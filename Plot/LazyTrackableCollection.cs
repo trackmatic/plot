@@ -21,7 +21,7 @@ namespace Plot
         {
             _factory = factory;
             _parent = parent;
-            _underlyingData = new TrackableCollection<T>(parent, relationship, new List<T>());
+            //_underlyingData = new TrackableCollection<T>(parent, relationship, new List<T>());
             Relationship = relationship;
         }
 
@@ -32,7 +32,7 @@ namespace Plot
         
         public IEnumerator<T> GetEnumerator()
         {
-            var parentState = EntityStateTracker.Get(_parent);
+            /*var parentState = EntityStateTracker.Get(_parent);
 
             if (parentState.Status == EntityStatus.New || _populated || parentState.Session.Item == null)
             {              
@@ -61,7 +61,8 @@ namespace Plot
 
                     yield return existing;
                 }
-            }
+            }*/
+            return null;
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

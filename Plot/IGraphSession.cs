@@ -27,7 +27,9 @@ namespace Plot
         void Register(IListener listener);
 
         IUnitOfWork Uow { get; }
-        
+
+        IEntityStateCache StateCache { get; }
+
         event EventHandler<ItemRegisteredEventArgs> ItemRegistered;
 
         event EventHandler<GraphSessionFlushedEventArgs> Flushed;

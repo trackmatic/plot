@@ -7,16 +7,19 @@ using Plot.Metadata;
 
 namespace Plot.Proxies
 {
-    public class RelationshipTrackerInterceptor : IInterceptor
+    public class RelationshipInterceptor : IInterceptor
     {
         private readonly IDictionary<string, State> _state;
 
         private readonly IMetadataFactory _metadataFactory;
 
-        public RelationshipTrackerInterceptor(IMetadataFactory metadataFactory)
+        private readonly IEntityStateCache _entityStateCache;
+
+        public RelationshipInterceptor(IMetadataFactory metadataFactory, IEntityStateCache entityStateCache)
         {
             _state = new Dictionary<string, State>();
             _metadataFactory = metadataFactory;
+            _entityStateCache = entityStateCache;
         }
 
         public void Intercept(IInvocation invocation)
@@ -54,7 +57,7 @@ namespace Plot.Proxies
 
         private bool IsSetter(IInvocation invocation)
         {
-            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && EntityStateTracker.Contains(invocation.InvocationTarget);
+            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && _entityStateCache.Contains(invocation.InvocationTarget);
         }
 
         public class State : ITrackableRelationship

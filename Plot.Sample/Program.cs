@@ -17,16 +17,19 @@ namespace Plot.Sample
 
             db.Connect();
 
+            var entityStateFactory = new EntityStateCacheFactory();
             var metadataFactory = new MetadataFactory();
             var proxyFactory = new DynamicProxyFactory(metadataFactory);
             var transactionFactory = new CypherTransactionFactory(db);
             var repositoryFactory = new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, typeof (OrganisationMapper).Assembly);
             var queryExecutorFactory = new QueryExecutorFactory(db, typeof (OrganisationMapper).Assembly);
-            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory);
+            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory);
 
             using (var session = factory.OpenSession())
             {
                 var organisation = session.Get<Organisation>("80");
+
+                organisation.Name = "Test Org.";
                 
                 session.SaveChanges();
             }

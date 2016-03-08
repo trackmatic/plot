@@ -17,15 +17,18 @@ namespace Plot
 
         private readonly IRepositoryFactory _repositoryFactory;
 
+        private readonly IEntityStateCache _entityStateCache;
+
         private bool _disposed;
 
-        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory)
+        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache entityStateCache)
         {
             _repositories = new Dictionary<Type, IRepository>();
             _uow = uow;
             _listeners = listeners.ToList();
             _queryExecutorFactory = queryExecutorFactory;
             _repositoryFactory = repositoryFactory;
+            _entityStateCache = entityStateCache;
         }
 
         public T Store<T>(T item)
@@ -70,7 +73,7 @@ namespace Plot
                 throw new InvalidOperationException("A query must return only 1 result to be used in the Map<T> method");
             }
 
-            return GetRepositoryOfType<T>().Get(results.Data.Select(x => EntityStateTracker.Get(x).GetIdentifier()).ToArray()).FirstOrDefault();
+            return GetRepositoryOfType<T>().Get(results.Data.Select(x => _entityStateCache.Get(x).GetIdentifier()).ToArray()).FirstOrDefault();
         }
 
         public IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query)
@@ -91,13 +94,15 @@ namespace Plot
             }
             _repositories.Clear();
             _listeners.Clear();
+            _entityStateCache.Dispose();
             OnDisposed();
             _disposed = true;
             Disposed(this, new GraphSessionDisposedEventArgs(this));
         }
         
         public IUnitOfWork Uow => _uow;
-        
+        public IEntityStateCache StateCache => _entityStateCache;
+
         public virtual bool Register(object item, EntityState state)
         {
             if (item == null)
@@ -117,7 +122,7 @@ namespace Plot
         public void Evict<T>(T item)
         {
             _uow.Remove(item);
-            EntityStateTracker.Remove(item);
+            _entityStateCache.Remove(item);
         }
 
         public virtual void SaveChanges()
@@ -131,7 +136,7 @@ namespace Plot
                 }
                 var mapper = repository.Mapper;
                 var aggregate = item;
-                var state = EntityStateTracker.Get(item);
+                var state = _entityStateCache.Get(item);
                 if (state.Status == EntityStatus.Deleted)
                 {
                     mapper.Delete(item, state);

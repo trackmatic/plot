@@ -16,20 +16,23 @@ namespace Plot.Tests
             var metadataFactory = new MetadataFactory();
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
-            var session = new GraphSession(new UnitOfWork(), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object);
-            var factory = new DynamicProxyFactory(metadataFactory);
-            var item = new Person
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                Id = "1",
-                Contacts = new List<Contact>
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var item = new Person
                 {
-                    new Contact { Id = "1" }
-                }
-            };
-            var proxy = factory.Create(item, session);
-            Assert.True(ProxyUtils.IsProxy(proxy));
-            Assert.True(proxy.Contacts is ITrackableCollection<Contact>);
-            Assert.True(ProxyUtils.IsProxy(proxy.Contacts[0]));
+                    Id = "1",
+                    Contacts = new List<Contact>
+                    {
+                        new Contact {Id = "1"}
+                    }
+                };
+                var proxy = factory.Create(item, session, stateTracker);
+                Assert.True(ProxyUtils.IsProxy(proxy));
+                Assert.True(proxy.Contacts is ITrackableCollection<Contact>);
+                Assert.True(ProxyUtils.IsProxy(proxy.Contacts[0]));
+            }
         }
     }
 }

@@ -8,9 +8,12 @@ namespace Plot
     {
         private readonly List<object> _items;
 
-        public UnitOfWork()
+        private readonly IEntityStateCache _entityStateCache;
+
+        public UnitOfWork(IEntityStateCache entityStateCache)
         {
             _items = new List<object>();
+            _entityStateCache = entityStateCache;
         }
         
         public void Remove(object item)
@@ -19,15 +22,13 @@ namespace Plot
             {
                 return;
             }
-
-            EntityStateTracker.Remove(item);
-
+            _entityStateCache.Remove(item);
             _items.Remove(item);
         }
 
         public void Merge(object item)
         {
-            var state = EntityStateTracker.Get(item);
+            var state = _entityStateCache.Get(item);
 
             if (state.IsReadonly)
             {
@@ -44,20 +45,16 @@ namespace Plot
 
         public void Register(object item)
         {
-            var state = EntityStateTracker.Get(item);
-
+            var state = _entityStateCache.Get(item);
             if (state.IsReadonly)
             {
                 return;
             }
-
             if (_items.Contains(item))
             {
                 return;
             }
-            
             _items.Add(item);
-
             OnRegistered(item);
         }
 
@@ -67,7 +64,7 @@ namespace Plot
         {
             OnFlushing();
 
-            foreach (var item in Items.OrderBy(x => EntityStateTracker.Get(x).Dependencies.Sequence))
+            foreach (var item in Items.OrderBy(x => _entityStateCache.Get(x).Dependencies.Sequence))
             {
                 yield return item;
             }
@@ -82,7 +79,7 @@ namespace Plot
 
         public T Get<T>(string id)
         {
-            return (T)_items.SingleOrDefault(x => x is T && EntityStateTracker.Get(x).GetIdentifier().Equals(id));
+            return (T)_items.SingleOrDefault(x => x is T && _entityStateCache.Get(x).GetIdentifier().Equals(id));
         }
 
         protected virtual void OnRegistered(object item)
@@ -112,7 +109,7 @@ namespace Plot
 
         protected object Get(string id, Type type)
         {
-            return _items.SingleOrDefault(x => x.GetType() == type && EntityStateTracker.Get(x).GetIdentifier().Equals(id));
+            return _items.SingleOrDefault(x => x.GetType() == type && _entityStateCache.Get(x).GetIdentifier().Equals(id));
         }
     }
 }

@@ -23,6 +23,10 @@ namespace Plot.Tests
                 }
             };
 
+            var stateTracker = new EntityStateCache();
+            var stateFactory = new Mock<IEntityStateCacheFactory>();
+            stateFactory.Setup(x => x.Create()).Returns(stateTracker);
+
             var metadataFactory = new MetadataFactory();
             var personMapper = new Mock<IMapper<Person>>();
             personMapper.Setup(x => x.Get(It.IsAny<string[]>())).Returns(new List<Person> { target });
@@ -47,7 +51,7 @@ namespace Plot.Tests
 
                 return null;
             });
-            var sessionFactory = new GraphSessionFactory(queryExecutorFactory.Object, repositoryFactory.Object);
+            var sessionFactory = new GraphSessionFactory(queryExecutorFactory.Object, repositoryFactory.Object, stateFactory.Object);
             using (var session = sessionFactory.OpenSession())
             {
                 var person = session.Get<Person>("1");

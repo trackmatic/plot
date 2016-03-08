@@ -18,11 +18,14 @@ namespace Plot
 
         private readonly IProxyFactory _proxyFactory;
 
+        private readonly IEntityStateCache _entityStateCache;
+
         protected AbstractRepository(IMapper<T> mapper, IGraphSession session, IProxyFactory proxyFactory)
         {
             _mapper = mapper;
             _session = session;
             _proxyFactory = proxyFactory;
+            _entityStateCache = session.StateCache;
         }
 
         public void Store(object item)
@@ -34,18 +37,18 @@ namespace Plot
 
         public void Delete(object item)
         {
-            EntityStateTracker.Get(item).Delete();
+            _entityStateCache.Get(item).Delete();
         }
 
         public void Store(T item)
         {
-            var proxy = _proxyFactory.Create(item, _session);
-            EntityStateTracker.Get(proxy).New();
+            var proxy = _proxyFactory.Create(item, _session, _entityStateCache);
+            _entityStateCache.Get(proxy).New();
         }
 
         public void Delete(T item)
         {
-            EntityStateTracker.Get(item).Delete();
+            _entityStateCache.Get(item).Delete();
         }
         
         public IEnumerable<T> Get(params string[] id)
@@ -63,8 +66,8 @@ namespace Plot
             var identifiers = GetUnpopulatedItems(items);
             foreach (var item in _mapper.Get(identifiers))
             {
-                var proxy = _proxyFactory.Create(item, _session);
-                var state = EntityStateTracker.Get(item);
+                var proxy = _proxyFactory.Create(item, _session, _entityStateCache);
+                var state = _entityStateCache.Get(item);
                 items[state.GetIdentifier()] = proxy;
                 state.Populate();
             }
@@ -96,17 +99,17 @@ namespace Plot
 
         private bool IsPopulated(IEnumerable<KeyValuePair<string, T>> items)
         {
-            return items.All(x => x.Value != null && EntityStateTracker.Get(x.Value).IsPopulated);
+            return items.All(x => x.Value != null && _entityStateCache.Get(x.Value).IsPopulated);
         }
 
         private string[] GetUnpopulatedItems(IDictionary<string, T> items)
         {
-            return items.Where(x => x.Value == null || !EntityStateTracker.Get(x.Value).IsPopulated).Select(x => x.Key).ToArray();
+            return items.Where(x => x.Value == null || !_entityStateCache.Get(x.Value).IsPopulated).Select(x => x.Key).ToArray();
         }
 
-        private static EntityState GetState(object proxy)
+        private EntityState GetState(object proxy)
         {
-            return EntityStateTracker.Contains(proxy) ? EntityStateTracker.Get(proxy) : EntityStateTracker.Create(proxy);
+            return _entityStateCache.Contains(proxy) ? _entityStateCache.Get(proxy) : _entityStateCache.Create(proxy);
         }
     }
 }

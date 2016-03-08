@@ -15,9 +15,9 @@ namespace Plot.Proxies
             _metadataFactory = metadataFactory;
         }
 
-        public T Create<T>(T item, IGraphSession session) where T : class
+        public T Create<T>(T item, IGraphSession session, IEntityStateCache entityStateCache) where T : class
         {
-            var generator = new Generator(session, _metadataFactory);
+            var generator = new Generator(session, _metadataFactory, entityStateCache);
             return generator.Create(item);
         }
 
@@ -31,12 +31,15 @@ namespace Plot.Proxies
 
             private readonly ProxyGenerationOptions _options;
 
-            public Generator(IGraphSession session, IMetadataFactory metadataFactory)
+            private readonly IEntityStateCache _entityStateCache;
+
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory, IEntityStateCache entityStateCache)
             {
                 _generator = new ProxyGenerator();
                 _session = session;
                 _metadataFactory = metadataFactory;
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
+                _entityStateCache = entityStateCache;
             }
 
             public T Create<T>(T item)
@@ -52,8 +55,8 @@ namespace Plot.Proxies
                 }
                 var interceptors = new IInterceptor[]
                 {
-                    new EntityStateTrackerInterceptor(),
-                    new RelationshipTrackerInterceptor(_metadataFactory)
+                    new EntityStateInterceptor(_entityStateCache),
+                    new RelationshipInterceptor(_metadataFactory, _entityStateCache)
                 };
                 var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
                 var state = GetState(proxy);
@@ -71,7 +74,7 @@ namespace Plot.Proxies
                     var child = (T) CreateTrackableEntity(item[i].GetType(), item[i]);
                     source.Add(child);
                 }
-                var proxy = new TrackableCollection<T>(parent, metadata[propertyInfo.Name].Relationship, source);
+                var proxy = new TrackableCollection<T>(parent, metadata[propertyInfo.Name].Relationship, source, _entityStateCache);
                 return proxy;
             }
 
@@ -114,9 +117,9 @@ namespace Plot.Proxies
                 return method;
             }
 
-            private static EntityState GetState(object proxy)
+            private EntityState GetState(object proxy)
             {
-                return EntityStateTracker.Contains(proxy) ? EntityStateTracker.Get(proxy) : EntityStateTracker.Create(proxy);
+                return _entityStateCache.Contains(proxy) ? _entityStateCache.Get(proxy) : _entityStateCache.Create(proxy);
             }
         }
     }

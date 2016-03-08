@@ -67,11 +67,14 @@
     <Compile Include="DefaultListener%27.cs" />
     <Compile Include="Dependencies.cs" />
     <Compile Include="EntityState.cs" />
-    <Compile Include="EntityStateTracker.cs" />
+    <Compile Include="EntityStateCache.cs" />
+    <Compile Include="EntityStateCacheFactory.cs" />
     <Compile Include="EntityStatus.cs" />
+    <Compile Include="IEntityStateCacheFactory.cs" />
+    <Compile Include="IEntityStateCache.cs" />
     <Compile Include="ITrackable.cs" />
     <Compile Include="ITrackableRelationship.cs" />
-    <Compile Include="Proxies\RelationshipTrackerInterceptor.cs" />
+    <Compile Include="Proxies\RelationshipInterceptor.cs" />
     <Compile Include="ProxyUtils.cs" />
     <Compile Include="GenericRepository.cs" />
     <Compile Include="GraphSession.cs" />
@@ -99,7 +102,7 @@
     <Compile Include="PagedGraphCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxies\DynamicProxyFactory.cs" />
-    <Compile Include="Proxies\EntityStateTrackerInterceptor.cs" />
+    <Compile Include="Proxies\EntityStateInterceptor.cs" />
     <Compile Include="Proxies\ProxyGenerationHook.cs" />
     <Compile Include="Proxies\IProxyFactory.cs" />
     <Compile Include="Queries\IQuery%27.cs" />

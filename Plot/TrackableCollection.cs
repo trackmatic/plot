@@ -15,13 +15,16 @@ namespace Plot
         private readonly object _parent;
 
         private readonly RelationshipMetadata _relationship;
+
+        private readonly IEntityStateCache _entityStateCache;
         
-        public TrackableCollection(object parent, RelationshipMetadata relatioship, IEnumerable<T> source)
+        public TrackableCollection(object parent, RelationshipMetadata relatioship, IEnumerable<T> source, IEntityStateCache entityStateCache)
         {
             _data = new List<T>();
             _removed = new List<T>();
             _parent = parent;
             _relationship = relatioship;
+            _entityStateCache = entityStateCache;
             Add(source);
         }
 
@@ -58,7 +61,7 @@ namespace Plot
         public void Add(T item)
         {
             AddInternal(item);
-            var parentState = EntityStateTracker.Get(_parent);
+            var parentState = _entityStateCache.Get(_parent);
             parentState.Dirty();
         }
 
@@ -85,7 +88,7 @@ namespace Plot
         {
             _data.Remove(item);
             _removed.Add(item);
-            EntityStateTracker.Get(_parent).Dirty();
+            _entityStateCache.Get(_parent).Dirty();
             return true;
         }
 
@@ -94,7 +97,7 @@ namespace Plot
             return _data.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return _data.GetEnumerator();
         }
@@ -103,7 +106,7 @@ namespace Plot
 
         public IEnumerable<T> Populate()
         {
-            var parentState = EntityStateTracker.Get(_parent);
+            var parentState = _entityStateCache.Get(_parent);
             var session = parentState.Session.Item;
 
             if (session == null)
@@ -111,7 +114,7 @@ namespace Plot
                 throw new NullReferenceException("Session must be set before calling populate");
             }
 
-            return session.Get<T>(_data.Select(x => EntityStateTracker.Get(x).GetIdentifier()).ToArray());
+            return session.Get<T>(_data.Select(x => _entityStateCache.Get(x).GetIdentifier()).ToArray());
         }
 
         public RelationshipMetadata Relationship => _relationship;
@@ -131,12 +134,12 @@ namespace Plot
                 throw new InvalidOperationException("A NULL item cannot be added to a trackable collection");
             }
             _data.Add(item);
-            var parentState = EntityStateTracker.Get(_parent);
+            var parentState = _entityStateCache.Get(_parent);
             parentState.Session.Get(session =>
             {
                 if (_relationship != null && _relationship.IsReverse)
                 {
-                    var itemState = EntityStateTracker.Get(item);
+                    var itemState = _entityStateCache.Get(item);
                     parentState.Dependencies.Register(itemState.Dependencies);
                 }
             });

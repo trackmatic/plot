@@ -11,16 +11,22 @@ namespace Plot
 
         private readonly List<IListener> _listeners;
 
-        public GraphSessionFactory(IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory)
+        private readonly IEntityStateCacheFactory _entityStateFactory;
+
+        public GraphSessionFactory(IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCacheFactory entityStateFactory)
         {
             _queryExecutorFactory = queryExecutorFactory;
             _repositoryFactory = repositoryFactory;
             _listeners = new List<IListener>();
+            _entityStateFactory = entityStateFactory;
         }
 
         public IGraphSession OpenSession()
         {
-            return new GraphSession(new UnitOfWork(), _listeners, _queryExecutorFactory, _repositoryFactory);
+            var entityStateCache = _entityStateFactory.Create();
+            var uow = new UnitOfWork(entityStateCache);
+            var session = new GraphSession(uow, _listeners, _queryExecutorFactory, _repositoryFactory, entityStateCache);
+            return session;
         }
         
         public void Register(IListener listener)

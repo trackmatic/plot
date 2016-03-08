@@ -29,17 +29,7 @@ namespace Plot
         {
             return source is IProxyTargetAccessor;
         }
-
-        public static void MakeReadonly(object source)
-        {
-            EntityStateTracker.Get(source).Readonly();
-        }
-
-        public static EntityState GetState(object source)
-        {
-            return EntityStateTracker.Get(source);
-        }
-
+        
         public static object GetTargetEntity(object source)
         {
             var proxy = source as IProxyTargetAccessor;
@@ -77,7 +67,7 @@ namespace Plot
             {
                 throw new InvalidOperationException("Item is not trackable and cannot be flushed");
             }
-            var interceptors = source.GetInterceptors().Where(x => x is RelationshipTrackerInterceptor).Cast<RelationshipTrackerInterceptor>();
+            var interceptors = source.GetInterceptors().Where(x => x is RelationshipInterceptor).Cast<RelationshipInterceptor>();
             return interceptors.SelectMany(x => x.GetTrackableRelationships());
         }
 
