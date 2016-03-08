@@ -5,18 +5,18 @@ namespace Plot.Proxies
 {
     public class EntityStateInterceptor : IInterceptor
     {
-        private readonly IEntityStateCache _entityStateCache;
+        private readonly IEntityStateCache _state;
 
-        public EntityStateInterceptor(IEntityStateCache entityStateCache)
+        public EntityStateInterceptor(IEntityStateCache state)
         {
-            _entityStateCache = entityStateCache;
+            _state = state;
         }
 
         public void Intercept(IInvocation invocation)
         {
             if (IsSetter(invocation))
             {
-                _entityStateCache.Get(invocation.InvocationTarget).Dirty();
+                _state.Get(invocation.InvocationTarget).Dirty();
             }
 
             if (invocation.InvocationTarget == null)
@@ -29,7 +29,7 @@ namespace Plot.Proxies
 
         private bool IsSetter(IInvocation invocation)
         {
-            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && _entityStateCache.Contains(invocation.InvocationTarget);
+            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && _state.Contains(invocation.InvocationTarget);
         }
     }
 }

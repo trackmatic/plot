@@ -1,21 +1,23 @@
 ﻿using Plot.Sample.Model;
 
-namespace Plot.Sample.Nodes
+namespace Plot.Sample.Data.Nodes
 {
-    public class AssetNode
+    public class OrganisationNode
     {
         public string Id { get; set; }
 
         public string Name { get; set; }
 
-        public Asset AsAsset()
+        public Organisation AsOrganisation()
         {
-            var asset = new Asset
+            var organisation = new Organisation
             {
                 Id = Id,
+
                 Name = Name
             };
-            return asset;
+
+            return organisation;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Plot.Tests
     public class dynamic_proxy_factory_tests
     {
         [Fact]
-        public void lists_are_proxied()
+        public void all_objects_in_the_object_graph_are_proxied()
         {
             var metadataFactory = new MetadataFactory();
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();

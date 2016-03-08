@@ -17,28 +17,28 @@ namespace Plot
 
         private readonly IRepositoryFactory _repositoryFactory;
 
-        private readonly IEntityStateCache _entityStateCache;
+        private readonly IEntityStateCache _state;
 
         private bool _disposed;
 
-        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache entityStateCache)
+        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache state)
         {
             _repositories = new Dictionary<Type, IRepository>();
             _uow = uow;
             _listeners = listeners.ToList();
             _queryExecutorFactory = queryExecutorFactory;
             _repositoryFactory = repositoryFactory;
-            _entityStateCache = entityStateCache;
+            _state = state;
         }
 
-        public T Store<T>(T item)
+        public T Create<T>(T item)
         {
             if (item == null)
             {
                 throw new NullReferenceException("Object cannot be null");
             }
             var repository = GetRepository(item);
-            repository.Store(item);
+            repository.Create(item);
             return item;
         }
 
@@ -73,7 +73,7 @@ namespace Plot
                 throw new InvalidOperationException("A query must return only 1 result to be used in the Map<T> method");
             }
 
-            return GetRepositoryOfType<T>().Get(results.Data.Select(x => _entityStateCache.Get(x).GetIdentifier()).ToArray()).FirstOrDefault();
+            return GetRepositoryOfType<T>().Get(results.Data.Select(x => _state.Get(x).GetIdentifier()).ToArray()).FirstOrDefault();
         }
 
         public IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query)
@@ -94,14 +94,15 @@ namespace Plot
             }
             _repositories.Clear();
             _listeners.Clear();
-            _entityStateCache.Dispose();
+            _state.Dispose();
             OnDisposed();
             _disposed = true;
             Disposed(this, new GraphSessionDisposedEventArgs(this));
         }
         
         public IUnitOfWork Uow => _uow;
-        public IEntityStateCache StateCache => _entityStateCache;
+
+        public IEntityStateCache State => _state;
 
         public virtual bool Register(object item, EntityState state)
         {
@@ -122,7 +123,7 @@ namespace Plot
         public void Evict<T>(T item)
         {
             _uow.Remove(item);
-            _entityStateCache.Remove(item);
+            _state.Remove(item);
         }
 
         public virtual void SaveChanges()
@@ -136,7 +137,7 @@ namespace Plot
                 }
                 var mapper = repository.Mapper;
                 var aggregate = item;
-                var state = _entityStateCache.Get(item);
+                var state = _state.Get(item);
                 if (state.Status == EntityStatus.Deleted)
                 {
                     mapper.Delete(item, state);

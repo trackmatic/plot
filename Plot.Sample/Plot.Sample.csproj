@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8C778B45-4400-45E2-892F-BC2615DFADF2}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Plot.Sample</RootNamespace>
     <AssemblyName>Plot.Sample</AssemblyName>
@@ -33,10 +33,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Neo4jClient, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4jClient.1.1.0.28\lib\net45\Neo4jClient.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -52,20 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mappers\AssetMapper.cs" />
-    <Compile Include="Mappers\ContactMapper.cs" />
-    <Compile Include="Mappers\OrganisationMapper.cs" />
-    <Compile Include="Mappers\SiteMapper.cs" />
     <Compile Include="Model\Asset.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Organisation.cs" />
     <Compile Include="Model\Site.cs" />
-    <Compile Include="Nodes\AssetNode.cs" />
-    <Compile Include="Nodes\ContactNode.cs" />
-    <Compile Include="Nodes\OrganisationNode.cs" />
-    <Compile Include="Nodes\SiteNode.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetOrganisationsByName.cs" />
     <Compile Include="Relationships.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -25,10 +25,10 @@ namespace Plot
             _mapper = mapper;
             _session = session;
             _proxyFactory = proxyFactory;
-            _entityStateCache = session.StateCache;
+            _entityStateCache = session.State;
         }
 
-        public void Store(object item)
+        public void Create(object item)
         {
             var state = GetState(item);
             _session.Register(item, state);

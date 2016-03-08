@@ -9,17 +9,17 @@ namespace Plot.Proxies
 {
     public class RelationshipInterceptor : IInterceptor
     {
-        private readonly IDictionary<string, State> _state;
+        private readonly IDictionary<string, RelationshipState> _relationshipState;
 
         private readonly IMetadataFactory _metadataFactory;
 
-        private readonly IEntityStateCache _entityStateCache;
+        private readonly IEntityStateCache _state;
 
-        public RelationshipInterceptor(IMetadataFactory metadataFactory, IEntityStateCache entityStateCache)
+        public RelationshipInterceptor(IMetadataFactory metadataFactory, IEntityStateCache state)
         {
-            _state = new Dictionary<string, State>();
+            _relationshipState = new Dictionary<string, RelationshipState>();
             _metadataFactory = metadataFactory;
-            _entityStateCache = entityStateCache;
+            _state = state;
         }
 
         public void Intercept(IInvocation invocation)
@@ -43,30 +43,30 @@ namespace Plot.Proxies
 
         public IEnumerable<ITrackableRelationship> GetTrackableRelationships()
         {
-            return _state.Values;
+            return _relationshipState.Values;
         }
 
-        private State GetState(string property)
+        private RelationshipState GetState(string property)
         {
-            if (!_state.ContainsKey(property))
+            if (!_relationshipState.ContainsKey(property))
             {
-                _state.Add(property, new State());
+                _relationshipState.Add(property, new RelationshipState());
             }
-            return _state[property];
+            return _relationshipState[property];
         }
 
         private bool IsSetter(IInvocation invocation)
         {
-            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && _entityStateCache.Contains(invocation.InvocationTarget);
+            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && _state.Contains(invocation.InvocationTarget);
         }
 
-        public class State : ITrackableRelationship
+        private class RelationshipState : ITrackableRelationship
         {
             private readonly List<object> _items;
 
             private object _current;
 
-            public State()
+            public RelationshipState()
             {
                 _items = new List<object>();
             }

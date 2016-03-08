@@ -2,8 +2,8 @@
 
 # Plot
 
-.Net Object Grap Mapper for Neo4j
+.Net Object Graph Mapper for Neo4j
 
 ## Install With NuGet
 
-    install-package Plot
+    install-package Plot.Neo4j

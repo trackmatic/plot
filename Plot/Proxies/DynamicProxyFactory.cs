@@ -32,7 +32,7 @@ namespace Plot.Proxies
 
             private readonly ProxyGenerationOptions _options;
 
-            private readonly IEntityStateCache _entityStateCache;
+            private readonly IEntityStateCache _state;
 
             public Generator(IGraphSession session, IMetadataFactory metadataFactory)
             {
@@ -40,7 +40,7 @@ namespace Plot.Proxies
                 _session = session;
                 _metadataFactory = metadataFactory;
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
-                _entityStateCache = session.StateCache;
+                _state = session.State;
             }
 
             public T Create<T>(T item)
@@ -57,8 +57,8 @@ namespace Plot.Proxies
             {
                 var interceptors = new IInterceptor[]
                 {
-                    new EntityStateInterceptor(_entityStateCache),
-                    new RelationshipInterceptor(_metadataFactory, _entityStateCache)
+                    new EntityStateInterceptor(_state),
+                    new RelationshipInterceptor(_metadataFactory, _state)
                 };
                 var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
                 var state = GetState(proxy);
@@ -104,7 +104,7 @@ namespace Plot.Proxies
                 }
                 var genericType = typeof (TrackableCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
                 var items = Populate(((IEnumerable<object>)source).ToList());
-                var args = new[] { parent, metadata[property.Name].Relationship, items, _entityStateCache};
+                var args = new[] { parent, metadata[property.Name].Relationship, items, _state};
                 var proxy = Activator.CreateInstance(genericType, args, null);
                 return proxy;
             }
@@ -142,7 +142,7 @@ namespace Plot.Proxies
 
             private EntityState GetState(object proxy)
             {
-                return _entityStateCache.Contains(proxy) ? _entityStateCache.Get(proxy) : _entityStateCache.Create(proxy);
+                return _state.Contains(proxy) ? _state.Get(proxy) : _state.Create(proxy);
             }
         }
     }

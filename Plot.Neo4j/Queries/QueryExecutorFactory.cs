@@ -36,7 +36,7 @@ namespace Plot.Neo4j.Queries
                     {
                         var local = type;
 
-                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, db, session), arguments[2]);
+                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, db), arguments[2]);
                     }
                 }
             }

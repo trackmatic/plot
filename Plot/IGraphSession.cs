@@ -6,7 +6,7 @@ namespace Plot
 {
     public interface IGraphSession : IDisposable
     {
-        T Store<T>(T item);
+        T Create<T>(T item);
 
         void Delete<T>(T item);
 
@@ -28,7 +28,7 @@ namespace Plot
 
         IUnitOfWork Uow { get; }
 
-        IEntityStateCache StateCache { get; }
+        IEntityStateCache State { get; }
 
         event EventHandler<ItemRegisteredEventArgs> ItemRegistered;
 

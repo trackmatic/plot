@@ -13,13 +13,9 @@ namespace Plot
         public PagedGraphGraphCollection(IQueryExecutor<T> executor, IQuery<T> query, IEnumerable<T> data, int total, int page)
         {
             _executor = executor;
-
             _query = query;
-
             Data = data;
-
             Total = total;
-
             Page = page;
         }
 
@@ -47,7 +43,6 @@ namespace Plot
                 {
                     return true;
                 }
-
                 return !Data.Any();
             }
         }
@@ -65,7 +60,6 @@ namespace Plot
                 {
                     yield return item;
                 }
-
             }
         }
 

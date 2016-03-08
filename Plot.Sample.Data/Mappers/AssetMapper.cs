@@ -5,10 +5,10 @@ using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
+using Plot.Sample.Data.Nodes;
 using Plot.Sample.Model;
-using Plot.Sample.Nodes;
 
-namespace Plot.Sample.Mappers
+namespace Plot.Sample.Data.Mappers
 {
     public class AssetMapper : Mapper<Asset>
     {
