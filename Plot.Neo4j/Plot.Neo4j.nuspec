@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Plot.Neo4j</id>
+    <version>0.0.1</version>
+    <title>Plot.Neo4j</title>
+    <authors>Trackmatic Solutions (Pty) Ltd</authors>
+    <owners>Trackmatic Solutions (Pty) Ltd</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An object graph mapping library for .Net</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>plot n4g ogm neo4j</tags>
+    <dependencies>
+      <dependency id="Microsoft.Net.Http" version="2.0.20710.0" />
+      <dependency id="Neo4jClient" version="1.1.0.28" />
+      <dependency id="Newtonsoft.Json" version="6.0.3" />
+      <dependency id="Plot.Neo4j" version="0.0.1" />
+    </dependencies>
+  </metadata>
+</package>

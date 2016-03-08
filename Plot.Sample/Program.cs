@@ -1,8 +1,8 @@
 ﻿using System;
 using Neo4jClient;
 using Plot.Metadata;
-using Plot.N4j;
-using Plot.N4j.Queries;
+using Plot.Neo4j;
+using Plot.Neo4j.Queries;
 using Plot.Proxies;
 using Plot.Sample.Mappers;
 using Plot.Sample.Model;

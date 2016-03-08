@@ -3,8 +3,10 @@ using Plot.Attributes;
 
 namespace Plot.Sample.Model
 {
-    public class Asset
+    public class Asset : IRequireSession
     {
+        private IGraphSession _session;
+
         public Asset()
         {
             Sites = Sites ?? new List<Site>();
@@ -31,6 +33,11 @@ namespace Plot.Sample.Model
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public virtual void Set(IGraphSession session)
+        {
+            _session = session;
         }
 
         public override bool Equals(object obj)

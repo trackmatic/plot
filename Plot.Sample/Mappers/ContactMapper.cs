@@ -1,8 +1,8 @@
 ﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
-using Plot.N4j;
-using Plot.N4j.Queries;
+using Plot.Neo4j;
+using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Model;
 using Plot.Sample.Nodes;

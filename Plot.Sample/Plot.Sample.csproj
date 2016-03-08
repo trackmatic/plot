@@ -72,9 +72,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Plot.N4j\Plot.N4j.csproj">
-      <Project>{db0fe3fa-1908-428a-a9fe-bde983fe10bd}</Project>
-      <Name>Plot.N4j</Name>
+    <ProjectReference Include="..\Plot.Neo4j\Plot.Neo4j.csproj">
+      <Project>{70934b7a-3cdc-42ab-b6fc-ff164f7ac2aa}</Project>
+      <Name>Plot.Neo4j</Name>
     </ProjectReference>
     <ProjectReference Include="..\Plot\Plot.csproj">
       <Project>{56eb9ccc-95dd-4cc2-bba9-67658f04b49e}</Project>

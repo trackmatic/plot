@@ -81,6 +81,7 @@
     <Compile Include="Cypher\WithSnippet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Plot.N4j.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

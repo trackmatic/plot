@@ -13,6 +13,11 @@ namespace Plot.Proxies
 
         public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
         {
+            if (memberInfo.MemberType == MemberTypes.Field)
+            {
+                return;
+            }
+
             throw new InvalidOperationException($"The method {memberInfo.Name} must be marked as virtual");
         }
 

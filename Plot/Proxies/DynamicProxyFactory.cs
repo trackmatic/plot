@@ -45,7 +45,12 @@ namespace Plot.Proxies
 
             public T Create<T>(T item)
             {
-                return (T)Create(typeof(T), item);
+                var proxy = (T)Create(typeof(T), item);
+                if (proxy is IRequireSession)
+                {
+                    ((IRequireSession) proxy).Set(_session);
+                }
+                return proxy;
             }
 
             private object Create(Type type, object item)
