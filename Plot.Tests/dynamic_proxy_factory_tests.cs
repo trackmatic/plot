@@ -28,7 +28,7 @@ namespace Plot.Tests
                         new Contact {Id = "1"}
                     }
                 };
-                var proxy = factory.Create(item, session, stateTracker);
+                var proxy = factory.Create(item, session);
                 Assert.True(ProxyUtils.IsProxy(proxy));
                 Assert.True(proxy.Contacts is ITrackableCollection<Contact>);
                 Assert.True(ProxyUtils.IsProxy(proxy.Contacts[0]));

@@ -17,8 +17,13 @@ namespace Plot
         private readonly RelationshipMetadata _relationship;
 
         private readonly IEntityStateCache _entityStateCache;
+
+        public TrackableCollection()
+        {
+            
+        }
         
-        public TrackableCollection(object parent, RelationshipMetadata relatioship, IEnumerable<T> source, IEntityStateCache entityStateCache)
+        public TrackableCollection(object parent, RelationshipMetadata relatioship, IEnumerable<object> source, IEntityStateCache entityStateCache)
         {
             _data = new List<T>();
             _removed = new List<T>();
@@ -119,11 +124,11 @@ namespace Plot
 
         public RelationshipMetadata Relationship => _relationship;
 
-        private void Add(IEnumerable<T> items)
+        private void Add(IEnumerable<object> items)
         {
             foreach (var item in items)
             {
-                AddInternal(item);
+                AddInternal((T)item);
             }
         }
 

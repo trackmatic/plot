@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Plot.Metadata;
@@ -15,9 +16,9 @@ namespace Plot.Proxies
             _metadataFactory = metadataFactory;
         }
 
-        public T Create<T>(T item, IGraphSession session, IEntityStateCache entityStateCache) where T : class
+        public T Create<T>(T item, IGraphSession session) where T : class
         {
-            var generator = new Generator(session, _metadataFactory, entityStateCache);
+            var generator = new Generator(session, _metadataFactory);
             return generator.Create(item);
         }
 
@@ -33,13 +34,13 @@ namespace Plot.Proxies
 
             private readonly IEntityStateCache _entityStateCache;
 
-            public Generator(IGraphSession session, IMetadataFactory metadataFactory, IEntityStateCache entityStateCache)
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory)
             {
                 _generator = new ProxyGenerator();
                 _session = session;
                 _metadataFactory = metadataFactory;
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
-                _entityStateCache = entityStateCache;
+                _entityStateCache = session.StateCache;
             }
 
             public T Create<T>(T item)
@@ -59,20 +60,6 @@ namespace Plot.Proxies
                 _session.Register(proxy, state);
                 Populate(proxy);
                 state.Clean();
-                return proxy;
-            }
-
-            public object CreateTrackableList<T>(NodeMetadata metadata, object parent, IList<T> item, PropertyInfo propertyInfo) where T : class
-            {
-                var source = new List<T>();
-                for (int i = 0; i < item.Count; i++)
-                {
-                    var type = ProxyUtils.GetTargetType(item[i]);
-                    var existing = (T)_session.Uow.Get(ProxyUtils.GetEntityId(item[i]), type);
-                    var child = existing ?? (T) Create(type, item[i]);
-                    source.Add(child);
-                }
-                var proxy = new TrackableCollection<T>(parent, metadata[propertyInfo.Name].Relationship, source, _entityStateCache);
                 return proxy;
             }
 
@@ -105,13 +92,16 @@ namespace Plot.Proxies
             private object List(NodeMetadata metadata, PropertyInfo property, object parent)
             {
                 var type = property.PropertyType;
-                var item = property.GetValue(parent);
-                if (item == null)
+                var source = property.GetValue(parent);
+                if (source == null)
                 {
                     return null;
                 }
-                var method = CreateGenericMethod(type);
-                return method.Invoke(this, new[] { metadata, parent, item, property });
+                var genericType = typeof (TrackableCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
+                var items = Populate(((IEnumerable<object>)source).ToList());
+                var args = new[] { parent, metadata[property.Name].Relationship, items, _entityStateCache};
+                var proxy = Activator.CreateInstance(genericType, args, null);
+                return proxy;
             }
 
             private object Relationship(NodeMetadata metadata, PropertyInfo property, object parent)
@@ -124,6 +114,19 @@ namespace Plot.Proxies
                 }
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
                 return Create(type, entity);
+            }
+
+            private List<object> Populate(IList<object> source)
+            {
+                var destination = new List<object>();
+                for (int i = 0; i < source.Count; i++)
+                {
+                    var type = ProxyUtils.GetTargetType(source[i]);
+                    var existing = _session.Uow.Get(ProxyUtils.GetEntityId(source[i]), type);
+                    var child = existing ?? Create(type, source[i]);
+                    destination.Add(child);
+                }
+                return destination;
             }
 
             private static MethodBase CreateGenericMethod(Type type)

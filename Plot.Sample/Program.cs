@@ -28,12 +28,11 @@ namespace Plot.Sample
             using (var session = factory.OpenSession())
             {
                 var organisation = session.Get<Organisation>("80");
-
                 var site = session.Get<Site>(organisation.Sites[0].Id);
-
                 var asset = site.Assets[0];
-                
-                
+                asset.Name = "test";
+                var a = session.Get<Asset>(asset.Id);
+                a.Name = "test1";
                 session.SaveChanges();
             }
             Console.WriteLine("Done");

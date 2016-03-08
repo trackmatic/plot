@@ -42,7 +42,7 @@ namespace Plot
 
         public void Store(T item)
         {
-            var proxy = _proxyFactory.Create(item, _session, _entityStateCache);
+            var proxy = _proxyFactory.Create(item, _session);
             _entityStateCache.Get(proxy).New();
         }
 
@@ -66,7 +66,7 @@ namespace Plot
             var identifiers = GetUnpopulatedItems(items);
             foreach (var item in _mapper.Get(identifiers))
             {
-                var proxy = _proxyFactory.Create(item, _session, _entityStateCache);
+                var proxy = _proxyFactory.Create(item, _session);
                 var state = _entityStateCache.Get(item);
                 items[state.GetIdentifier()] = proxy;
                 state.Populate();

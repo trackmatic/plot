@@ -49,7 +49,7 @@ namespace Plot.Tests
                         Name = "first address"
                     }
                 };
-                var proxy = proxyFactory.Create(person, session, stateTracker);
+                var proxy = proxyFactory.Create(person, session);
                 proxy.Address = null;
                 proxy.Address = new Address {Id = "2"};
                 var trackableRelationships = ProxyUtils.Flush(proxy).ToList();
