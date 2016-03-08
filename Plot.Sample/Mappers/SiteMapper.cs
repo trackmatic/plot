@@ -49,14 +49,15 @@ namespace Plot.Sample.Mappers
                     .Match("(site:Site)")
                     .Where("site.Id in {id}")
                     .OptionalMatch("(site-[:SITE_OF]->organisation)")
-                    .OptionalMatch("((assetTag:AssetTag)-[:BELONGS_TO]->site)")
                     .OptionalMatch("(site-[:SITE_OF]->(organisation:Organisation))")
-                    .With("organisation, site, assetTag")
+                    .OptionalMatch("((asset:Asset)-[:BELONGS_TO]->site)")
+                    .With("organisation, site, asset")
                     .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((site, organisation, assetTag, assets, driverTags, assetTags, people) => new GetQueryDataset
+                    .ReturnDistinct((site, organisation, asset) => new GetQueryDataset
                     {
                         Site = site.As<SiteNode>(),
-                        Organisations = organisation.CollectAs<OrganisationNode>()
+                        Organisations = organisation.CollectAs<OrganisationNode>(),
+                        Assets = asset.CollectAs<AssetNode>()
                     });
                 return dataset;
             }
@@ -73,6 +74,10 @@ namespace Plot.Sample.Mappers
                 {
                     aggregate.Add(node.AsOrganisation());
                 }
+                foreach ( var node in dataset.Assets)
+                {
+                    aggregate.Add(node.AsAsset());
+                }
             }
         }
 
@@ -85,6 +90,8 @@ namespace Plot.Sample.Mappers
             public SiteNode Site { get; set; }
 
             public IEnumerable<OrganisationNode> Organisations { get; set; }
+
+            public IEnumerable<AssetNode> Assets { get; set; }
         }
 
         #endregion

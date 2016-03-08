@@ -52,12 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappers\AssetMapper.cs" />
     <Compile Include="Mappers\ContactMapper.cs" />
     <Compile Include="Mappers\OrganisationMapper.cs" />
     <Compile Include="Mappers\SiteMapper.cs" />
+    <Compile Include="Model\Asset.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Organisation.cs" />
     <Compile Include="Model\Site.cs" />
+    <Compile Include="Nodes\AssetNode.cs" />
     <Compile Include="Nodes\ContactNode.cs" />
     <Compile Include="Nodes\OrganisationNode.cs" />
     <Compile Include="Nodes\SiteNode.cs" />

@@ -91,7 +91,6 @@ namespace Plot
             {
                 return;
             }
-
             MarkClean();
         }
 
@@ -103,20 +102,16 @@ namespace Plot
         public void Readonly()
         {
             MarkClean();
-
             _readonly = true;
         }
 
-        public bool IsReadonly
-        {
-            get { return _readonly; }
-        }
+        public bool IsReadonly => _readonly;
 
         public void Populate()
         {
             _populated = true;
-
             _readonly = false;
+            Clean();
         }
 
         public string GetIdentifier()

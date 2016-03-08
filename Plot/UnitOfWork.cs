@@ -15,7 +15,7 @@ namespace Plot
             _items = new List<object>();
             _entityStateCache = entityStateCache;
         }
-        
+
         public void Remove(object item)
         {
             if (_items.Contains(item))
@@ -79,7 +79,7 @@ namespace Plot
 
         public T Get<T>(string id)
         {
-            return (T)_items.SingleOrDefault(x => x is T && _entityStateCache.Get(x).GetIdentifier().Equals(id));
+            return (T) Get(id, typeof(T));
         }
 
         protected virtual void OnRegistered(object item)
@@ -107,9 +107,9 @@ namespace Plot
             _items.Clear();
         }
 
-        protected object Get(string id, Type type)
+        public object Get(string id, Type type)
         {
-            return _items.SingleOrDefault(x => x.GetType() == type && _entityStateCache.Get(x).GetIdentifier().Equals(id));
+            return _items.SingleOrDefault(x => ProxyUtils.GetTargetType(x) == type && _entityStateCache.Get(x).GetIdentifier().Equals(id));
         }
     }
 }

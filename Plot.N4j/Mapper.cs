@@ -166,7 +166,7 @@ namespace Plot.N4j
                 commands.Add(command);
                 if (relationship.DeleteOrphan)
                 {
-                    commands.Add(new DeleteOrphanCommand(new NodeSnippet(MetadataFactory.Create(destination), destination)));
+                    commands.Add(new DeleteWithCommand(new NodeSnippet(MetadataFactory.Create(destination), destination)));
                 }
             }
             return commands;

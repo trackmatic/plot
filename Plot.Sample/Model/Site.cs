@@ -8,6 +8,7 @@ namespace Plot.Sample.Model
         public Site()
         {
             Organisations = Organisations ?? new List<Organisation>();
+            Assets = Assets ?? new List<Asset>();
         }
 
         public virtual string Id { get; set; }
@@ -17,6 +18,9 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.SiteOf)]
         public virtual IList<Organisation> Organisations { get; set; }
 
+        [Relationship(Relationships.BelongsTo, true)]
+        public virtual IList<Asset> Assets { get; set; }
+
         public virtual void Add(Organisation organisation)
         {
             if (Organisations.Contains(organisation))
@@ -25,6 +29,16 @@ namespace Plot.Sample.Model
             }
             Organisations.Add(organisation);
             organisation.Add(this);
+        }
+
+        public virtual void Add(Asset asset)
+        {
+            if (Assets.Contains(asset))
+            {
+                return;
+            }
+            Assets.Add(asset);
+            asset.Add(this);
         }
 
         public override int GetHashCode()

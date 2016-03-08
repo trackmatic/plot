@@ -2,16 +2,15 @@
 
 namespace Plot.N4j.Cypher.Commands
 {
-    public class DeleteOrphanCommand : ICommand
+    public class DeleteWithCommand : ICommand
     {
         private readonly NodeSnippet _source;
 
         private readonly NodeIdSnippet _id;
 
-        public DeleteOrphanCommand(NodeSnippet source)
+        public DeleteWithCommand(NodeSnippet source)
         {
             _source = source;
-
             _id = new NodeIdSnippet(source);
         }
 

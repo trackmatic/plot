@@ -29,7 +29,10 @@ namespace Plot.Sample
             {
                 var organisation = session.Get<Organisation>("80");
 
-                organisation.Name = "Test Org.";
+                var site = session.Get<Site>(organisation.Sites[0].Id);
+
+                var asset = site.Assets[0];
+                
                 
                 session.SaveChanges();
             }

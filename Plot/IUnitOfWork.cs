@@ -17,6 +17,8 @@ namespace Plot
         
         T Get<T>(string id);
 
+        object Get(string id, Type type);
+
         void Remove(object item);
     }
 }

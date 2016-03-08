@@ -139,6 +139,10 @@ namespace Plot
             {
                 if (_relationship != null && _relationship.IsReverse)
                 {
+                    if (!_entityStateCache.Contains(item))
+                    {
+                        return;
+                    }
                     var itemState = _entityStateCache.Get(item);
                     parentState.Dependencies.Register(itemState.Dependencies);
                 }

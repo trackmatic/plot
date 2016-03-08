@@ -44,15 +44,11 @@ namespace Plot.Proxies
 
             public T Create<T>(T item)
             {
-                return (T)CreateTrackableEntity(typeof(T), item);
+                return (T)Create(typeof(T), item);
             }
 
-            private object CreateTrackableEntity(Type type, object item)
+            private object Create(Type type, object item)
             {
-                if (_session.Uow.Contains(item))
-                {
-                    return item;
-                }
                 var interceptors = new IInterceptor[]
                 {
                     new EntityStateInterceptor(_entityStateCache),
@@ -61,7 +57,7 @@ namespace Plot.Proxies
                 var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
                 var state = GetState(proxy);
                 _session.Register(proxy, state);
-                PopulateEntity(proxy);
+                Populate(proxy);
                 state.Clean();
                 return proxy;
             }
@@ -71,44 +67,63 @@ namespace Plot.Proxies
                 var source = new List<T>();
                 for (int i = 0; i < item.Count; i++)
                 {
-                    var child = (T) CreateTrackableEntity(item[i].GetType(), item[i]);
+                    var type = ProxyUtils.GetTargetType(item[i]);
+                    var existing = (T)_session.Uow.Get(ProxyUtils.GetEntityId(item[i]), type);
+                    var child = existing ?? (T) Create(type, item[i]);
                     source.Add(child);
                 }
                 var proxy = new TrackableCollection<T>(parent, metadata[propertyInfo.Name].Relationship, source, _entityStateCache);
                 return proxy;
             }
 
-            private void PopulateEntity(object item)
+            private void Populate(object item)
             {
-                var type = ProxyUtils.GetTargetEntity(item).GetType();
+                var type = ProxyUtils.GetTargetType(item);
                 var metadata = _metadataFactory.Create(type);
                 var properties = type.GetProperties();
                 foreach (var property in properties)
                 {
-                    var child = property.GetValue(item);
-                    var childType = property.PropertyType;
-                    if (metadata[property.Name].IsPrimitive)
+                    var propertyMetadata = metadata[property.Name];
+                    if (propertyMetadata.IsPrimitive)
                     {
                         continue;
                     }
-                    var proxy = CreateProxy(metadata, childType, property, item, child);
+                    var proxy = Factory(propertyMetadata)(metadata, property, item);
                     property.SetValue(item, proxy);
                 }
             }
 
-            private object CreateProxy(NodeMetadata metadata, Type type, PropertyInfo propertyInfo, object parent, object item)
+            private Func<NodeMetadata, PropertyInfo, object, object> Factory(PropertyMetadata property)
             {
+                if (property.IsList)
+                {
+                    return List;
+                }
+                return Relationship;
+            }
+
+            private object List(NodeMetadata metadata, PropertyInfo property, object parent)
+            {
+                var type = property.PropertyType;
+                var item = property.GetValue(parent);
                 if (item == null)
                 {
                     return null;
                 }
-                var property = metadata[propertyInfo.Name];
-                if (property.IsList)
+                var method = CreateGenericMethod(type);
+                return method.Invoke(this, new[] { metadata, parent, item, property });
+            }
+
+            private object Relationship(NodeMetadata metadata, PropertyInfo property, object parent)
+            {
+                var type = property.PropertyType;
+                var item = property.GetValue(parent);
+                if (item == null)
                 {
-                    var method = CreateGenericMethod(type);
-                    return method.Invoke(this, new[] { metadata, parent, item, propertyInfo});
+                    return null;
                 }
-                return CreateTrackableEntity(type, item);
+                var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
+                return Create(type, entity);
             }
 
             private static MethodBase CreateGenericMethod(Type type)
