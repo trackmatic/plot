@@ -1,0 +1,14 @@
+*/**/.suo
+*/**/bin
+*/**/obj
+*.suo
+*/bin
+*/obj
+/packages
+/.figs
+TestResult.xml
+.vs
+*/**/*.user
+*.user
+*/**/aspnet_client
+*.user

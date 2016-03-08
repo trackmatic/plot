@@ -1,0 +1,9 @@
+﻿namespace Plot.Metadata
+{
+    public class RelationshipMetadata
+    {
+        public bool IsReverse { get; set; }
+
+        public string Name { get; set; }
+    }
+}
