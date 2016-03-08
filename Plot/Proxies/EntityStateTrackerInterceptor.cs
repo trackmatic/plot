@@ -7,7 +7,7 @@ namespace Plot.Proxies
     {
         public void Intercept(IInvocation invocation)
         {
-            if (invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && EntityStateTracker.Contains(invocation.InvocationTarget))
+            if (IsSetter(invocation))
             {
                 EntityStateTracker.Get(invocation.InvocationTarget).Dirty();
             }
@@ -18,6 +18,11 @@ namespace Plot.Proxies
             }
 
             invocation.Proceed();
+        }
+
+        private bool IsSetter(IInvocation invocation)
+        {
+            return invocation.Method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase) && EntityStateTracker.Contains(invocation.InvocationTarget);
         }
     }
 }

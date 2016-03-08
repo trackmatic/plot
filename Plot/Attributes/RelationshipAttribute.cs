@@ -24,5 +24,7 @@ namespace Plot.Attributes
         public bool Reverse { get; set; }
 
         public string Name { get; set; }
+
+        public bool DeleteOrphan { get; set; }
     }
 }

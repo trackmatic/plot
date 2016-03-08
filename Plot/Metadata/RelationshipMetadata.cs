@@ -5,5 +5,7 @@
         public bool IsReverse { get; set; }
 
         public string Name { get; set; }
+
+        public bool DeleteOrphan { get; set; }
     }
 }

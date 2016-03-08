@@ -4,9 +4,8 @@ using Plot.Metadata;
 
 namespace Plot
 {
-    public interface ITrackableCollection : IEnumerable
+    public interface ITrackableCollection : IEnumerable, ITrackable
     {
-        IEnumerable Flush();
     }
 
     public interface ITrackableCollection<T> : IEnumerable<T>, ITrackableCollection

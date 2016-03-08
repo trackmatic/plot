@@ -8,19 +8,16 @@ namespace Plot.Proxies
 {
     public class DynamicProxyFactory : IProxyFactory
     {
-        private readonly ProxyGenerator _generator;
-
         private readonly IMetadataFactory _metadataFactory;
 
         public DynamicProxyFactory(IMetadataFactory metadataFactory)
         {
-            _generator = new ProxyGenerator();
             _metadataFactory = metadataFactory;
         }
 
         public T Create<T>(T item, IGraphSession session) where T : class
         {
-            var generator = new Generator(_generator, session, _metadataFactory);
+            var generator = new Generator(session, _metadataFactory);
             return generator.Create(item);
         }
 
@@ -32,11 +29,14 @@ namespace Plot.Proxies
 
             private readonly IMetadataFactory _metadataFactory;
 
-            public Generator(ProxyGenerator generator, IGraphSession session, IMetadataFactory metadataFactory)
+            private readonly ProxyGenerationOptions _options;
+
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory)
             {
-                _generator = generator;
+                _generator = new ProxyGenerator();
                 _session = session;
                 _metadataFactory = metadataFactory;
+                _options = new ProxyGenerationOptions(new ProxyGenerationHook());
             }
 
             public T Create<T>(T item)
@@ -50,8 +50,12 @@ namespace Plot.Proxies
                 {
                     return item;
                 }
-                var options = new ProxyGenerationOptions(new EntityStateTrackerProxyGenerationHook());
-                var proxy = _generator.CreateClassProxyWithTarget(type, item, options, new EntityStateTrackerInterceptor());
+                var interceptors = new IInterceptor[]
+                {
+                    new EntityStateTrackerInterceptor(),
+                    new RelationshipTrackerInterceptor(_metadataFactory)
+                };
+                var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
                 var state = GetState(proxy);
                 _session.Register(proxy, state);
                 PopulateEntity(proxy);
@@ -100,10 +104,6 @@ namespace Plot.Proxies
                 {
                     var method = CreateGenericMethod(type);
                     return method.Invoke(this, new[] { metadata, parent, item, propertyInfo});
-                }
-                if (property.HasRelationship)
-                {
-                    // TODO: create trackable relationship proxy
                 }
                 return CreateTrackableEntity(type, item);
             }

@@ -27,11 +27,11 @@ namespace Plot.Sample
             using (var session = factory.OpenSession())
             {
                 var organisation = session.Get<Organisation>("80");
-                organisation.Sites[0].Name = "Another new site name";
+                
                 session.SaveChanges();
-                Console.ReadLine();
             }
-
+            Console.WriteLine("Done");
+            Console.ReadLine();
         }
     }
 }

@@ -65,7 +65,8 @@ namespace Plot.Metadata
             var relationship = attribute == null ? null : new RelationshipMetadata
             {
                 IsReverse = attribute.Reverse,
-                Name = attribute.Name
+                Name = attribute.Name,
+                DeleteOrphan = attribute.DeleteOrphan
             };
             return relationship;
 

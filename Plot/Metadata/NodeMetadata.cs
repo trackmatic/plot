@@ -26,5 +26,10 @@ namespace Plot.Metadata
         {
             _properties.Add(name, property);
         }
+
+        public bool Contains(string property)
+        {
+            return _properties.ContainsKey(property);
+        }
     }
 }

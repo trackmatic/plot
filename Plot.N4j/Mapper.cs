@@ -107,6 +107,12 @@ namespace Plot.N4j
                 {
                     var collection = property.GetValue<IEnumerable>(item);
                     commands.AddRange(CreateRelationshipCommands(item, collection, property.Relationship));
+                    continue;
+                }
+
+                if (property.HasRelationship)
+                {
+                    commands.AddRange(CreateRelationshipCommands(item, property.Relationship));
                 }
             }
 
@@ -130,6 +136,41 @@ namespace Plot.N4j
         }
 
         private IMetadataFactory MetadataFactory { get; }
+
+        private IEnumerable<ICommand> CreateRelationshipCommands(object source, RelationshipMetadata relationship)
+        {
+            var commands = new List<ICommand>();
+            if (relationship.IsReverse)
+            {
+                return commands;
+            }
+            var trackableRelationships = ProxyUtils.Flush(source);
+            foreach (var trackableRelationship in trackableRelationships)
+            {
+                commands.AddRange(CreateDeleteRelationshipCommands(source, trackableRelationship, relationship));
+                if (trackableRelationship.Current == null)
+                {
+                    continue;
+                }
+                commands.Add(CreateRelationship(source, trackableRelationship.Current, relationship));
+            }
+            return commands;
+        }
+
+        private IEnumerable<ICommand> CreateDeleteRelationshipCommands(object source, ITrackableRelationship trackableRelationship, RelationshipMetadata relationship)
+        {
+            var commands = new List<ICommand>();
+            foreach (var destination in trackableRelationship.Flush())
+            {
+                var command = DeleteRelationship(source, destination, relationship);
+                commands.Add(command);
+                if (relationship.DeleteOrphan)
+                {
+                    commands.Add(new DeleteOrphanCommand(new NodeSnippet(MetadataFactory.Create(destination), destination)));
+                }
+            }
+            return commands;
+        }
 
         private IEnumerable<ICommand> CreateRelationshipCommands(object source, IEnumerable collection, RelationshipMetadata relationship)
         {

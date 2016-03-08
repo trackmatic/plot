@@ -52,6 +52,7 @@
     <Compile Include="Cypher\Commands\CreateCommand.cs" />
     <Compile Include="Cypher\Commands\CreateRelationshipCommand.cs" />
     <Compile Include="Cypher\Commands\DeleteCommand.cs" />
+    <Compile Include="Cypher\Commands\DeleteOrphanCommand.cs" />
     <Compile Include="Cypher\Commands\DeleteRelationshipCommand.cs" />
     <Compile Include="CypherTransaction.cs" />
     <Compile Include="CypherTransactionFactory.cs" />

@@ -17,7 +17,7 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.SiteOf, true)]
         public virtual IList<Site> Sites { get; set; }
 
-        [Relationship]
+        [Relationship(Relationships.ContactFor, DeleteOrphan = true)]
         public virtual Contact Contact { get; set; }
 
         public virtual void Add(Site site)

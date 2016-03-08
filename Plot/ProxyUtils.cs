@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Castle.DynamicProxy;
+using Plot.Proxies;
 
 namespace Plot
 {
@@ -59,12 +62,23 @@ namespace Plot
 
         public static IEnumerable Flush(IEnumerable list)
         {
-            var trackable = list as ITrackableCollection;
+            var trackable = list as ITrackable;
             if (trackable == null)
             {
                 throw new InvalidOperationException("Collection is not trackable and cannot be flushed");
             }
             return trackable.Flush();
+        }
+
+        public static IEnumerable<ITrackableRelationship> Flush(object item)
+        {
+            var source = item as IProxyTargetAccessor;
+            if (source == null)
+            {
+                throw new InvalidOperationException("Item is not trackable and cannot be flushed");
+            }
+            var interceptors = source.GetInterceptors().Where(x => x is RelationshipTrackerInterceptor).Cast<RelationshipTrackerInterceptor>();
+            return interceptors.SelectMany(x => x.GetTrackableRelationships());
         }
 
         public static bool IsTrackable(IEnumerable list)
