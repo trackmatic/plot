@@ -14,5 +14,26 @@ Plot is an application framework designed to assist in managing CRUD operations 
 ## Creating a session factory
 A graph session factory is required to start interacting with the framwork. A factory is created using the static Confuguration class in the Plot.Neo4j assembly. You need to supply one or more assemblies which contain your mappers and queries so that can be loaded.
 
+There should only be one instance of the session factory per application.
+
     var uri = new Uri("http://neo4j:trackmatic@localhost:7474/db/data");
     var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
+
+## Creating a session
+A session is creating using the session factory and is the entry point to working with your data.
+
+    using (var session = factory.OpenSession())
+    {
+    }
+
+## Creating an entity
+The session object is used to create new entities. The session.Create method tells the session to track the entity and save it when session.SaveChanges is called()
+
+    using (var session = factory.OpenSession())
+    {
+        var entity = session.Create<Organisation>(new Organisation
+        {
+            Id = "1",
+                Name = "Organisation A"
+        });
+    }
