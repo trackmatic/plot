@@ -21,6 +21,8 @@ namespace Plot.Metadata
 
         public bool IsReadOnly { get; set; }
 
+        public bool IsIgnored { get; set; }
+
         public bool HasRelationship => Relationship != null;
 
         public bool IsReverse()

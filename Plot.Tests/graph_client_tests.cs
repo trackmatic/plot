@@ -27,7 +27,7 @@ namespace Plot.Tests
             var stateFactory = new Mock<IEntityStateCacheFactory>();
             stateFactory.Setup(x => x.Create()).Returns(stateTracker);
 
-            var metadataFactory = new MetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory();
             var personMapper = new Mock<IMapper<Person>>();
             personMapper.Setup(x => x.Get(It.IsAny<string[]>())).Returns(new List<Person> { target });
             personMapper.Setup(x => x.Update(It.IsAny<object>(), It.IsAny<EntityState>())).Verifiable();

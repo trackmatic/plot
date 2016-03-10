@@ -32,7 +32,7 @@ namespace Plot.Tests
         [Fact]
         public void a_proxy_is_generated_for_trackable_relationships()
         {
-            var metadataFactory = new MetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory();
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractRepository.cs" />
+    <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="Attributes\ReadonlyAttribute.cs" />
     <Compile Include="Attributes\RelationshipAttribute.cs" />
     <Compile Include="DefaultListener%27.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="LazyResolver.cs" />
     <Compile Include="LazyTrackableCollection.cs" />
     <Compile Include="Metadata\IMetadataFactory.cs" />
-    <Compile Include="Metadata\MetadataFactory.cs" />
+    <Compile Include="Metadata\AttributeMetadataFactory.cs" />
     <Compile Include="Metadata\NodeMetadata.cs" />
     <Compile Include="Metadata\PropertyMetadata.cs" />
     <Compile Include="Metadata\RelationshipMetadata.cs" />

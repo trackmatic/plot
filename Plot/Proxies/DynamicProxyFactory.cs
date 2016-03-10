@@ -80,6 +80,10 @@ namespace Plot.Proxies
                     {
                         continue;
                     }
+                    if (propertyMetadata.IsIgnored)
+                    {
+                        continue;
+                    }
                     var proxy = Factory(propertyMetadata)(metadata, property, item);
                     property.SetValue(item, proxy);
                 }

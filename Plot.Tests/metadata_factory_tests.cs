@@ -10,7 +10,7 @@ namespace Plot.Tests
         [Fact]
         public void factory_creates_meta_data()
         {
-            var factory = new MetadataFactory();
+            var factory = new AttributeMetadataFactory();
             var node = factory.Create(typeof(Person));
             Assert.Equal("Person", node.Name);
             Assert.Equal(3, node.Properties.Count());
