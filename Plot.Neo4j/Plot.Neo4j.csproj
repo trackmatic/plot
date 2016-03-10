@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="CypherTransaction.cs" />
     <Compile Include="CypherTransactionFactory.cs" />
     <Compile Include="Cypher\Commands\CreateCommand.cs" />
