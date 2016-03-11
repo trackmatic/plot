@@ -60,6 +60,7 @@ namespace Plot.Proxies
                     new EntityStateInterceptor(_state),
                     new RelationshipInterceptor(_metadataFactory, _state)
                 };
+                ProxyUtils.SetEntityId(item);
                 var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
                 var state = GetState(proxy);
                 _session.Register(proxy, state);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
+using Plot.Exceptions;
 using Plot.Proxies;
 
 namespace Plot
@@ -11,18 +12,23 @@ namespace Plot
     {
         public static string GetEntityId(object source)
         {
-            var type = source.GetType();
-            var property = type.GetProperty("Id");
-            if (property == null)
-            {
-                throw new InvalidOperationException("Entities must have an id property of type string");
-            }
+            var property = EntityIdUtils.GetId(source);
             var id = property.GetValue(source);
             if (id == null)
             {
-                throw new InvalidOperationException($"Id of {source} cannot be null");
+                throw new PropertyNotSetException(Text.IdNull, source);
             }
             return id.ToString();
+        }
+
+        public static void SetEntityId(object source)
+        {
+            var property = EntityIdUtils.GetId(source);
+            var id = property.GetValue(source);
+            if (id == null)
+            {
+                property.SetValue(source, Guid.NewGuid().ToString());
+            }
         }
         
         public static bool IsProxy(object source)
@@ -55,7 +61,7 @@ namespace Plot
             var trackable = list as ITrackable;
             if (trackable == null)
             {
-                throw new InvalidOperationException("Collection is not trackable and cannot be flushed");
+                throw new TrackableCollectionException(Text.FlushTrackableCollectionException);
             }
             return trackable.Flush();
         }
@@ -65,7 +71,7 @@ namespace Plot
             var source = item as IProxyTargetAccessor;
             if (source == null)
             {
-                throw new InvalidOperationException("Item is not trackable and cannot be flushed");
+                throw new TrackableRelationshipException(Text.FlushTrackablerelationshipException);
             }
             var interceptors = source.GetInterceptors().Where(x => x is RelationshipInterceptor).Cast<RelationshipInterceptor>();
             return interceptors.SelectMany(x => x.GetTrackableRelationships());

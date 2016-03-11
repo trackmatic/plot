@@ -60,6 +60,27 @@ namespace Plot.Tests
             }
         }
 
+        [Fact]
+        public void id_property_is_set_if_null()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var notSet = new AnotherEntity();
+                var proxy = factory.Create(notSet, session);
+                Assert.NotNull(proxy.Id);
+                Assert.NotEmpty(proxy.Id);
+
+                var set = new AnotherEntity {Id = "1"};
+                proxy = factory.Create(set, session);
+                Assert.Equal("1", proxy.Id);
+            }
+        }
+
         public class EntityWithIgnoredProperty
         {
             public virtual string Id { get; set; }

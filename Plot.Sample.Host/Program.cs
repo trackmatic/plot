@@ -1,6 +1,7 @@
 ﻿using System;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
+using Plot.Sample.Model;
 using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
@@ -13,6 +14,12 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
             using (var session = factory.OpenSession())
             {
+                var entity = session.Create<Organisation>(new Organisation
+                {
+                    Id = "1",
+                    Name = "Organisation A"
+                });
+
                 var results = session.Query(new GetOrganisationsByName()).Data;
             }
             Console.WriteLine("Done");

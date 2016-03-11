@@ -49,12 +49,18 @@
     <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="Attributes\ReadonlyAttribute.cs" />
     <Compile Include="Attributes\RelationshipAttribute.cs" />
+    <Compile Include="Conventions.cs" />
     <Compile Include="DefaultListener%27.cs" />
     <Compile Include="Dependencies.cs" />
+    <Compile Include="EntityIdUtils.cs" />
     <Compile Include="EntityState.cs" />
     <Compile Include="EntityStateCache.cs" />
     <Compile Include="EntityStateCacheFactory.cs" />
     <Compile Include="EntityStatus.cs" />
+    <Compile Include="Exceptions\MissingRequiredPropertyException.cs" />
+    <Compile Include="Exceptions\PropertyNotSetException.cs" />
+    <Compile Include="Exceptions\TrackableCollectionException.cs" />
+    <Compile Include="Exceptions\TrackableRelationshipException.cs" />
     <Compile Include="IEntityStateCacheFactory.cs" />
     <Compile Include="IEntityStateCache.cs" />
     <Compile Include="IRequireSession.cs" />
@@ -101,12 +107,23 @@
     <Compile Include="Queries\AbstractQueryResult.cs" />
     <Compile Include="GraphSessionDisposedEventArgs.cs" />
     <Compile Include="GraphSessionFlushedEventArgs.cs" />
+    <Compile Include="Text.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Text.resx</DependentUpon>
+    </Compile>
     <Compile Include="TrackableCollection.cs" />
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Plot.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Text.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Text.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

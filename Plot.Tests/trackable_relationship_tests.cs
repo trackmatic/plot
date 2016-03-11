@@ -11,7 +11,6 @@ namespace Plot.Tests
 {
     public class trackable_relationship_tests
     {
-
         public class Address
         {
             public virtual string Id { get; set; }
