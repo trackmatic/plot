@@ -139,19 +139,18 @@ namespace Plot
                 throw new InvalidOperationException("A NULL item cannot be added to a trackable collection");
             }
             _data.Add(item);
-            var parentState = _entityStateCache.Get(_parent);
-            parentState.Session.Get(session =>
+            var child = _entityStateCache.Get(item);
+            var parent = _entityStateCache.Get(_parent);
+            if (_relationship.IsReverse)
             {
-                if (_relationship != null && _relationship.IsReverse)
-                {
-                    if (!_entityStateCache.Contains(item))
-                    {
-                        return;
-                    }
-                    var itemState = _entityStateCache.Get(item);
-                    parentState.Dependencies.Register(itemState.Dependencies);
-                }
-            });
+                parent.Dependencies.Register(child.Dependencies);
+            }
+            else
+            {
+                child.Dependencies.Register(parent.Dependencies);
+            }
         }
+
+        public void Inject() { }
     }
 }

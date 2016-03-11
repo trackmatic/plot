@@ -28,11 +28,13 @@ namespace Plot
             _entityStateCache = session.State;
         }
 
-        public void Create(object item)
+        public object Create(object item)
         {
-            var state = GetState(item);
-            _session.Register(item, state);
+            var proxy = _proxyFactory.Create((T)item, _session);
+            var state = GetState(proxy);
+            _session.Register(proxy, state);
             state.New();
+            return proxy;
         }
 
         public void Delete(object item)

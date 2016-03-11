@@ -63,6 +63,7 @@
     <Compile Include="Exceptions\TrackableRelationshipException.cs" />
     <Compile Include="IEntityStateCacheFactory.cs" />
     <Compile Include="IEntityStateCache.cs" />
+    <Compile Include="IRegisterDependencies.cs" />
     <Compile Include="IRequireSession.cs" />
     <Compile Include="ITrackable.cs" />
     <Compile Include="ITrackableRelationship.cs" />

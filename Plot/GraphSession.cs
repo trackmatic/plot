@@ -38,8 +38,7 @@ namespace Plot
                 throw new NullReferenceException("Object cannot be null");
             }
             var repository = GetRepository(item);
-            repository.Create(item);
-            return item;
+            return (T)repository.Create(item);
         }
 
         public void Delete<T>(T item)
