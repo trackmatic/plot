@@ -13,27 +13,17 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var organisation = session.Create(new Organisation
-                {
-                    Id = "1",
-                    Name = "Trackmatic"
-                });
+                var organisation = session.Get<Organisation>("1");
 
-                var site = session.Create(new Site
+                /*var site = session.Create<Site>(new Site
                 {
                     Id = "1",
                     Name = "Jhb"
                 });
 
-                organisation.Add(site);
+                organisation.Add(site);*/
 
-                var accessGroup = session.Create(new AccessGroup
-                {
-                    Id = "1",
-                    Name = "Developers"
-                });
-
-                organisation.Add(accessGroup);
+                organisation.Sites.Remove(organisation.Sites[0]);
 
                 session.SaveChanges();
             }

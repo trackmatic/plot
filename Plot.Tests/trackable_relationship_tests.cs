@@ -50,7 +50,7 @@ namespace Plot.Tests
                 };
                 var proxy = proxyFactory.Create(person, session);
                 proxy.Address = null;
-                proxy.Address = new Address {Id = "2"};
+                proxy.Address = proxyFactory.Create(new Address {Id = "2"}, session);
                 var trackableRelationships = ProxyUtils.Flush(proxy).ToList();
                 Assert.Equal(1, trackableRelationships.Count());
                 foreach (var trackableRelationship in trackableRelationships)

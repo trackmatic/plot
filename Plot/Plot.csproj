@@ -63,10 +63,9 @@
     <Compile Include="Exceptions\TrackableRelationshipException.cs" />
     <Compile Include="IEntityStateCacheFactory.cs" />
     <Compile Include="IEntityStateCache.cs" />
-    <Compile Include="IRegisterDependencies.cs" />
     <Compile Include="IRequireSession.cs" />
     <Compile Include="ITrackable.cs" />
-    <Compile Include="ITrackableRelationship.cs" />
+    <Compile Include="Proxies\ITrackableRelationship.cs" />
     <Compile Include="Proxies\RelationshipInterceptor.cs" />
     <Compile Include="ProxyUtils.cs" />
     <Compile Include="GenericRepository.cs" />
@@ -83,7 +82,7 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="ItemRegisteredEventArgs.cs" />
-    <Compile Include="ITrackableCollection.cs" />
+    <Compile Include="Proxies\ITrackableCollection.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="LazyResolver.cs" />
     <Compile Include="LazyTrackableCollection.cs" />
@@ -113,7 +112,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Text.resx</DependentUpon>
     </Compile>
-    <Compile Include="TrackableCollection.cs" />
+    <Compile Include="Proxies\TrackableCollection.cs" />
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

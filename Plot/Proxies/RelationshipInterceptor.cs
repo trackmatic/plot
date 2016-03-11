@@ -38,8 +38,28 @@ namespace Plot.Proxies
             }
             var state = GetState(property.Name);
             state.Push(invocation.Arguments[0]);
+            RegisterDependencies(property.Relationship, invocation.InvocationTarget, invocation.Arguments[0]);
             invocation.Proceed();
         }
+
+        private void RegisterDependencies(RelationshipMetadata relationship, object parentItem, object item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            var child = _state.Get(item);
+            var parent = _state.Get(parentItem);
+            if (relationship.IsReverse)
+            {
+                parent.Dependencies.Register(child.Dependencies);
+            }
+            else
+            {
+                child.Dependencies.Register(parent.Dependencies);
+            }
+        }
+
 
         public IEnumerable<ITrackableRelationship> GetTrackableRelationships()
         {

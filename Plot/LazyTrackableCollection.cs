@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Plot.Metadata;
+using Plot.Proxies;
 using Plot.Queries;
 
 namespace Plot

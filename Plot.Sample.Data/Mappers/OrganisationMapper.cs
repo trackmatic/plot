@@ -47,8 +47,8 @@ namespace Plot.Sample.Data.Mappers
                     .Cypher
                     .Match("(organisation:Organisation)")
                     .Where("organisation.Id in {id}")
-                    .OptionalMatch("(organisation-[:RUNS]->site)")
-                    .OptionalMatch("(organisation-[:MAINTAINS]->(accessGroup:AccessGroup)")
+                    .OptionalMatch("(organisation-[:RUNS]->(site:Site))")
+                    .OptionalMatch("(organisation-[:MAINTAINS]->(accessGroup:AccessGroup))")
                     .WithParam("id", abstractQuery.Id)
                     .ReturnDistinct((organisation, site, accessGroup) => new GetQueryDataset
                     {

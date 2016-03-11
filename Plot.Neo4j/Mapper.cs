@@ -8,6 +8,7 @@ using Plot.Metadata;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Cypher.Commands;
 using Plot.Neo4j.Queries;
+using Plot.Proxies;
 using Plot.Queries;
 
 namespace Plot.Neo4j
@@ -183,14 +184,17 @@ namespace Plot.Neo4j
             {
                 return commands;
             }
-            var enumerable = collection as object[] ?? collection.Cast<object>().ToArray();
-            commands.AddRange(from object destination in enumerable select CreateRelationship(source, destination, relationship));
-            if (ProxyUtils.IsTrackable(enumerable))
+            commands.AddRange(from object destination in collection select CreateRelationship(source, destination, relationship));
+            if (ProxyUtils.IsTrackable(collection))
             {
-                commands.AddRange(from object destination in ProxyUtils.Flush(enumerable) select DeleteRelationship(source, destination, relationship));
+                foreach (var destination in ProxyUtils.Flush(collection))
+                {
+                    commands.Add(DeleteRelationship(source, destination, relationship));
+                }
             }
             return commands;
         }
+        
 
         private ICommand CreateRelationship(object source, object destination, RelationshipMetadata relationship)
         {
@@ -204,7 +208,7 @@ namespace Plot.Neo4j
         {
             var sourceMetadata = MetadataFactory.Create(source);
             var destinationMetadata = MetadataFactory.Create(destination);
-            var command = new DeleteRelationshipCommand(new ParamSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), relationship.Name);
+            var command = new DeleteRelationshipCommand(new ParamSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), relationship.Name, relationship.DeleteOrphan);
             return command;
         }
     }

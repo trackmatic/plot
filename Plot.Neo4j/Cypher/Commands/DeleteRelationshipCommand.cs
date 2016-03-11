@@ -1,4 +1,5 @@
-﻿using Neo4jClient.Cypher;
+﻿using System.Collections.Generic;
+using Neo4jClient.Cypher;
 
 namespace Plot.Neo4j.Cypher.Commands
 {
@@ -12,13 +13,16 @@ namespace Plot.Neo4j.Cypher.Commands
 
         private readonly ParamSnippet _relationshipName;
 
-        public DeleteRelationshipCommand(ParamSnippet source, NodeSnippet destination, string relationship)
+        private readonly bool _deleteOrphan;
+
+        public DeleteRelationshipCommand(ParamSnippet source, NodeSnippet destination, string relationship, bool deleteOrphan)
         {
             _source = source;
             _destination = destination;
             _destination = destination;
             _relationship = relationship;
             _relationshipName = new ParamSnippet(source, "rel");
+            _deleteOrphan = deleteOrphan;
         }
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
@@ -28,8 +32,19 @@ namespace Plot.Neo4j.Cypher.Commands
                 .Match(new MatchNodeSnippet(_destination, new ParamSnippet(_destination.Param, "id")))
                 .Match(new MatchRelationshipSnippet(_source, _destination.Param, _relationshipName, _relationship))
                 .WithParam(new ParamSnippet(_destination.Param, "id"), ProxyUtils.GetEntityId(_destination.Data))
-                .Delete(_relationshipName);
+                .Delete(GetNodesToDelete());
             return query;
+        }
+
+        private ParamSnippet[] GetNodesToDelete()
+        {
+            var nodes = new List<ParamSnippet>();
+            nodes.Add(_relationshipName);
+            if (_deleteOrphan)
+            {
+                nodes.Add(_destination.Param);
+            }
+            return nodes.ToArray();
         }
     }
 }

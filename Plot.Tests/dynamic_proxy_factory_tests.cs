@@ -81,6 +81,50 @@ namespace Plot.Tests
             }
         }
 
+        [Fact]
+        public void depdendencies_are_incremented_when_property_set()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var parent = factory.Create(new Parent {Id = "0"}, session);
+                var child = factory.Create(new Child {Id = "1"}, session);
+                parent.Child = child;
+
+                var parentState = stateTracker.Get(parent);
+                Assert.Equal(2, parentState.Dependencies.Sequence);
+
+                var childState = stateTracker.Get(child);
+                Assert.Equal(1, childState.Dependencies.Sequence);
+            }
+        }
+
+        [Fact]
+        public void depdendencies_are_incremented_when_item_added_to_a_list()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var parent = factory.Create(new Parent { Id = "0" }, session);
+                var child = factory.Create(new Child { Id = "1" }, session);
+                parent.Children.Add(child);
+
+                var parentState = stateTracker.Get(parent);
+                Assert.Equal(2, parentState.Dependencies.Sequence);
+
+                var childState = stateTracker.Get(child);
+                Assert.Equal(1, childState.Dependencies.Sequence);
+            }
+        }
+
         public class EntityWithIgnoredProperty
         {
             public virtual string Id { get; set; }
@@ -92,6 +136,27 @@ namespace Plot.Tests
         }
 
         public class AnotherEntity
+        {
+            public virtual string Id { get; set; }
+        }
+
+        public class Parent
+        {
+            public Parent()
+            {
+                Children = Children ?? new List<Child>();
+            }
+
+            public virtual string Id { get; set; }
+
+            [Relationship("HAS_A")]
+            public virtual Child Child { get; set; }
+
+            [Relationship("HAS_A")]
+            public virtual IList<Child> Children { get; set; }
+        }
+
+        public class Child
         {
             public virtual string Id { get; set; }
         }

@@ -15,10 +15,10 @@ namespace Plot.Sample.Model
 
         public virtual string Name { get; set; }
 
-        [Relationship(Relationships.Runs)]
+        [Relationship(Relationships.Runs, DeleteOrphan = true)]
         public virtual IList<Site> Sites { get; set; }
 
-        [Relationship(Relationships.Maintains)]
+        [Relationship(Relationships.Maintains, DeleteOrphan = true)]
         public virtual IList<AccessGroup> AccessGroups { get; set; }
 
         public virtual void Add(AccessGroup accessGroup)
