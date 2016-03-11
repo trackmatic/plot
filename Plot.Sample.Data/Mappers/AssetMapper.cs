@@ -22,7 +22,7 @@ namespace Plot.Sample.Data.Mappers
             var data = new
             {
                 item.Id,
-                item.Name
+                item.FleetNumber
             };
             return data;
         }
@@ -65,7 +65,7 @@ namespace Plot.Sample.Data.Mappers
 
             protected override void Map(Asset aggregate, GetQueryDataset dataset)
             {
-                aggregate.Name = dataset.Asset.Name;
+                aggregate.FleetNumber = dataset.Asset.FleetNumber;
                 foreach (var site in dataset.Sites)
                 {
                     aggregate.Add(site.AsSite());

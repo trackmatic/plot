@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using Plot.Attributes;
 
 namespace Plot.Sample.Model
 {
-    public class Asset : IRequireSession
+    public class Asset
     {
-        private IGraphSession _session;
-
         public Asset()
         {
             Sites = Sites ?? new List<Site>();
@@ -14,9 +11,8 @@ namespace Plot.Sample.Model
 
         public virtual string Id { get; set; }
 
-        public virtual string Name { get; set; }
+        public virtual string FleetNumber { get; set; }
 
-        [Relationship(Relationships.BelongsTo)]
         public virtual IList<Site> Sites { get; set; }
 
         public virtual void Add(Site site)
@@ -25,7 +21,6 @@ namespace Plot.Sample.Model
             {
                 return;
             }
-
             Sites.Add(site);
             site.Add(this);
         }
@@ -35,19 +30,9 @@ namespace Plot.Sample.Model
             return Id.GetHashCode();
         }
 
-        public virtual void Set(IGraphSession session)
-        {
-            _session = session;
-        }
-
         public override bool Equals(object obj)
         {
-            var other = obj as Asset;
-            if (other == null)
-            {
-                return false;
-            }
-            return other.GetHashCode() == GetHashCode();
+            return Utils.Equals(this, obj);
         }
     }
 }

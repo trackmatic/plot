@@ -2,7 +2,6 @@
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
 using Plot.Sample.Model;
-using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
 {
@@ -14,12 +13,29 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var entity = session.Get<Organisation>("1");
+                var organisation = session.Create(new Organisation
+                {
+                    Id = "1",
+                    Name = "Trackmatic"
+                });
 
-                entity.Name = "Acme";
+                var site = session.Create(new Site
+                {
+                    Id = "1",
+                    Name = "Jhb"
+                });
+
+                organisation.Add(site);
+
+                var accessGroup = session.Create(new AccessGroup
+                {
+                    Id = "1",
+                    Name = "Developers"
+                });
+
+                organisation.Add(accessGroup);
 
                 session.SaveChanges();
-                
             }
             Console.WriteLine("Done");
             Console.ReadLine();

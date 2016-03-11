@@ -8,17 +8,27 @@ namespace Plot.Sample.Model
         public Organisation()
         {
             Sites = Sites ?? new List<Site>();
+            AccessGroups = AccessGroups ?? new List<AccessGroup>();
         }
 
         public virtual string Id { get; set; }
 
         public virtual string Name { get; set; }
 
-        [Relationship(Relationships.SiteOf, true)]
+        [Relationship(Relationships.Runs)]
         public virtual IList<Site> Sites { get; set; }
 
-        [Relationship(Relationships.ContactFor, DeleteOrphan = true)]
-        public virtual Contact Contact { get; set; }
+        [Relationship(Relationships.Maintains)]
+        public virtual IList<AccessGroup> AccessGroups { get; set; }
+
+        public virtual void Add(AccessGroup accessGroup)
+        {
+            if (AccessGroups.Contains(accessGroup))
+            {
+                return;
+            }
+            AccessGroups.Add(accessGroup);
+        }
 
         public virtual void Add(Site site)
         {
@@ -27,8 +37,8 @@ namespace Plot.Sample.Model
                 return;
             }
             Sites.Add(site);
-            site.Add(this);
-        }
+            site?.Set(this);
+        } 
 
         public override int GetHashCode()
         {
@@ -37,12 +47,7 @@ namespace Plot.Sample.Model
 
         public override bool Equals(object obj)
         {
-            var other = obj as Organisation;
-            if (other == null)
-            {
-                return false;
-            }
-            return other.GetHashCode() == GetHashCode();
+            return Utils.Equals(this, obj);
         }
     }
 }

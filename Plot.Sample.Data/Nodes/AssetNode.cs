@@ -6,14 +6,14 @@ namespace Plot.Sample.Data.Nodes
     {
         public string Id { get; set; }
 
-        public string Name { get; set; }
+        public string FleetNumber { get; set; }
 
         public Asset AsAsset()
         {
             var asset = new Asset
             {
                 Id = Id,
-                Name = Name
+                FleetNumber = FleetNumber
             };
             return asset;
         }

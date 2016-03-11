@@ -47,14 +47,14 @@ namespace Plot.Sample.Data.Mappers
                     .Cypher
                     .Match("(organisation:Organisation)")
                     .Where("organisation.Id in {id}")
-                    .OptionalMatch("(site-[:SITE_OF]->organisation)")
-                    .OptionalMatch("(organisation-[:CONTACT_FOR]->contact)")
+                    .OptionalMatch("(organisation-[:RUNS]->site)")
+                    .OptionalMatch("(organisation-[:MAINTAINS]->(accessGroup:AccessGroup)")
                     .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((organisation, site, contact) => new GetQueryDataset
+                    .ReturnDistinct((organisation, site, accessGroup) => new GetQueryDataset
                     {
                         Organisation = organisation.As<OrganisationNode>(),
                         Sites = site.CollectAs<SiteNode>(),
-                        Contact = contact.As<ContactNode>()
+                        AccessGroups = accessGroup.CollectAs<AccessGroupNode>()
                     });
                 return cypher;
             }
@@ -67,10 +67,13 @@ namespace Plot.Sample.Data.Mappers
             protected override void Map(Organisation aggregate, GetQueryDataset dataset)
             {
                 aggregate.Name = dataset.Organisation.Name;
-                aggregate.Contact = dataset.Contact?.AsContact();
                 foreach (var node in dataset.Sites)
                 {
                     aggregate.Add(node.AsSite());
+                }
+                foreach (var node in dataset.AccessGroups)
+                {
+                    aggregate.Add(node.AsAccessGroup());
                 }
             }
         }
@@ -85,7 +88,7 @@ namespace Plot.Sample.Data.Mappers
 
             public IEnumerable<SiteNode> Sites { get; set; }
 
-            public ContactNode Contact { get; set; }
+            public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
         }
 
         #endregion

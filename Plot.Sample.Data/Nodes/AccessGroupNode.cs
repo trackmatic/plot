@@ -2,20 +2,19 @@
 
 namespace Plot.Sample.Data.Nodes
 {
-    public class ContactNode
+    public class AccessGroupNode
     {
         public string Id { get; set; }
 
         public string Name { get; set; }
 
-        public Contact AsContact()
+        public AccessGroup AsAccessGroup()
         {
-            var contact = new Contact
+            return new AccessGroup
             {
                 Id = Id,
                 Name = Name
             };
-            return contact;
         }
     }
 }

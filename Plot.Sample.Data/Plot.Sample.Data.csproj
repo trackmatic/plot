@@ -49,12 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappers\AccessGroupMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
-    <Compile Include="Mappers\ContactMapper.cs" />
     <Compile Include="Mappers\OrganisationMapper.cs" />
     <Compile Include="Mappers\SiteMapper.cs" />
+    <Compile Include="Nodes\AccessGroupNode.cs" />
     <Compile Include="Nodes\AssetNode.cs" />
-    <Compile Include="Nodes\ContactNode.cs" />
     <Compile Include="Nodes\OrganisationNode.cs" />
     <Compile Include="Nodes\SiteNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

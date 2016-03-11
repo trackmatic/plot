@@ -56,7 +56,7 @@ namespace Plot.Sample.Data.Mappers
                     .ReturnDistinct((site, organisation, asset) => new GetQueryDataset
                     {
                         Site = site.As<SiteNode>(),
-                        Organisations = organisation.CollectAs<OrganisationNode>(),
+                        Organisation = organisation.As<OrganisationNode>(),
                         Assets = asset.CollectAs<AssetNode>()
                     });
                 return dataset;
@@ -70,10 +70,7 @@ namespace Plot.Sample.Data.Mappers
             protected override void Map(Site aggregate, GetQueryDataset dataset)
             {
                 aggregate.Name = dataset.Site.Name;
-                foreach (var node in dataset.Organisations)
-                {
-                    aggregate.Add(node.AsOrganisation());
-                }
+                aggregate.Set(dataset.Organisation?.AsOrganisation());
                 foreach ( var node in dataset.Assets)
                 {
                     aggregate.Add(node.AsAsset());
@@ -89,7 +86,7 @@ namespace Plot.Sample.Data.Mappers
         {
             public SiteNode Site { get; set; }
 
-            public IEnumerable<OrganisationNode> Organisations { get; set; }
+            public OrganisationNode Organisation { get; set; }
 
             public IEnumerable<AssetNode> Assets { get; set; }
         }

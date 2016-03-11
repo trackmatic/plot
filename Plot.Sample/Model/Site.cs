@@ -7,7 +7,6 @@ namespace Plot.Sample.Model
     {
         public Site()
         {
-            Organisations = Organisations ?? new List<Organisation>();
             Assets = Assets ?? new List<Asset>();
         }
 
@@ -15,20 +14,20 @@ namespace Plot.Sample.Model
 
         public virtual string Name { get; set; }
 
-        [Relationship(Relationships.SiteOf)]
-        public virtual IList<Organisation> Organisations { get; set; }
-
-        [Relationship(Relationships.BelongsTo, true)]
+        [Relationship(Relationships.Operates)]
         public virtual IList<Asset> Assets { get; set; }
 
-        public virtual void Add(Organisation organisation)
+        [Relationship(Relationships.Runs, Reverse = true)]
+        public virtual Organisation Organisation { get; set; }
+
+        public virtual void Set(Organisation organisation)
         {
-            if (Organisations.Contains(organisation))
+            if (Organisation == organisation)
             {
                 return;
             }
-            Organisations.Add(organisation);
-            organisation.Add(this);
+            Organisation = organisation;
+            organisation?.Add(this);
         }
 
         public virtual void Add(Asset asset)
@@ -38,7 +37,6 @@ namespace Plot.Sample.Model
                 return;
             }
             Assets.Add(asset);
-            asset.Add(this);
         }
 
         public override int GetHashCode()
@@ -48,12 +46,7 @@ namespace Plot.Sample.Model
 
         public override bool Equals(object obj)
         {
-            var other = obj as Site;
-            if (other == null)
-            {
-                return false;
-            }
-            return other.GetHashCode() == GetHashCode();
+            return Utils.Equals(this, obj);
         }
     }
 }
