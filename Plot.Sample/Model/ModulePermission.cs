@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Plot.Attributes;
 
 namespace Plot.Sample.Model
 {
@@ -12,10 +13,13 @@ namespace Plot.Sample.Model
 
         public virtual string Id { get; set; }
 
+        [Relationship(Relationships.GrantAccessTo)]
         public virtual Module Module { get; set; }
 
+        [Relationship(Relationships.GrantAccessTo)]
         public virtual IList<Role> Roles { get; set; }
 
+        [Relationship(Relationships.GrantAccessTo)]
         public virtual IList<SitePermission> Sites { get; set; }
 
         public override int GetHashCode()

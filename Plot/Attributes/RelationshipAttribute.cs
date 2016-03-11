@@ -26,5 +26,7 @@ namespace Plot.Attributes
         public string Name { get; set; }
 
         public bool DeleteOrphan { get; set; }
+
+        public bool Lazy { get; set; }
     }
 }

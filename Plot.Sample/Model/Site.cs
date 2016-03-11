@@ -20,6 +20,9 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.Runs, Reverse = true)]
         public virtual Organisation Organisation { get; set; }
 
+        [Relationship(Relationships.Contracts)]
+        public virtual IList<Person> People { get; set; }
+
         public virtual void Set(Organisation organisation)
         {
             if (Organisation == organisation)
@@ -32,11 +35,12 @@ namespace Plot.Sample.Model
 
         public virtual void Add(Asset asset)
         {
-            if (Assets.Contains(asset))
-            {
-                return;
-            }
-            Assets.Add(asset);
+            Utils.Add(Assets, asset, () => asset.Add(this));
+        }
+
+        public virtual void Add(Person person)
+        {
+            Utils.Add(People, person, () => person.Add(this));
         }
 
         public override int GetHashCode()

@@ -1,15 +1,39 @@
-﻿using Plot.Attributes;
+﻿using System.Collections.Generic;
+using Plot.Attributes;
 
 namespace Plot.Sample.Model
 {
     public class Person
     {
+        public Person()
+        {
+            Organisations = Organisations ?? new List<Organisation>();
+            Sites = Sites ?? new List<Site>();
+        }
+
         public virtual string Id { get; set; }
 
+        [Ignore]
         public virtual Names Names { get; set; }
 
         [Relationship(Relationships.IsA)]
         public virtual User User { get; set; }
+
+        [Relationship(Relationships.MemberOf, Reverse = true)]
+        public virtual IList<Organisation> Organisations { get; set; }
+
+        [Relationship(Relationships.Contracts, Reverse = true)]
+        public virtual IList<Site> Sites { get; set; }
+
+        public virtual void Add(Organisation organisation)
+        {
+            Utils.Add(Organisations, organisation, () => organisation.Add(this));
+        }
+
+        public virtual void Add(Site site)
+        {
+            Utils.Add(Sites, site, () => site.Add(this));
+        }
 
         public virtual void Set(User user)
         {

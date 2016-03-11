@@ -72,7 +72,7 @@ namespace Plot.Neo4j
         protected abstract IQueryExecutor<T> CreateQueryExecutor();
 
         protected IGraphSession Session => _session;
-
+        
         private void Execute(T item, Func<ICypherFluentQuery, T, IEnumerable<ICommand>> operation)
         {
             var transaction = _transactionFactory.Create(_session);
@@ -136,7 +136,7 @@ namespace Plot.Neo4j
             return item.ToList();
         }
 
-        private IMetadataFactory MetadataFactory { get; }
+        protected IMetadataFactory MetadataFactory { get; }
 
         private IEnumerable<ICommand> CreateRelationshipCommands(object source, RelationshipMetadata relationship)
         {

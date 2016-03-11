@@ -13,7 +13,7 @@ namespace Plot.Sample.Model
 
         public virtual Site Site { get; set; }
 
-        public virtual List<AccessGroup> AccessGroups { get; set; }
+        public virtual IList<AccessGroup> AccessGroups { get; set; }
 
         public override int GetHashCode()
         {

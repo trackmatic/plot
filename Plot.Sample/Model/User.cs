@@ -8,6 +8,7 @@ namespace Plot.Sample.Model
         public User()
         {
             AccessGroups = AccessGroups ?? new List<AccessGroup>();
+            Modules = Modules ?? new List<ModulePermission>();
         }
 
         public virtual string Id { get; set; }
@@ -20,6 +21,9 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.HasAccessTo)]
         public virtual IList<AccessGroup> AccessGroups { get; set; }
 
+        [Relationship(Relationships.HasAccessTo)]
+        public virtual IList<ModulePermission> Modules { get; set; }
+
         public virtual void Set(Person person)
         {
             if (Person == person)
@@ -28,6 +32,11 @@ namespace Plot.Sample.Model
             }
             Person = person;
             person?.Set(this);
+        }
+
+        public virtual void Add(ModulePermission module)
+        {
+            Utils.Add(Modules, module);
         }
 
         public override int GetHashCode()

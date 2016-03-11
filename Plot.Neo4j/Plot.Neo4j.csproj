@@ -76,6 +76,7 @@
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\AbstractQueryExecutor.cs" />
+    <Compile Include="Queries\GenericQueryExecutor.cs" />
     <Compile Include="Queries\GetQuery.cs" />
     <Compile Include="Queries\GetQueryExecutorBase.cs" />
     <Compile Include="Queries\QueryExecutorFactory.cs" />

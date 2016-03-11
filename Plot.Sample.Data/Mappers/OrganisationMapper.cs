@@ -30,33 +30,15 @@ namespace Plot.Sample.Data.Mappers
 
         protected override IQueryExecutor<Organisation> CreateQueryExecutor()
         {
-            return new GetQueryExecutor(Db);
+            return new GetQueryExecutor(Db, MetadataFactory);
         }
         
         #region Queries
 
-        private class GetQueryExecutor : GetQueryExecutorBase<Organisation, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Organisation, GetQueryDataset>
         {
-            public GetQueryExecutor(GraphClient db) : base(db)
+            public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
-            }
-
-            protected override ICypherFluentQuery<GetQueryDataset> GetDataset(IGraphClient db, GetAbstractQuery<Organisation> abstractQuery)
-            {
-                var cypher = db
-                    .Cypher
-                    .Match("(organisation:Organisation)")
-                    .Where("organisation.Id in {id}")
-                    .OptionalMatch("(organisation-[:RUNS]->(site:Site))")
-                    .OptionalMatch("(organisation-[:MAINTAINS]->(accessGroup:AccessGroup))")
-                    .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((organisation, site, accessGroup) => new GetQueryDataset
-                    {
-                        Organisation = organisation.As<OrganisationNode>(),
-                        Sites = site.CollectAs<SiteNode>(),
-                        AccessGroups = accessGroup.CollectAs<AccessGroupNode>()
-                    });
-                return cypher;
             }
 
             protected override Organisation Create(GetQueryDataset item)
@@ -67,14 +49,18 @@ namespace Plot.Sample.Data.Mappers
             protected override void Map(Organisation aggregate, GetQueryDataset dataset)
             {
                 aggregate.Name = dataset.Organisation.Name;
-                foreach (var node in dataset.Sites)
+                dataset.Sites.Map(x => aggregate.Add(x.AsSite()));
+                dataset.AccessGroups.Map(x => aggregate.Add(x.AsAccessGroup()));
+            }
+
+            protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
+            {
+                return cypher.ReturnDistinct((organisation, sites, accessGroups) => new GetQueryDataset
                 {
-                    aggregate.Add(node.AsSite());
-                }
-                foreach (var node in dataset.AccessGroups)
-                {
-                    aggregate.Add(node.AsAccessGroup());
-                }
+                    Organisation = organisation.As<OrganisationNode>(),
+                    AccessGroups = accessGroups.CollectAs<AccessGroupNode>(),
+                    Sites = sites.CollectAs<SiteNode>()
+                });
             }
         }
 

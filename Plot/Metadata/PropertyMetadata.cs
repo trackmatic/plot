@@ -11,8 +11,10 @@ namespace Plot.Metadata
             _property = property;
         }
 
-        public string Name { get; set; }
+        public NodeMetadata Type { get; set; }
 
+        public string Name { get; set; }
+        
         public RelationshipMetadata Relationship { get; set; }
 
         public bool IsList { get; set; }

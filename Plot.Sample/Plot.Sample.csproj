@@ -64,7 +64,6 @@
     <Compile Include="Model\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByName.cs" />
-    <Compile Include="Relationships.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

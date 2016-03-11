@@ -29,32 +29,24 @@ namespace Plot.Sample.Data.Mappers
 
         protected override IQueryExecutor<AccessGroup> CreateQueryExecutor()
         {
-            return new GetQueryExecutor(Db);
+            return new GetQueryExecutor(Db, MetadataFactory);
         }
-
-
+        
         #region Queries
 
-        private class GetQueryExecutor : GetQueryExecutorBase<AccessGroup, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<AccessGroup, GetQueryDataset>
         {
-            public GetQueryExecutor(GraphClient db) : base(db)
+            public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
             }
 
-            protected override ICypherFluentQuery<GetQueryDataset> GetDataset(IGraphClient db, GetAbstractQuery<AccessGroup> abstractQuery)
+            protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                var cypher = db
-                    .Cypher
-                    .Match("(accessGroup:AccessGroup)")
-                    .Where("accessGroup.Id in {id}")
-                    .OptionalMatch("(accessGroup-[:RESTRICTS_ACCESS_TO]->(asset:Asset))")
-                    .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((accessGroup, asset) => new GetQueryDataset
-                    {
-                        AccessGroup = accessGroup.As<AccessGroupNode>(),
-                        Assets = asset.CollectAs<AssetNode>()
-                    });
-                return cypher;
+                return cypher.ReturnDistinct((accessGroup, assets) => new GetQueryDataset
+                {
+                    AccessGroup = accessGroup.As<AccessGroupNode>(),
+                    Assets = assets.CollectAs<AssetNode>()
+                });
             }
 
             protected override AccessGroup Create(GetQueryDataset dataset)

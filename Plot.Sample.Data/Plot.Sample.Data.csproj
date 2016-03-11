@@ -51,12 +51,24 @@
   <ItemGroup>
     <Compile Include="Mappers\AccessGroupMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
+    <Compile Include="Mappers\ModuleMapper.cs" />
+    <Compile Include="Mappers\ModulePermissionMapper.cs" />
     <Compile Include="Mappers\OrganisationMapper.cs" />
+    <Compile Include="Mappers\PersonMapper.cs" />
+    <Compile Include="Mappers\RoleMapper.cs" />
     <Compile Include="Mappers\SiteMapper.cs" />
+    <Compile Include="Mappers\SitePermissionMapper.cs" />
+    <Compile Include="Mappers\UserMapper.cs" />
     <Compile Include="Nodes\AccessGroupNode.cs" />
     <Compile Include="Nodes\AssetNode.cs" />
+    <Compile Include="Nodes\ModuleNode.cs" />
+    <Compile Include="Nodes\ModulePermissionNode.cs" />
     <Compile Include="Nodes\OrganisationNode.cs" />
+    <Compile Include="Nodes\PersonNode.cs" />
+    <Compile Include="Nodes\RoleNode.cs" />
     <Compile Include="Nodes\SiteNode.cs" />
+    <Compile Include="Nodes\SitePermissionNode.cs" />
+    <Compile Include="Nodes\UserNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByNameExecutor.cs" />
   </ItemGroup>

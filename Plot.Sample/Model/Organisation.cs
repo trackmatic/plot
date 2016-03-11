@@ -9,6 +9,7 @@ namespace Plot.Sample.Model
         {
             Sites = Sites ?? new List<Site>();
             AccessGroups = AccessGroups ?? new List<AccessGroup>();
+            People = People ?? new List<Person>();
         }
 
         public virtual string Id { get; set; }
@@ -21,23 +22,22 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.Maintains, DeleteOrphan = true)]
         public virtual IList<AccessGroup> AccessGroups { get; set; }
 
+        [Relationship(Relationships.MemberOf, Reverse = true)]
+        public virtual IList<Person> People { get; set; }
+
+        public virtual void Add(Person person)
+        {
+            Utils.Add(People, person, () => person.Add(this));
+        }
+
         public virtual void Add(AccessGroup accessGroup)
         {
-            if (AccessGroups.Contains(accessGroup))
-            {
-                return;
-            }
-            AccessGroups.Add(accessGroup);
+            Utils.Add(AccessGroups, accessGroup);
         }
 
         public virtual void Add(Site site)
         {
-            if (Sites.Contains(site))
-            {
-                return;
-            }
-            Sites.Add(site);
-            site?.Set(this);
+            Utils.Add(Sites, site, () => site.Set(this));
         } 
 
         public override int GetHashCode()

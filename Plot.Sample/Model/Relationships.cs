@@ -17,5 +17,7 @@
         public const string Runs = "RUNS";
 
         public const string Operates = "OPERATES";
+
+        public const string GrantAccessTo = "GRANT_ACCESS_TO";
     }
 }

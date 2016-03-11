@@ -37,12 +37,13 @@ namespace Plot.Metadata
 
         private NodeMetadata New(Type type)
         {
-            var properties = type.GetProperties().Select(CreateProperty).ToList();
-            var node = new NodeMetadata(properties)
+            var node = new NodeMetadata()
             {
                 Name = type.Name
             };
             _cache.Add(type, node);
+            var properties = type.GetProperties().Select(CreateProperty).ToList();
+            node.Set(properties);
             return node;
         }
 
@@ -55,9 +56,19 @@ namespace Plot.Metadata
                 IsPrimitive = IsPrimitive(propertyInfo.PropertyType),
                 Relationship = CreateRelationship(propertyInfo),
                 IsReadOnly = IsReadonly(propertyInfo),
-                IsIgnored = IsIgnored(propertyInfo)
+                IsIgnored = IsIgnored(propertyInfo),
+                Type = CreateNode(propertyInfo)
             };
             return property;
+        }
+
+        private NodeMetadata CreateNode(PropertyInfo propertyInfo)
+        {
+            if (IsList(propertyInfo.PropertyType))
+            {
+                return Create(propertyInfo.PropertyType.GenericTypeArguments[0]);
+            }
+            return Create(propertyInfo.PropertyType);
         }
 
         private RelationshipMetadata CreateRelationship(PropertyInfo propertyInfo)
@@ -67,7 +78,8 @@ namespace Plot.Metadata
             {
                 IsReverse = attribute.Reverse,
                 Name = attribute.Name,
-                DeleteOrphan = attribute.DeleteOrphan
+                DeleteOrphan = attribute.DeleteOrphan,
+                Lazy = attribute.Lazy
             };
             return relationship;
 

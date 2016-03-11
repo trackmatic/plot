@@ -30,36 +30,26 @@ namespace Plot.Sample.Data.Mappers
 
         protected override IQueryExecutor<Site> CreateQueryExecutor()
         {
-            return new GetQueryExecutor(Db);
+            return new GetQueryExecutor(Db, MetadataFactory);
         }
         
         #region Queries
 
-        private class GetQueryExecutor : GetQueryExecutorBase<Site, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Site, GetQueryDataset>
         {
-            public GetQueryExecutor(GraphClient db) : base(db)
+            public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
 
             }
-
-            protected override ICypherFluentQuery<GetQueryDataset> GetDataset(IGraphClient db, GetAbstractQuery<Site> abstractQuery)
+            
+            protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                var dataset = db
-                    .Cypher
-                    .Match("(site:Site)")
-                    .Where("site.Id in {id}")
-                    .OptionalMatch("(site-[:SITE_OF]->organisation)")
-                    .OptionalMatch("(site-[:SITE_OF]->(organisation:Organisation))")
-                    .OptionalMatch("((asset:Asset)-[:BELONGS_TO]->site)")
-                    .With("organisation, site, asset")
-                    .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((site, organisation, asset) => new GetQueryDataset
-                    {
-                        Site = site.As<SiteNode>(),
-                        Organisation = organisation.As<OrganisationNode>(),
-                        Assets = asset.CollectAs<AssetNode>()
-                    });
-                return dataset;
+                return cypher.ReturnDistinct((site, organisation, assets) => new GetQueryDataset
+                {
+                    Site = site.As<SiteNode>(),
+                    Organisation = organisation.As<OrganisationNode>(),
+                    Assets = assets.CollectAs<AssetNode>()
+                });
             }
 
             protected override Site Create(GetQueryDataset item)

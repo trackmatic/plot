@@ -146,7 +146,14 @@ namespace Plot
         private void RegisterDependencies(T item)
         {
             var child = _state.Get(item);
+
             var parent = _state.Get(_parent);
+
+            if (_relationship == null)
+            {
+                return;
+            }
+
             if (_relationship.IsReverse)
             {
                 parent.Dependencies.Register(child.Dependencies);

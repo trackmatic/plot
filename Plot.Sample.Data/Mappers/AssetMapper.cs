@@ -29,32 +29,25 @@ namespace Plot.Sample.Data.Mappers
 
         protected override IQueryExecutor<Asset> CreateQueryExecutor()
         {
-            return new GetQueryExecutor(Db);
+            return new GetQueryExecutor(Db, MetadataFactory);
         }
 
 
         #region Queries
 
-        private class GetQueryExecutor : GetQueryExecutorBase<Asset, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Asset, GetQueryDataset>
         {
-            public GetQueryExecutor(GraphClient db) : base(db)
+            public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
             }
 
-            protected override ICypherFluentQuery<GetQueryDataset> GetDataset(IGraphClient db, GetAbstractQuery<Asset> abstractQuery)
+            protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                var cypher = db
-                    .Cypher
-                    .Match("(asset:Asset)")
-                    .Where("asset.Id in {id}")
-                    .OptionalMatch("(asset-[:BELONGS_TO]->(site:Site))")
-                    .WithParam("id", abstractQuery.Id)
-                    .ReturnDistinct((asset, site) => new GetQueryDataset
-                    {
-                        Sites = site.CollectAs<SiteNode>(),
-                        Asset = site.As<AssetNode>()
-                    });
-                return cypher;
+                return cypher.ReturnDistinct((asset, sites) => new GetQueryDataset
+                {
+                    Asset = asset.As<AssetNode>(),
+                    Sites = sites.CollectAs<SiteNode>()
+                });
             }
 
             protected override Asset Create(GetQueryDataset dataset)

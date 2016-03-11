@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 
 namespace Plot.Metadata
 {
@@ -7,13 +6,9 @@ namespace Plot.Metadata
     {
         private readonly IDictionary<string, PropertyMetadata> _properties;
 
-        public NodeMetadata(IEnumerable<PropertyMetadata> properties)
+        public NodeMetadata()
         {
             _properties = new Dictionary<string, PropertyMetadata>();
-            foreach (var property in properties)
-            {
-                Add(property.Name, property);
-            }
         }
 
         public string Name { get; set; }
@@ -30,6 +25,14 @@ namespace Plot.Metadata
         public bool Contains(string property)
         {
             return _properties.ContainsKey(property);
+        }
+
+        public void Set(IEnumerable<PropertyMetadata> properties)
+        {
+            foreach (var property in properties)
+            {
+                Add(property.Name, property);
+            }
         }
     }
 }
