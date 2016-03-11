@@ -62,11 +62,33 @@ namespace Plot.Proxies
                 };
                 ProxyUtils.SetEntityId(item);
                 var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
+                //Map(item, proxy);
                 var state = GetState(proxy);
                 _session.Register(proxy, state);
                 Populate(proxy);
                 state.Clean();
                 return proxy;
+            }
+
+            private void Map(object source, object proxy)
+            {
+                foreach (var property in source.GetType().GetProperties())
+                {
+                    if (property.SetMethod == null)
+                    {
+                        continue;
+                    }
+                    var value = property.GetMethod.Invoke(source, null);
+                    if (value == null)
+                    {
+                        continue;
+                    }
+                    if (ProxyUtils.IsProxy(value))
+                    {
+                        continue;
+                    }
+                    property.SetMethod.Invoke(proxy, new[] {value});
+                }
             }
 
             private void Populate(object item)

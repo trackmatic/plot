@@ -8,6 +8,7 @@ namespace Plot.Sample.Model
         public Site()
         {
             Assets = Assets ?? new List<Asset>();
+            People = People ?? new List<Person>();
         }
 
         public virtual string Id { get; set; }
@@ -45,7 +46,7 @@ namespace Plot.Sample.Model
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return ProxyUtils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)

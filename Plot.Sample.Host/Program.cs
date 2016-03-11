@@ -24,29 +24,61 @@ namespace Plot.Sample.Host
                     }
                 });
 
-                var role = session.Get<Role>("administrator");
+                var role = session.Create(new Role
+                {
+                    Id = "administrator",
+                    Name = "Administrator"
+                });
 
-                var module = session.Get<Module>("organisation");
+                var module = session.Create(new Module
+                {
+                    Id = "module",
+                    Name = "Module"
+                });
 
-                var organisation = session.Get<Organisation>("1");
+                var organisation = session.Create(new Organisation
+                {
+                    Id = "1",
+                    Name = "Trackmatic"
+                });
+
+                var site = session.Create(new Site
+                {
+                    Id = "1",
+                    Name = "Site"
+                });
+                site.Add(person);
+
+                organisation.Add(site);
+
+
+                var accessGroup = session.Create(new AccessGroup
+                {
+                    Id = "1",
+                    Name = "Access Group"
+                });
+
+                organisation.Add(accessGroup);
 
                 organisation.Add(person);
 
                 var sitePermission = session.Create(new SitePermission
                 {
-                    Id = "1",
-                    Site = organisation.Sites[0],
-                    AccessGroups = new List<AccessGroup> {organisation.AccessGroups[0]}
+                    Id = "1"
                 });
+
+                sitePermission.Site = organisation.Sites[0];
+                sitePermission.AccessGroups.Add(organisation.AccessGroups[0]);
 
                 var modulePermission = session.Create(new ModulePermission
                 {
                     Id = "1",
-
                     Roles = new List<Role> {  role },
-                    Module = module,
-                    Sites = new List<SitePermission> { sitePermission }
                 });
+
+                modulePermission.Add(sitePermission);
+                modulePermission.Module = module;
+                modulePermission.Add(role);
 
                 var user = session.Create(new User
                 {
@@ -55,9 +87,9 @@ namespace Plot.Sample.Host
                     Username = "ross"
                 });
 
-                //person.User = user;
+                person.User = user;
 
-                person.Set(user);
+                //person.Set(user);
 
                 user.Add(modulePermission);
 

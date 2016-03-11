@@ -19,7 +19,7 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.IsA)]
         public virtual User User { get; set; }
 
-        [Relationship(Relationships.MemberOf, Reverse = true)]
+        [Relationship(Relationships.MemberOf)]
         public virtual IList<Organisation> Organisations { get; set; }
 
         [Relationship(Relationships.Contracts, Reverse = true)]
@@ -47,7 +47,7 @@ namespace Plot.Sample.Model
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return ProxyUtils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)

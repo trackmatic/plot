@@ -22,9 +22,27 @@ namespace Plot.Sample.Model
         [Relationship(Relationships.GrantAccessTo)]
         public virtual IList<SitePermission> Sites { get; set; }
 
+        public virtual void Add(SitePermission permission)
+        {
+            if (Sites.Contains(permission))
+            {
+                return;
+            }
+            Sites.Add(permission);
+        }
+
+        public virtual void Add(Role role)
+        {
+            if (Roles.Contains(role))
+            {
+                return;
+            }
+            Roles.Add(role);
+        }
+
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return ProxyUtils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)

@@ -42,7 +42,7 @@ namespace Plot.Sample.Model
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return ProxyUtils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)
