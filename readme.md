@@ -27,7 +27,7 @@ A session is creating using the session factory and is the entry point to workin
     }
 
 ## Creating an entity
-The session object is used to create new entities. The session.Create method tells the session to track the entity and save it when session.SaveChanges is called()
+The session object is used to create new entities. The session.Create method tells the session to track the entity and save it when session.SaveChanges() is called
 
     using (var session = factory.OpenSession())
     {
@@ -36,4 +36,16 @@ The session object is used to create new entities. The session.Create method tel
             Id = "1",
                 Name = "Organisation A"
         });
+        session.SaveChanges();
     }
+
+## Retrieving an entity by id
+Use the session.Get<> method to retrieve an entity based on it's id. The entity is changed tracked, so what ever changes are made to the entity will be flushed to the underlying data store when session.SaveChanges() is called.
+
+    using (var session = factory.OpenSession())
+    {
+        var entity = session.Get<Organisation>("1");
+        entity.Name = "Acme";
+        session.SaveChanges();
+    }
+

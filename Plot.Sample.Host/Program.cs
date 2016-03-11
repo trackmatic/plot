@@ -14,13 +14,12 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var entity = session.Create<Organisation>(new Organisation
-                {
-                    Id = "1",
-                    Name = "Organisation A"
-                });
+                var entity = session.Get<Organisation>("1");
 
-                var results = session.Query(new GetOrganisationsByName()).Data;
+                entity.Name = "Acme";
+
+                session.SaveChanges();
+                
             }
             Console.WriteLine("Done");
             Console.ReadLine();
