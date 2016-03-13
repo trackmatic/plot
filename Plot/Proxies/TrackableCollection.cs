@@ -156,12 +156,10 @@ namespace Plot
 
             if (_relationship.IsReverse)
             {
-                parent.Dependencies.Register(child.Dependencies);
+                return;
             }
-            else
-            {
-                child.Dependencies.Register(parent.Dependencies);
-            }
+            child.Dependencies.Register(parent.Dependencies);
+            //parent.Dependencies.Register(child.Dependencies);
         }
     }
 }

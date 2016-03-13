@@ -16,9 +16,9 @@ namespace Plot.Proxies
             _metadataFactory = metadataFactory;
         }
 
-        public T Create<T>(T item, IGraphSession session) where T : class
+        public T Create<T>(T item, IGraphSession session, EntityStatus status = EntityStatus.Clean) where T : class
         {
-            var generator = new Generator(session, _metadataFactory);
+            var generator = new Generator(session, _metadataFactory, status);
             return generator.Create(item);
         }
 
@@ -34,13 +34,16 @@ namespace Plot.Proxies
 
             private readonly IEntityStateCache _state;
 
-            public Generator(IGraphSession session, IMetadataFactory metadataFactory)
+            private readonly EntityStatus _status;
+
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory, EntityStatus status = EntityStatus.Clean)
             {
                 _generator = new ProxyGenerator();
                 _session = session;
                 _metadataFactory = metadataFactory;
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
                 _state = session.State;
+                _status = status;
             }
 
             public T Create<T>(T item)
@@ -61,18 +64,18 @@ namespace Plot.Proxies
                     new RelationshipInterceptor(_metadataFactory, _state)
                 };
                 ProxyUtils.SetEntityId(item);
-                var proxy = _generator.CreateClassProxyWithTarget(type, item, _options, interceptors);
-                //Map(item, proxy);
+                var proxy = _generator.CreateClassProxy(type, _options, interceptors);
+                Map(item, proxy);
                 var state = GetState(proxy);
                 _session.Register(proxy, state);
                 Populate(proxy);
-                state.Clean();
+                state.Set(_status);
                 return proxy;
             }
 
             private void Map(object source, object proxy)
             {
-                foreach (var property in source.GetType().GetProperties())
+                foreach (var property in ProxyUtils.GetTargetEntityType(source).GetProperties())
                 {
                     if (property.SetMethod == null)
                     {
@@ -145,6 +148,7 @@ namespace Plot.Proxies
                     return null;
                 }
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
+                
                 return Create(type, entity);
             }
 

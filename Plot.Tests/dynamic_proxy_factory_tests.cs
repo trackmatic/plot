@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
 using Plot.Metadata;
@@ -91,8 +92,8 @@ namespace Plot.Tests
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
                 var factory = new DynamicProxyFactory(metadataFactory);
-                var parent = factory.Create(new Parent {Id = "0"}, session);
-                var child = factory.Create(new Child {Id = "1"}, session);
+                var parent = factory.Create(new Parent {Id = "parent"}, session);
+                var child = factory.Create(new Child {Id = "child"}, session);
                 parent.Child = child;
 
                 var parentState = stateTracker.Get(parent);
@@ -113,8 +114,8 @@ namespace Plot.Tests
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
                 var factory = new DynamicProxyFactory(metadataFactory);
-                var parent = factory.Create(new Parent { Id = "0" }, session);
-                var child = factory.Create(new Child { Id = "1" }, session);
+                var parent = factory.Create(new Parent { Id = "parent" }, session);
+                var child = factory.Create(new Child { Id = "child" }, session);
                 parent.Children.Add(child);
 
                 var parentState = stateTracker.Get(parent);
@@ -122,6 +123,45 @@ namespace Plot.Tests
 
                 var childState = stateTracker.Get(child);
                 Assert.Equal(1, childState.Dependencies.Sequence);
+            }
+        }
+
+        [Fact]
+        public void properties_set_during_construction_are_restored_after_proxy_created()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var item = new EntityWithPropertiesSetInConstructor("1", "Test");
+                var proxy = factory.Create(item, session);
+                Assert.Equal("1", proxy.Id);
+                Assert.Equal("Test", proxy.Name);
+            }
+        }
+
+        [Fact]
+        public void change_tracking_is_applied_when_entity_set_in_constructor()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+
+            var mapper = new Mock<IMapper<Parent>>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            repositoryFactory.Setup(x => x.Create(It.IsAny<IGraphSession>(), It.IsAny<Type>())).Returns<IGraphSession, Type>((s, t) => new GenericAbstractRepository<Parent>(mapper.Object, s, new DynamicProxyFactory(metadataFactory)));
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var proxy = session.Create(new Parent
+                {
+                    Id = "1",
+                    Child = new Child {Id = "2"}
+                });
+                var state = stateTracker.Get(proxy.Child);
+                Assert.Equal(EntityStatus.New, state.Status);
             }
         }
 
@@ -159,6 +199,24 @@ namespace Plot.Tests
         public class Child
         {
             public virtual string Id { get; set; }
+        }
+
+        public class EntityWithPropertiesSetInConstructor
+        {
+            public EntityWithPropertiesSetInConstructor()
+            {
+                
+            }
+
+            public EntityWithPropertiesSetInConstructor(string id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
+
+            public virtual string Id { get; set; }
+
+            public virtual string Name { get; set; }
         }
     }
 }

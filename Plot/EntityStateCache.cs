@@ -4,7 +4,7 @@ namespace Plot
 {
     public class EntityStateCache : IEntityStateCache
     {
-       private readonly IDictionary<object, EntityState> _state;
+        private readonly IDictionary<object, EntityState> _state;
 
         public EntityStateCache()
         {
@@ -46,5 +46,7 @@ namespace Plot
         {
             _state.Clear();
         }
+
+        public IEnumerable<EntityState> State => _state.Values;
     }
 }

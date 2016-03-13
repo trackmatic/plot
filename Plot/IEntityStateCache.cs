@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Plot
 {
@@ -11,5 +12,7 @@ namespace Plot
         bool Contains(object proxy);
 
         void Remove(object proxy);
+
+        IEnumerable<EntityState> State { get; }
     }
 }

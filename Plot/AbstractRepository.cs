@@ -30,7 +30,7 @@ namespace Plot
 
         public object Create(object item)
         {
-            var proxy = _proxyFactory.Create((T)item, _session);
+            var proxy = _proxyFactory.Create((T)item, _session, EntityStatus.New);
             var state = GetState(proxy);
             _session.Register(proxy, state);
             state.New();

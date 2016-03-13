@@ -23,7 +23,7 @@ namespace Plot.Metadata
 
         public NodeMetadata Create(object instance)
         {
-            return Create(ProxyUtils.GetTargetEntity(instance).GetType());
+            return Create(ProxyUtils.GetTargetEntityType(instance));
         }
 
         private NodeMetadata Load(Type type)

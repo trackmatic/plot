@@ -1,5 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Moq;
+using Plot.Attributes;
 using Plot.Metadata;
+using Plot.Proxies;
+using Plot.Queries;
 using Plot.Tests.Model;
 using Xunit;
 
@@ -26,6 +31,54 @@ namespace Plot.Tests
             Assert.False(node["Contacts"].IsPrimitive);
             Assert.NotNull(node["Contacts"].Relationship);
             Assert.Equal("LINKED_TO", node["Contacts"].Relationship.Name);
+        }
+
+        [Fact]
+        public void factory_creates_meta_data_correctly_from_a_proxy_object()
+        {
+            var metadataFactory = new AttributeMetadataFactory();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory);
+                var item = new Parent
+                {
+                    Id = "1",
+                    Child = new Child { Id = "2"},
+                    Children = new List<Child> {  new Child {  Id = "3"} }
+                };
+                var proxy = factory.Create(item, session);
+                var parentMetadata = metadataFactory.Create(proxy);
+                Assert.Equal("Parent", parentMetadata.Name);
+
+                var childMetadta = metadataFactory.Create(proxy.Child);
+                Assert.Equal("Child", childMetadta.Name);
+            }
+        }
+
+        public class Parent
+        {
+            public Parent()
+            {
+                Children = new List<Child>();
+            }
+
+            public virtual string Id { get; set; }
+
+            [Relationship("HAS_A")]
+            public virtual Child Child { get; set; }
+
+            [Relationship("HAS_MANY")]
+            public virtual IList<Child> Children { get; set; }
+        }
+
+        public class Child
+        {
+            public virtual string Id { get; set; }
+
+
         }
     }
 }

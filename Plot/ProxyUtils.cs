@@ -44,6 +44,16 @@ namespace Plot
         {
             return source is IProxyTargetAccessor;
         }
+
+        public static Type GetTargetEntityType(object source)
+        {
+            var proxy = source as IProxyTargetAccessor;
+            if (proxy == null)
+            {
+                return source.GetType();
+            }
+            return proxy.DynProxyGetTarget().GetType().BaseType;
+        }
         
         public static object GetTargetEntity(object source)
         {

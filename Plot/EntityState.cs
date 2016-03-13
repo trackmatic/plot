@@ -19,7 +19,7 @@ namespace Plot
             _id = id;
             _status = EntityStatus.Clean;
             _session = new LazyResolver<IGraphSession>();
-            Dependencies = new Dependencies();
+            Dependencies = new Dependencies(id);
         }
 
         public void Inject(IGraphSession session)
@@ -117,6 +117,25 @@ namespace Plot
         public string GetIdentifier()
         {
             return _id;
+        }
+
+        internal void Set(EntityStatus status)
+        {
+            switch (status)
+            {
+                case EntityStatus.Clean:
+                    MarkClean();
+                    break;
+                case EntityStatus.Deleted:
+                    Delete();
+                    break;
+                case EntityStatus.Dirty:
+                    Dirty();
+                    break;
+                case EntityStatus.New:
+                    New();
+                    break;
+            }
         }
     }
 }

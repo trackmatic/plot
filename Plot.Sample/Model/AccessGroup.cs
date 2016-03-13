@@ -27,7 +27,7 @@ namespace Plot.Sample.Model
             }
             Assets.Add(asset);
         }
-
+        
         public override int GetHashCode()
         {
             return ProxyUtils.GetHashCode(Id);
