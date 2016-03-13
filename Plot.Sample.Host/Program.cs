@@ -13,36 +13,20 @@ namespace Plot.Sample.Host
 {
     internal class Program
     {
-        private static void Print(IEntityStateCache stateTracker)
-        {
-            Console.WriteLine("*****************************");
-            var output = string.Join("\r\n", stateTracker.State.Select(x => x.GetIdentifier() + ":" + x.Dependencies.Sequence).ToList());
-            Console.WriteLine(output);
-            Console.WriteLine("*****************************");
-        }
-
         private static void Main(string[] args)
         {
             var uri = new Uri("http://neo4j:trackmatic@localhost:7474/db/data");
-            var db = new GraphClient(uri);
-            db.Connect();
-            var entityStateFactory = new EntityStateCacheFactory();
-            var metadataFactory = new AttributeMetadataFactory();
-            var proxyFactory = new DynamicProxyFactory(metadataFactory);
-            var transactionFactory = new CypherTransactionFactory(db);
-            var repositoryFactory = new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, typeof(OrganisationMapper).Assembly);
-            var queryExecutorFactory = new QueryExecutorFactory(db, typeof(OrganisationMapper).Assembly);
-            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory);
+            var factory = Configuration.CreateGraphSessionFactory(uri, typeof(UserMapper).Assembly);
 
             using (var session = factory.OpenSession())
             {
-                Print(session.State);
                 var organisation = session.Create(new Organisation
                 {
                     Id = "org",
                     Name = "Trackmatic"
                 });
-                Print(session.State);
+
+                session.SaveChanges();
 
                 var site = session.Create(new Site
                 {
@@ -50,7 +34,7 @@ namespace Plot.Sample.Host
                     Name = "Site"
                 });
                 organisation.Add(site);
-                Print(session.State);
+                session.SaveChanges();
 
                 var person = session.Create(new Person
                 {
@@ -62,63 +46,59 @@ namespace Plot.Sample.Host
                     }
                 });
                 site.Add(person);
-                Print(session.State);
+                session.SaveChanges();
 
                 var accessGroup = session.Create(new AccessGroup
                 {
-                    Id = "ag",
+                    Id = "accessGroup",
                     Name = "Access Group"
                 });
                 organisation.Add(accessGroup);
-                Print(session.State);
                 organisation.Add(person);
-                Print(session.State);
+                session.SaveChanges();
 
-                /*var role = session.Create(new Role
+                var role = session.Create(new Role
                 {
                     Id = "administrator",
                     Name = "Administrator"
                 });
+                session.SaveChanges();
 
                 var module = session.Create(new Module
                 {
                     Id = "module",
                     Name = "Module"
                 });
+                session.SaveChanges();
 
                 var sitePermission = session.Create(new SitePermission
                 {
-                    Id = "1"
+                    Id = "sitePermission"
                 });
-
                 sitePermission.Site = organisation.Sites[0];
                 sitePermission.AccessGroups.Add(organisation.AccessGroups[0]);
+                session.SaveChanges();
 
                 var modulePermission = session.Create(new ModulePermission
                 {
-                    Id = "1",
+                    Id = "modulePermission",
                     Roles = new List<Role> {  role },
                     Sites = new List<SitePermission> {  sitePermission},
                     //Module = module
                 });
-
                 modulePermission.Module = module;
+                session.SaveChanges();
 
                 var user = session.Create(new User
                 {
-                    Id = "1",
+                    Id = "user",
                     Person = person,
                     Username = "ross"
                 });
-
                 person.User = user;
-
                 person.Set(user);
-
-                user.Add(modulePermission);*/
-
+                user.Add(modulePermission);
                 session.SaveChanges();
-
             }
 
             Console.WriteLine("Done");

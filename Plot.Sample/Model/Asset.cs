@@ -6,7 +6,7 @@ namespace Plot.Sample.Model
     {
         public Asset()
         {
-            Sites = Sites ?? new List<Site>();
+            Sites = new List<Site>();
         }
 
         public virtual string Id { get; set; }

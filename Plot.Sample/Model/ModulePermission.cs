@@ -7,8 +7,8 @@ namespace Plot.Sample.Model
     {
         public ModulePermission()
         {
-            Roles = Roles ?? new List<Role>();
-            Sites = Sites ?? new List<SitePermission>();
+            Roles = new List<Role>();
+            Sites = new List<SitePermission>();
         }
 
         public virtual string Id { get; set; }

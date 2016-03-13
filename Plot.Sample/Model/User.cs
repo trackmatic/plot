@@ -7,8 +7,8 @@ namespace Plot.Sample.Model
     {
         public User()
         {
-            AccessGroups = AccessGroups ?? new List<AccessGroup>();
-            Modules = Modules ?? new List<ModulePermission>();
+            AccessGroups = new List<AccessGroup>();
+            Modules = new List<ModulePermission>();
         }
 
         public virtual string Id { get; set; }

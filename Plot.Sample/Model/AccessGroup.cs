@@ -9,7 +9,7 @@ namespace Plot.Sample.Model
     {
         public AccessGroup()
         {
-            Assets = Assets ?? new List<Asset>();
+            Assets = new List<Asset>();
         }
 
         public virtual string Id { get; set; }

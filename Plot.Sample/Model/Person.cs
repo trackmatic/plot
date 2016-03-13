@@ -7,8 +7,8 @@ namespace Plot.Sample.Model
     {
         public Person()
         {
-            Organisations = Organisations ?? new List<Organisation>();
-            Sites = Sites ?? new List<Site>();
+            Organisations = new List<Organisation>();
+            Sites = new List<Site>();
         }
 
         public virtual string Id { get; set; }

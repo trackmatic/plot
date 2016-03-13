@@ -7,7 +7,7 @@ namespace Plot.Sample.Model
     {
         public SitePermission()
         {
-            AccessGroups = AccessGroups ?? new List<AccessGroup>();
+            AccessGroups = new List<AccessGroup>();
         }
 
         public virtual string Id { get; set; }
