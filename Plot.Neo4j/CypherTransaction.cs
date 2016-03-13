@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Text;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 
@@ -23,7 +23,6 @@ namespace Plot.Neo4j
             foreach (var item in _items)
             {
                 Log(item);
-                Console.ReadLine();
                 item.ExecuteWithoutResults();
             }
             _items.Clear();
@@ -40,10 +39,11 @@ namespace Plot.Neo4j
 
         private void Log(ICypherFluentQuery query)
         {
-            Console.WriteLine("-----------------------START-----------------------");
-            var debug = query.Query.DebugQueryText;
-            Console.WriteLine(debug);
-            Console.WriteLine("-----------------------END-------------------------");
+            var builder = new StringBuilder();
+            builder.AppendLine("-----------------------START-----------------------");
+            builder.AppendLine(query.Query.DebugQueryText);
+            builder.AppendLine("-----------------------END-------------------------");
+            Console.WriteLine(builder);
         }
     }
 }

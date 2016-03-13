@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Plot
 {
@@ -25,26 +24,24 @@ namespace Plot
             if (!_dependencies.Contains(dependency))
             {
                 _dependencies.Add(dependency);
+
+                var diff = (_sequence+1) - dependency.Sequence;
+
+                if (diff <= 0)
+                {
+                    return;
+                }
+
                 dependency.Increment(_sequence);
             }
         }
 
-        public void Increment(int parent)
+        private void Increment(int parent)
         {
-            if (parent + 1 > Sequence)
-            {
-                _sequence = parent + 1;
-            }
+            _sequence = parent + 1;
 
             foreach (var dependency in _dependencies)
             {
-                if (dependency._sequence + 1 > _sequence + 1)
-                {
-                    continue;
-                }
-
-                //dependency.Increment(_sequence);
-
                 dependency._sequence = _sequence + 1;
             }
         }
