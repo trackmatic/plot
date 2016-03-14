@@ -16,7 +16,7 @@ A graph session factory is required to start interacting with the framwork. A fa
 
 There should only be one instance of the session factory per application.
 
-    var uri = new Uri("http://neo4j:trackmatic@localhost:7474/db/data");
+    var uri = new Uri("http://neo4j:neo4j@localhost:7474/db/data");
     var factory = Configuration.CreateGraphSessionFactory(uri, typeof(OrganisationMapper).Assembly);
 
 ## Creating a session

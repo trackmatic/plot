@@ -24,7 +24,7 @@ namespace Plot.Sample.Model
 
         [Relationship(Relationships.MemberOf, Reverse = true)]
         public virtual IList<Person> People { get; set; }
-
+        
         public virtual void Add(Person person)
         {
             Utils.Add(People, person, () => person.Add(this));
@@ -42,7 +42,7 @@ namespace Plot.Sample.Model
 
         public override int GetHashCode()
         {
-            return ProxyUtils.GetHashCode(Id);
+            return Utils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)

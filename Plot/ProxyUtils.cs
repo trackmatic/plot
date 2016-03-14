@@ -10,15 +10,6 @@ namespace Plot
 {
     public static class ProxyUtils
     {
-        public static int GetHashCode(object value)
-        {
-            if (value == null)
-            {
-                return 0;
-            }
-            return value.GetHashCode();
-        }
-
         public static string GetEntityId(object source)
         {
             var property = EntityIdUtils.GetId(source);

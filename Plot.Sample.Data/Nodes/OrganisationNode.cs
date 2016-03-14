@@ -8,12 +8,15 @@ namespace Plot.Sample.Data.Nodes
 
         public string Name { get; set; }
 
+        public Address Physical { get; set; }
+
+        public Address Postal { get; set; }
+
         public Organisation AsOrganisation()
         {
             var organisation = new Organisation
             {
                 Id = Id,
-
                 Name = Name
             };
 

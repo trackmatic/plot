@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Plot.Sample.Model
+namespace Plot.Tests
 {
     public static class Utils
     {
