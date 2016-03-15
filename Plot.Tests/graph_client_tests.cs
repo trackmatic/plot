@@ -4,6 +4,7 @@ using Moq;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
+using Plot.Testing;
 using Plot.Tests.Model;
 using Xunit;
 
@@ -60,6 +61,37 @@ namespace Plot.Tests
                 session.SaveChanges();
             }
             personMapper.Verify();
+        }
+
+        [Fact]
+        public void listeners_are_called_when_registered()
+        {
+            var stateTracker = new EntityStateCache();
+            var stateFactory = new Mock<IEntityStateCacheFactory>();
+            stateFactory.Setup(x => x.Create()).Returns(stateTracker);
+            var metadataFactory = new AttributeMetadataFactory();
+            var personMapper = new Mock<IMapper<Person>>();
+            personMapper.Setup(x => x.Update(It.IsAny<object>(), It.IsAny<EntityState>())).Verifiable();
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var proxyFactory = new DynamicProxyFactory(metadataFactory);
+            var repositoryFactory = new RepositoryFactory(proxyFactory);
+            repositoryFactory.Register<Person>(x => personMapper.Object);
+
+            var listener = new Mock<IListener<Person>>();
+            listener.Setup(x => x.Create(It.IsAny<object>(), It.IsAny<IGraphSession>())).Verifiable();
+
+            var sessionFactory = new GraphSessionFactory(queryExecutorFactory.Object, repositoryFactory, stateFactory.Object);
+            sessionFactory.Register(listener.Object);
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                session.Create(new Person
+                {
+                    Id = "1"
+                });
+                session.SaveChanges();
+                listener.Verify();
+            }
         }
     }
 }

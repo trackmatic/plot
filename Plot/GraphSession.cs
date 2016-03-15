@@ -140,17 +140,17 @@ namespace Plot
                 if (state.Status == EntityStatus.Deleted)
                 {
                     mapper.Delete(item, state);
-                    Publish(item.GetType(), x => x.Delete(aggregate, this));
+                    Publish(ProxyUtils.GetTargetEntityType(item), x => x.Delete(aggregate, this));
                 }
                 else if (state.Status == EntityStatus.Dirty)
                 {
                     mapper.Update(item, state);
-                    Publish(item.GetType(), x => x.Update(aggregate, this));
+                    Publish(ProxyUtils.GetTargetEntityType(item), x => x.Update(aggregate, this));
                 }
                 else if (state.Status == EntityStatus.New)
                 {
                     mapper.Insert(item, state);
-                    Publish(item.GetType(), x => x.Create(aggregate, this));
+                    Publish(ProxyUtils.GetTargetEntityType(item), x => x.Create(aggregate, this));
                 }
                 state.Clean();
             }
