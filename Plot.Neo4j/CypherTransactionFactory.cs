@@ -1,18 +1,22 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Neo4jClient;
+using Neo4jClient.Transactions;
+using Plot.Logging;
 
 namespace Plot.Neo4j
 {
     public class CypherTransactionFactory : ICypherTransactionFactory
     {
-        private readonly IGraphClient _db;
+        private readonly ITransactionalGraphClient _db;
 
         private readonly IDictionary<IGraphSession, ICypherTransaction> _transactions;
 
-        public CypherTransactionFactory(IGraphClient db)
+        private readonly ILogger _logger;
+
+        public CypherTransactionFactory(ITransactionalGraphClient db, ILogger logger)
         {
             _db = db;
+            _logger = logger;
             _transactions = new ConcurrentDictionary<IGraphSession, ICypherTransaction>();
         }
 
@@ -22,7 +26,7 @@ namespace Plot.Neo4j
             {
                 return _transactions[session];
             }
-            var transaction = new CypherTransaction(_db);
+            var transaction = new CypherTransaction(_db, _logger);
             _transactions.Add(session, transaction);
             session.Flushed += OnFlushed;
             session.Disposed += OnDisposed;
@@ -31,15 +35,25 @@ namespace Plot.Neo4j
 
         private void OnDisposed(object sender, GraphSessionDisposedEventArgs e)
         {
-            _transactions.Remove(e.Session);
-            e.Session.Disposed -= OnDisposed;
-            e.Session.Flushed -= OnFlushed;
+            try
+            {
+                var transaction = _transactions[e.Session];
+                transaction.Dispose();
+                _logger.Info($"Disposing transaction {transaction}");
+            }
+            finally
+            {
+                _transactions.Remove(e.Session);
+                e.Session.Disposed -= OnDisposed;
+                e.Session.Flushed -= OnFlushed;
+            }
         }
 
         private void OnFlushed(object sender, GraphSessionFlushedEventArgs e)
         {
             var transaction = _transactions[e.Session];
             transaction.Commit();
+            _logger.Info($"Flushing transaction {transaction}");
         }
     }
 }

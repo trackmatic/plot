@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
+using Plot.Testing;
 using Xunit;
 
 namespace Plot.Tests

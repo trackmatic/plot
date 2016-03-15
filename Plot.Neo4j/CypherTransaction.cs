@@ -1,21 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Neo4jClient;
 using Neo4jClient.Cypher;
+using Neo4jClient.Transactions;
+using Plot.Logging;
 
 namespace Plot.Neo4j
 {
     public class CypherTransaction : ICypherTransaction
     {
-        private readonly IGraphClient _db;
+        private readonly ITransactionalGraphClient _db;
 
         private readonly List<ICypherFluentQuery> _items;
 
-        public CypherTransaction(IGraphClient db)
+        private bool _disposed;
+
+        private readonly ITransaction _transaction;
+
+        private readonly Guid _id;
+
+        private readonly ILogger _logger;
+
+        public CypherTransaction(ITransactionalGraphClient db, ILogger logger)
         {
+            _id = Guid.NewGuid();
             _db = db;
             _items = new List<ICypherFluentQuery>();
+            _transaction = _db.BeginTransaction();
+            _logger = logger;
         }
 
         public void Commit()
@@ -31,9 +43,7 @@ namespace Plot.Neo4j
         public void Enlist(IMapper mapper, Func<ICypherFluentQuery, ICypherFluentQuery> callback)
         {
             var query = _db.Cypher;
-
             query = callback(query);
-
             _items.Add(query);
         }
 
@@ -43,7 +53,22 @@ namespace Plot.Neo4j
             builder.AppendLine("-----------------------START-----------------------");
             builder.AppendLine(query.Query.DebugQueryText);
             builder.AppendLine("-----------------------END-------------------------");
-            Console.WriteLine(builder);
+            _logger.Info(builder.ToString());
+        }
+
+        public override string ToString()
+        {
+            return $"transaction:{_id}";
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+            _disposed = true;
+            _transaction.Commit();
         }
     }
 }

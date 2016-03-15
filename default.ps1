@@ -13,6 +13,22 @@ Task Publish {
     $apikey = Read-Host -Prompt 'Enter Api Key'
     publish-package "Plot" $apikey
     publish-package "Plot.Neo4j" $apikey
+    publish-package "Plot.Testing" $apikey
+}
+
+Task Publish-Plot {
+    $apikey = Read-Host -Prompt 'Enter Api Key'
+    publish-package "Plot" $apikey    
+}
+
+Task Publish-Plot-Neo4j {
+    $apikey = Read-Host -Prompt 'Enter Api Key'
+    publish-package "Plot.Neo4j" $apikey
+}
+
+Task Publish-Plot-Testing {
+    $apikey = Read-Host -Prompt 'Enter Api Key'
+    publish-package "Plot.Testing" $apikey
 }
 
 Task Build {

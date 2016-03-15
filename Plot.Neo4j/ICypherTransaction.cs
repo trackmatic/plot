@@ -3,7 +3,7 @@ using Neo4jClient.Cypher;
 
 namespace Plot.Neo4j
 {
-    public interface ICypherTransaction
+    public interface ICypherTransaction : IDisposable
     {
         void Commit();
 

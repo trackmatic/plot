@@ -80,7 +80,6 @@
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryFactory.cs" />
     <Compile Include="trackable_relationship_tests.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
@@ -88,6 +87,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plot.Testing\Plot.Testing.csproj">
+      <Project>{7799503d-e256-4787-8fee-4712d87a91f6}</Project>
+      <Name>Plot.Testing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plot\Plot.csproj">
       <Project>{56EB9CCC-95DD-4CC2-BBA9-67658F04B49E}</Project>
       <Name>Plot</Name>

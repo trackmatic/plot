@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Plot.Proxies;
 
-namespace Plot.Tests
+namespace Plot.Testing
 {
     public class RepositoryFactory : IRepositoryFactory
     {

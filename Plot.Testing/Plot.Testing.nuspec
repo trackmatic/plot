@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Plot.Testing</id>
+    <version>0.1.3</version>
+    <title>Plot.Testing</title>
+    <authors>Trackmatic Solutions (Pty) Ltd</authors>
+    <owners>Trackmatic Solutions (Pty) Ltd</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An object graph mapping library for .Net</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>plot n4g ogm neo4j</tags>
+    <dependencies>
+      <dependency id="Plot" version="0.1.3" />
+    </dependencies>
+  </metadata>
+</package>

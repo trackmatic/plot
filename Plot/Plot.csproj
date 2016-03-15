@@ -49,6 +49,7 @@
     <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="Attributes\ReadonlyAttribute.cs" />
     <Compile Include="Attributes\RelationshipAttribute.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Conventions.cs" />
     <Compile Include="DefaultListener%27.cs" />
     <Compile Include="Dependencies.cs" />
@@ -63,8 +64,10 @@
     <Compile Include="Exceptions\TrackableRelationshipException.cs" />
     <Compile Include="IEntityStateCacheFactory.cs" />
     <Compile Include="IEntityStateCache.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="IRequireSession.cs" />
     <Compile Include="ITrackable.cs" />
+    <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Proxies\ITrackableRelationship.cs" />
     <Compile Include="Proxies\RelationshipInterceptor.cs" />
     <Compile Include="ProxyUtils.cs" />

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Neo4jClient;
 using Neo4jClient.Cypher;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Cypher.Commands;
@@ -195,7 +196,6 @@ namespace Plot.Neo4j
             return commands;
         }
         
-
         private ICommand CreateRelationship(object source, object destination, RelationshipMetadata relationship)
         {
             var sourceMetadata = MetadataFactory.Create(source);
