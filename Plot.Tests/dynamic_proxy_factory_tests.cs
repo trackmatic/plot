@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
@@ -15,13 +16,13 @@ namespace Plot.Tests
         [Fact]
         public void all_objects_in_the_object_graph_are_proxied()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new Person
                 {
                     Id = "1",
@@ -41,13 +42,13 @@ namespace Plot.Tests
         public void properties_which_are_marked_as_ignored_are_not_proxied()
         {
 
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new EntityWithIgnoredProperty
                 {
                     Id = "1",
@@ -64,13 +65,13 @@ namespace Plot.Tests
         [Fact]
         public void id_property_is_set_if_null()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var notSet = new AnotherEntity();
                 var proxy = factory.Create(notSet, session);
                 Assert.NotNull(proxy.Id);
@@ -85,13 +86,13 @@ namespace Plot.Tests
         [Fact]
         public void depdendencies_are_incremented_when_property_set()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var parent = factory.Create(new Parent {Id = "parent"}, session);
                 var child = factory.Create(new Child {Id = "child"}, session);
                 parent.Child = child;
@@ -107,13 +108,13 @@ namespace Plot.Tests
         [Fact]
         public void depdendencies_are_incremented_when_item_added_to_a_list()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var parent = factory.Create(new Parent { Id = "parent" }, session);
                 var child = factory.Create(new Child { Id = "child" }, session);
                 parent.Children.Add(child);
@@ -129,13 +130,13 @@ namespace Plot.Tests
         [Fact]
         public void properties_set_during_construction_are_restored_after_proxy_created()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new EntityWithPropertiesSetInConstructor("1", "Test");
                 var proxy = factory.Create(item, session);
                 Assert.Equal("1", proxy.Id);
@@ -146,12 +147,12 @@ namespace Plot.Tests
         [Fact]
         public void change_tracking_is_applied_when_entity_set_in_constructor()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
 
             var mapper = new Mock<IMapper<Parent>>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
-            repositoryFactory.Setup(x => x.Create(It.IsAny<IGraphSession>(), It.IsAny<Type>())).Returns<IGraphSession, Type>((s, t) => new GenericAbstractRepository<Parent>(mapper.Object, s, new DynamicProxyFactory(metadataFactory)));
+            repositoryFactory.Setup(x => x.Create(It.IsAny<IGraphSession>(), It.IsAny<Type>())).Returns<IGraphSession, Type>((s, t) => new GenericAbstractRepository<Parent>(mapper.Object, s, new DynamicProxyFactory(metadataFactory, new NullLogger())));
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {

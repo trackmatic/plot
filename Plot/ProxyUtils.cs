@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
 using Plot.Exceptions;
+using Plot.Metadata;
 using Plot.Proxies;
 
 namespace Plot
@@ -76,7 +77,7 @@ namespace Plot
             return trackable.Flush();
         }
 
-        public static IEnumerable<ITrackableRelationship> Flush(object item)
+        public static IEnumerable<ITrackableRelationship> Flush(object item, RelationshipMetadata relationship)
         {
             var source = item as IProxyTargetAccessor;
             if (source == null)
@@ -84,7 +85,7 @@ namespace Plot
                 throw new TrackableRelationshipException(Text.FlushTrackablerelationshipException);
             }
             var interceptors = source.GetInterceptors().Where(x => x is RelationshipInterceptor).Cast<RelationshipInterceptor>();
-            return interceptors.SelectMany(x => x.GetTrackableRelationships());
+            return interceptors.Select(x => x.GetTrackableRelationship(relationship));
         }
 
         public static bool IsTrackable(IEnumerable list)

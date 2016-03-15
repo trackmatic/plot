@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Moq;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
@@ -28,7 +29,7 @@ namespace Plot.Tests
             var stateFactory = new Mock<IEntityStateCacheFactory>();
             stateFactory.Setup(x => x.Create()).Returns(stateTracker);
 
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var personMapper = new Mock<IMapper<Person>>();
             personMapper.Setup(x => x.Get(It.IsAny<string[]>())).Returns(new List<Person> { target });
             personMapper.Setup(x => x.Update(It.IsAny<object>(), It.IsAny<EntityState>())).Verifiable();
@@ -42,12 +43,12 @@ namespace Plot.Tests
             {
                 if (t == typeof (Person))
                 {
-                    return new GenericAbstractRepository<Person>(personMapper.Object, s, new DynamicProxyFactory(metadataFactory));
+                    return new GenericAbstractRepository<Person>(personMapper.Object, s, new DynamicProxyFactory(metadataFactory, new NullLogger()));
                 }
 
                 if (t == typeof(Contact))
                 {
-                    return new GenericAbstractRepository<Contact>(contactMapper.Object, s, new DynamicProxyFactory(metadataFactory));
+                    return new GenericAbstractRepository<Contact>(contactMapper.Object, s, new DynamicProxyFactory(metadataFactory, new NullLogger()));
                 }
 
                 return null;
@@ -69,11 +70,11 @@ namespace Plot.Tests
             var stateTracker = new EntityStateCache();
             var stateFactory = new Mock<IEntityStateCacheFactory>();
             stateFactory.Setup(x => x.Create()).Returns(stateTracker);
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var personMapper = new Mock<IMapper<Person>>();
             personMapper.Setup(x => x.Update(It.IsAny<object>(), It.IsAny<EntityState>())).Verifiable();
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
-            var proxyFactory = new DynamicProxyFactory(metadataFactory);
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
             var repositoryFactory = new RepositoryFactory(proxyFactory);
             repositoryFactory.Register<Person>(x => personMapper.Object);
 

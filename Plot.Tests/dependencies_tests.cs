@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
@@ -38,9 +39,8 @@ namespace Plot.Tests
             var stateTracker = new EntityStateCache();
             var stateFactory = new Mock<IEntityStateCacheFactory>();
             stateFactory.Setup(x => x.Create()).Returns(stateTracker);
-
-            var metadataFactory = new AttributeMetadataFactory();
-            var proxyFactory = new DynamicProxyFactory(metadataFactory);
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
 
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new RepositoryFactory(proxyFactory);

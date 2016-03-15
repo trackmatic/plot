@@ -21,8 +21,10 @@ namespace Plot.Logging
 
         private void Log(ConsoleColor color, string message)
         {
+            var previousColour = Console.ForegroundColor;
             Console.ForegroundColor = color;
             Console.WriteLine($"{DateTime.Now}] {message}");
+            Console.ForegroundColor = previousColour;
         }
     }
 }

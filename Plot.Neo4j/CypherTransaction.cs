@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Neo4jClient.Cypher;
 using Neo4jClient.Transactions;
 using Plot.Logging;
@@ -49,11 +48,7 @@ namespace Plot.Neo4j
 
         private void Log(ICypherFluentQuery query)
         {
-            var builder = new StringBuilder();
-            builder.AppendLine("-----------------------START-----------------------");
-            builder.AppendLine(query.Query.DebugQueryText);
-            builder.AppendLine("-----------------------END-------------------------");
-            _logger.Info(builder.ToString());
+            _logger.Info(query.Query.DebugQueryText);
         }
 
         public override string ToString()

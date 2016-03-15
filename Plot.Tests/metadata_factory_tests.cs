@@ -2,6 +2,7 @@
 using System.Linq;
 using Moq;
 using Plot.Attributes;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
@@ -15,7 +16,7 @@ namespace Plot.Tests
         [Fact]
         public void factory_creates_meta_data()
         {
-            var factory = new AttributeMetadataFactory();
+            var factory = new AttributeMetadataFactory(new NullLogger());
             var node = factory.Create(typeof(Person));
             Assert.Equal("Person", node.Name);
             Assert.Equal(3, node.Properties.Count());
@@ -36,13 +37,13 @@ namespace Plot.Tests
         [Fact]
         public void factory_creates_meta_data_correctly_from_a_proxy_object()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var factory = new DynamicProxyFactory(metadataFactory);
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new Parent
                 {
                     Id = "1",
@@ -55,6 +56,30 @@ namespace Plot.Tests
 
                 var childMetadta = metadataFactory.Create(proxy.Child);
                 Assert.Equal("Child", childMetadta.Name);
+            }
+        }
+
+        [Fact]
+        public void reverse_property_is_set_correctly_on_one_to_one_relationships()
+        {
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new Mock<IRepositoryFactory>();
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            {
+                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+                var alpha = factory.Create(new ClassAlpha
+                {
+                    Id = "1"
+                }, session);
+                var beta = factory.Create(new ClassBeta
+                {
+                    Id = "2"
+                }, session);
+                alpha.Beta = beta;
+                var metadata = metadataFactory.Create(beta);
+                Assert.True(metadata.Properties.ToList()[1].Relationship.IsReverse);
             }
         }
 
@@ -77,8 +102,23 @@ namespace Plot.Tests
         public class Child
         {
             public virtual string Id { get; set; }
+        }
 
+        public class ClassAlpha
+        {
+            public virtual string Id { get; set; }
 
+            [Relationship("HAS")]
+            public virtual ClassBeta Beta { get; set; }
+            
+        }
+
+        public class ClassBeta
+        {
+            public virtual string Id { get; set; }
+
+            [Relationship("HAS", Reverse = true)]
+            public virtual  ClassAlpha Alpha { get; set; }
         }
     }
 }

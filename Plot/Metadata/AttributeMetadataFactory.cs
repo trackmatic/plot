@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Plot.Attributes;
+using Plot.Logging;
 
 namespace Plot.Metadata
 {
@@ -11,8 +12,11 @@ namespace Plot.Metadata
     {
         private readonly IDictionary<Type, NodeMetadata> _cache;
 
-        public AttributeMetadataFactory()
+        private readonly ILogger _logger;
+
+        public AttributeMetadataFactory(ILogger logger)
         {
+            _logger = logger;
             _cache = new Dictionary<Type, NodeMetadata>();
         }
 
@@ -37,14 +41,17 @@ namespace Plot.Metadata
 
         private NodeMetadata New(Type type)
         {
-            var node = new NodeMetadata()
+            using (Timer.Start("Metadata Creation", _logger))
             {
-                Name = type.Name
-            };
-            _cache.Add(type, node);
-            var properties = type.GetProperties().Select(CreateProperty).ToList();
-            node.Set(properties);
-            return node;
+                var node = new NodeMetadata()
+                {
+                    Name = type.Name
+                };
+                _cache.Add(type, node);
+                var properties = type.GetProperties().Select(CreateProperty).ToList();
+                node.Set(properties);
+                return node;
+            }
         }
 
         private PropertyMetadata CreateProperty(PropertyInfo propertyInfo)

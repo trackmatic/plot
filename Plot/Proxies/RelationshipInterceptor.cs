@@ -9,7 +9,7 @@ namespace Plot.Proxies
 {
     public class RelationshipInterceptor : IInterceptor
     {
-        private readonly IDictionary<string, RelationshipState> _relationshipState;
+        private readonly IDictionary<RelationshipMetadata, RelationshipState> _relationshipState;
 
         private readonly IMetadataFactory _metadataFactory;
 
@@ -17,7 +17,7 @@ namespace Plot.Proxies
 
         public RelationshipInterceptor(IMetadataFactory metadataFactory, IEntityStateCache state)
         {
-            _relationshipState = new Dictionary<string, RelationshipState>();
+            _relationshipState = new Dictionary<RelationshipMetadata, RelationshipState>();
             _metadataFactory = metadataFactory;
             _state = state;
         }
@@ -36,7 +36,7 @@ namespace Plot.Proxies
                 invocation.Proceed();
                 return;
             }
-            var state = GetState(property.Name);
+            var state = GetState(property);
             state.Push(invocation.Arguments[0]);
             RegisterDependencies(property.Relationship, invocation.InvocationTarget, invocation.Arguments[0]);
             invocation.Proceed();
@@ -60,18 +60,18 @@ namespace Plot.Proxies
         }
 
 
-        public IEnumerable<ITrackableRelationship> GetTrackableRelationships()
+        public ITrackableRelationship GetTrackableRelationship(RelationshipMetadata relationship)
         {
-            return _relationshipState.Values;
+            return _relationshipState[relationship];
         }
 
-        private RelationshipState GetState(string property)
+        private RelationshipState GetState(PropertyMetadata property)
         {
-            if (!_relationshipState.ContainsKey(property))
+            if (!_relationshipState.ContainsKey(property.Relationship))
             {
-                _relationshipState.Add(property, new RelationshipState());
+                _relationshipState.Add(property.Relationship, new RelationshipState());
             }
-            return _relationshipState[property];
+            return _relationshipState[property.Relationship];
         }
 
         private bool IsSetter(IInvocation invocation)

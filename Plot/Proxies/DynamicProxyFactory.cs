@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Plot.Logging;
 using Plot.Metadata;
 
 namespace Plot.Proxies
@@ -11,15 +12,24 @@ namespace Plot.Proxies
     {
         private readonly IMetadataFactory _metadataFactory;
 
-        public DynamicProxyFactory(IMetadataFactory metadataFactory)
+        private readonly ILogger _logger;
+
+        private readonly ProxyGenerator _generator;
+
+        public DynamicProxyFactory(IMetadataFactory metadataFactory, ILogger logger)
         {
             _metadataFactory = metadataFactory;
+            _logger = logger;
+            _generator = new ProxyGenerator();
         }
 
         public T Create<T>(T item, IGraphSession session, EntityStatus status = EntityStatus.Clean) where T : class
         {
-            var generator = new Generator(session, _metadataFactory, status);
-            return generator.Create(item);
+            using (Timer.Start("Proxy Creation", _logger))
+            {
+                var generator = new Generator(session, _metadataFactory, _generator, status);
+                return generator.Create(item);
+            }
         }
 
         private class Generator
@@ -36,9 +46,9 @@ namespace Plot.Proxies
 
             private readonly EntityStatus _status;
 
-            public Generator(IGraphSession session, IMetadataFactory metadataFactory, EntityStatus status = EntityStatus.Clean)
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, EntityStatus status = EntityStatus.Clean)
             {
-                _generator = new ProxyGenerator();
+                _generator = generator;
                 _session = session;
                 _metadataFactory = metadataFactory;
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());

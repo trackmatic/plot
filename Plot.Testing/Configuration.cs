@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 
@@ -8,8 +8,8 @@ namespace Plot.Testing
     {
         public static IGraphSessionFactory CreateTestSessionFactory(params IMapper[] mappers)
         {
-            var metadataFactory = new AttributeMetadataFactory();
-            var proxyFactory = new DynamicProxyFactory(metadataFactory);
+            var metadataFactory = new AttributeMetadataFactory(new ConsoleLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new ConsoleLogger());
             var repositoryFactory = new RepositoryFactory(proxyFactory);
             foreach (var mapper in mappers)
             {

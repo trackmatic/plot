@@ -146,7 +146,7 @@ namespace Plot.Neo4j
             {
                 return commands;
             }
-            var trackableRelationships = ProxyUtils.Flush(source);
+            var trackableRelationships = ProxyUtils.Flush(source, relationship);
             foreach (var trackableRelationship in trackableRelationships)
             {
                 commands.AddRange(CreateDeleteRelationshipCommands(source, trackableRelationship, relationship));
@@ -177,11 +177,7 @@ namespace Plot.Neo4j
         private IEnumerable<ICommand> CreateRelationshipCommands(object source, IEnumerable collection, RelationshipMetadata relationship)
         {
             var commands = new List<ICommand>();
-            if (relationship == null)
-            {
-                return commands;
-            }
-            if (relationship.IsReverse)
+            if (relationship == null || relationship.IsReverse)
             {
                 return commands;
             }

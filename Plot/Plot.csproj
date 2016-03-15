@@ -68,6 +68,7 @@
     <Compile Include="IRequireSession.cs" />
     <Compile Include="ITrackable.cs" />
     <Compile Include="Logging\NullLogger.cs" />
+    <Compile Include="Logging\Timer.cs" />
     <Compile Include="Proxies\ITrackableRelationship.cs" />
     <Compile Include="Proxies\RelationshipInterceptor.cs" />
     <Compile Include="ProxyUtils.cs" />

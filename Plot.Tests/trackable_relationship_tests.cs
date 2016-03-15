@@ -2,6 +2,7 @@
 using System.Linq;
 using Moq;
 using Plot.Attributes;
+using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
@@ -31,13 +32,13 @@ namespace Plot.Tests
         [Fact]
         public void a_proxy_is_generated_for_trackable_relationships()
         {
-            var metadataFactory = new AttributeMetadataFactory();
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
             {
-                var proxyFactory = new DynamicProxyFactory(metadataFactory);
+                var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var person = new Person
                 {
                     Id = "1",
@@ -51,8 +52,9 @@ namespace Plot.Tests
                 var proxy = proxyFactory.Create(person, session);
                 proxy.Address = null;
                 proxy.Address = proxyFactory.Create(new Address {Id = "2"}, session);
-                var trackableRelationships = ProxyUtils.Flush(proxy).ToList();
-                Assert.Equal(1, trackableRelationships.Count());
+                var metadata = metadataFactory.Create(proxy);
+                var trackableRelationships = ProxyUtils.Flush(proxy, metadata["Address"].Relationship).ToList();
+                Assert.Equal(1, trackableRelationships.Count);
                 foreach (var trackableRelationship in trackableRelationships)
                 {
                     var enumerable = trackableRelationship.Flush();
