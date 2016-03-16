@@ -82,7 +82,6 @@
     <Compile Include="Queries\QueryExecutorFactory.cs" />
     <Compile Include="Queries\RelationshipSyntax.cs" />
     <Compile Include="RepositoryFactory.cs" />
-    <Compile Include="Queries\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
