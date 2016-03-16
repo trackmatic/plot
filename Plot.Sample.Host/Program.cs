@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
 using Plot.Sample.Model;
+using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
 {
@@ -12,10 +13,12 @@ namespace Plot.Sample.Host
         {
             var uri = new Uri("http://localhost:7474/db/data");
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic", typeof(UserMapper).Assembly);
-            try
-            {
+            //try
+            //{
                 using (var session = factory.OpenSession())
                 {
+                    var data = session.Get(new GetUserByUsername {Username = "ross"}, false);
+
                     var organisation = session.Create(new Organisation
                     {
                         Id = "org",
@@ -97,11 +100,11 @@ namespace Plot.Sample.Host
                     session.SaveChanges();
                 }
 
-            }
+            /*}
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            }
+            }*/
 
             Console.WriteLine("Done");
             Console.ReadLine();

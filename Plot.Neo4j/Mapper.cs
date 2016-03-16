@@ -133,7 +133,7 @@ namespace Plot.Neo4j
         private IList<T> OnGet(params string[] id)
         {
             var executor = CreateQueryExecutor();
-            var item = executor.Execute(Session.Uow, new GetAbstractQuery<T>(id));
+            var item = executor.Execute(Session, new GetAbstractQuery<T>(id));
             return item.ToList();
         }
 

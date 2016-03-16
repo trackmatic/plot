@@ -63,21 +63,22 @@ namespace Plot
             return items.FirstOrDefault();
         }
 
-        public T Get<T>(IQuery<T> query)
+        public T Get<T>(IQuery<T> query, bool enlist = true)
         {
-            var results = Query(query);
+            var results = Query(query, enlist);
 
             if (results.Data.Count() > 1)
             {
                 throw new InvalidOperationException("A query must return only 1 result to be used in the Map<T> method");
             }
 
-            return GetRepositoryOfType<T>().Get(results.Data.Select(x => _state.Get(x).GetIdentifier()).ToArray()).FirstOrDefault();
+            return results.Data.FirstOrDefault();
         }
 
-        public IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query)
+        public IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query, bool enlist = false)
         {
-            return _queryExecutorFactory.Create(query, this).Execute(query);
+            var executor = _queryExecutorFactory.Create(query, this);
+            return executor.ExecuteWithPaging(this, query, enlist);
         }
 
         public void Dispose()
@@ -102,6 +103,14 @@ namespace Plot
         public IUnitOfWork Uow => _uow;
 
         public IEntityStateCache State => _state;
+
+        public bool Register(object item)
+        {
+            var state = GetState(item); ;
+            var result = Register(item, state);
+            state.New();
+            return result;
+        }
 
         public virtual bool Register(object item, EntityState state)
         {
@@ -204,6 +213,11 @@ namespace Plot
                 _repositories[type] = _repositoryFactory.Create(this, type);
             }
             return _repositories[type];
+        }
+
+        private EntityState GetState(object proxy)
+        {
+            return _state.Contains(proxy) ? _state.Get(proxy) : _state.Create(proxy);
         }
     }
 }

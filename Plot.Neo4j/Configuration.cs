@@ -31,7 +31,7 @@ namespace Plot.Neo4j
             var proxyFactory = new DynamicProxyFactory(metadataFactory, _logger);
             var transactionFactory = new CypherTransactionFactory(db, _logger);
             var repositoryFactory = new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, mapperAssemblies);
-            var queryExecutorFactory = new QueryExecutorFactory(db, mapperAssemblies);
+            var queryExecutorFactory = new QueryExecutorFactory(db, metadataFactory, mapperAssemblies);
             var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory);
             return factory;
         }

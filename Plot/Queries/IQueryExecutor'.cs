@@ -4,8 +4,8 @@ namespace Plot.Queries
 {
     public interface IQueryExecutor<TResult> : IQueryExecutor
     {
-        IPagedGraphCollection<TResult> Execute(IQuery<TResult> query);
+        IPagedGraphCollection<TResult> ExecuteWithPaging(IGraphSession session, IQuery<TResult> query, bool enlist);
 
-        IEnumerable<TResult> Execute(IUnitOfWork uow, IQuery<TResult> query);
+        IEnumerable<TResult> Execute(IGraphSession session, IQuery<TResult> query);
     }
 }

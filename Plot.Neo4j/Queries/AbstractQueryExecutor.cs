@@ -4,6 +4,8 @@ using System.Linq;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Queries;
+using Plot.Logging;
+using Plot.Metadata;
 
 namespace Plot.Neo4j.Queries
 {
@@ -13,28 +15,31 @@ namespace Plot.Neo4j.Queries
     {
         private readonly GraphClient _db;
 
-        protected AbstractQueryExecutor(GraphClient db)
+        private readonly IMetadataFactory _metadataFactory;
+
+        protected AbstractQueryExecutor(GraphClient db, IMetadataFactory metadataFactory)
         {
             _db = db;
+            _metadataFactory = metadataFactory;
         }
 
-        public IEnumerable<TAggregate> Execute(IUnitOfWork uow, IQuery<TAggregate> query)
+        public IEnumerable<TAggregate> Execute(IGraphSession session, IQuery<TAggregate> query)
         {
             var cypher = CreateCypherQuery(query);
             var dataset = cypher.Results.ToList();
             var results = Map(item =>
             {
                 var aggregate = Create(item);
-                if (uow.Contains(aggregate))
+                if (session.Uow.Contains(aggregate))
                 {
-                    aggregate = uow.Get<TAggregate>(ProxyUtils.GetEntityId(aggregate));
+                    aggregate = session.Uow.Get<TAggregate>(ProxyUtils.GetEntityId(aggregate));
                 }
                 return aggregate;
             }, dataset);
             return results;
         }
 
-        public IPagedGraphCollection<TAggregate> Execute(IQuery<TAggregate> query)
+        public IPagedGraphCollection<TAggregate> ExecuteWithPaging(IGraphSession session, IQuery<TAggregate> query, bool enlist)
         {
             var cypher = CreateCypherQuery(query);
             var dataset = cypher.Results.ToList();
@@ -46,10 +51,22 @@ namespace Plot.Neo4j.Queries
             var page = total == 0 ? 1 : (query.Skip/total)+1;
             if (!dataset.Any())
             {
-                return new PagedGraphGraphCollection<TAggregate>(this, query, new List<TAggregate>(), 0, (int)page);
+                return new PagedGraphGraphCollection<TAggregate>(session, this, query, new List<TAggregate>(), 0, (int)page, enlist);
             }
-            var results = Map(Create, dataset);
-            return new PagedGraphGraphCollection<TAggregate>(this, query, results, (int)total, (int)page);
+            var results = Map(item =>
+            {
+                var aggregate = Create(item);
+                if (session.Uow.Contains(aggregate))
+                {
+                    aggregate = session.Uow.Get<TAggregate>(ProxyUtils.GetEntityId(aggregate));
+                }
+                else if (enlist)
+                {
+                    session.Register(aggregate);
+                }
+                return aggregate;
+            }, dataset);
+            return new PagedGraphGraphCollection<TAggregate>(session, this, query, results, (int)total, (int)page, enlist);
         }
 
         protected abstract ICypherFluentQuery<TDataset> GetDataset(IGraphClient db, TQuery query);
@@ -60,9 +77,14 @@ namespace Plot.Neo4j.Queries
 
         protected abstract void Map(TAggregate aggregate, TDataset item);
 
+        protected NodeMetadata Metadata
+        {
+            get { return _metadataFactory.Create(typeof(TAggregate)); }
+        }
+
         private void Log(ICypherFluentQuery query)
         {
-            // TODO:
+
         }
 
         public Type QueryType => typeof (TQuery);

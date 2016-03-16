@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Neo4jClient;
 using Plot.Queries;
+using Plot.Metadata;
 
 namespace Plot.Neo4j.Queries
 {
@@ -11,13 +12,16 @@ namespace Plot.Neo4j.Queries
     {
         private readonly Dictionary<Type, Func<IGraphSession, IQueryExecutor>> _queries;
 
-        public QueryExecutorFactory()
+        private readonly IMetadataFactory _metadataFactory;
+
+        public QueryExecutorFactory(IMetadataFactory metadataFactory)
         {
             _queries = new Dictionary<Type, Func<IGraphSession, IQueryExecutor>>();
+            _metadataFactory = metadataFactory;
         }
 
 
-        public QueryExecutorFactory(GraphClient db, params Assembly[] assemblies) : this()
+        public QueryExecutorFactory(GraphClient db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
         {
             foreach (var assembly in assemblies)
             {
@@ -36,7 +40,7 @@ namespace Plot.Neo4j.Queries
                     {
                         var local = type;
 
-                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, db), arguments[2]);
+                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, db, _metadataFactory), arguments[2]);
                     }
                 }
             }

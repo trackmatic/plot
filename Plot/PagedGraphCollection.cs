@@ -10,8 +10,13 @@ namespace Plot
         
         private readonly IQuery<T> _query;
 
-        public PagedGraphGraphCollection(IQueryExecutor<T> executor, IQuery<T> query, IEnumerable<T> data, int total, int page)
+        private readonly IGraphSession _session;
+
+        private readonly bool _enlist;
+
+        public PagedGraphGraphCollection(IGraphSession session, IQueryExecutor<T> executor, IQuery<T> query, IEnumerable<T> data, int total, int page, bool enlist)
         {
+            _session = session;
             _executor = executor;
             _query = query;
             Data = data;
@@ -32,7 +37,7 @@ namespace Plot
         
         public IPagedGraphCollection<T> Next()
         {
-            return _executor.Execute(_query.Next());
+            return _executor.ExecuteWithPaging(_session, _query.Next(), _enlist);
         }
 
         public bool IsEmpty

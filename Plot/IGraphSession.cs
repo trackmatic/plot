@@ -12,14 +12,15 @@ namespace Plot
 
         IEnumerable<T> Get<T>(params string[] id);
 
-        T Get<T>(IQuery<T> query);
+        T Get<T>(IQuery<T> query, bool enlist = true);
 
         T Get<T>(string id);
 
         void Evict<T>(T item);
 
-        IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query);
-        
+        IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query, bool enlist = false);
+        bool Register(object model);
+
         bool Register(object model, EntityState state);
 
         void SaveChanges();

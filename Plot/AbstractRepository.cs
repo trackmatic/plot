@@ -31,9 +31,7 @@ namespace Plot
         public object Create(object item)
         {
             var proxy = _proxyFactory.Create((T)item, _session, EntityStatus.New);
-            var state = GetState(proxy);
-            _session.Register(proxy, state);
-            state.New();
+            _session.Register(proxy);
             return proxy;
         }
 
@@ -76,12 +74,6 @@ namespace Plot
             return items.Select(x => x.Value);
         }
 
-        public IPagedGraphCollection<T> Query(IQueryExecutor<T> queryExecutor, IQuery<T> query)
-        {
-            var item = queryExecutor.Execute(query);
-            return item;
-        }
-
         public IMapper Mapper => _mapper;
 
         public void Dispose()
@@ -107,11 +99,6 @@ namespace Plot
         private string[] GetUnpopulatedItems(IDictionary<string, T> items)
         {
             return items.Where(x => x.Value == null || !_entityStateCache.Get(x.Value).IsPopulated).Select(x => x.Key).ToArray();
-        }
-
-        private EntityState GetState(object proxy)
-        {
-            return _entityStateCache.Contains(proxy) ? _entityStateCache.Get(proxy) : _entityStateCache.Create(proxy);
         }
     }
 }

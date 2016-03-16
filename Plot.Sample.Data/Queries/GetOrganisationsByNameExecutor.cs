@@ -7,13 +7,14 @@ using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Model;
 using Plot.Sample.Queries;
+using Plot.Metadata;
 
 namespace Plot.Sample.Data.Queries
 {
     public class GetOrganisationsByNameExecutor : AbstractQueryExecutor<Organisation, GetOrganisationsByNameExecutor.ResultDataset, GetOrganisationsByName>
     {
-        public GetOrganisationsByNameExecutor(GraphClient db) 
-            : base(db)
+        public GetOrganisationsByNameExecutor(GraphClient db, IMetadataFactory metadataFactory) 
+            : base(db, metadataFactory)
         {
 
         }

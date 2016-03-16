@@ -79,9 +79,10 @@
     <Compile Include="Queries\AbstractQueryExecutor.cs" />
     <Compile Include="Queries\GenericQueryExecutor.cs" />
     <Compile Include="Queries\GetQuery.cs" />
-    <Compile Include="Queries\GetQueryExecutorBase.cs" />
     <Compile Include="Queries\QueryExecutorFactory.cs" />
+    <Compile Include="Queries\RelationshipSyntax.cs" />
     <Compile Include="RepositoryFactory.cs" />
+    <Compile Include="Queries\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
