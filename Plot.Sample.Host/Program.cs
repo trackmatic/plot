@@ -15,10 +15,8 @@ namespace Plot.Sample.Host
             using (var session = factory.OpenSession())
             {
                 var user = session.Get<User>("118");
-                var requestedBy = session.Get<User>("118");
-                var request = session.Create(new ResetPasswordRequest());
-                request.RequestedBy = requestedBy;
-                request.User = user;
+                var password = session.Create(Password.Create("test"));
+                user.Set(password);
                 session.SaveChanges();
             }
             Console.WriteLine("Done");

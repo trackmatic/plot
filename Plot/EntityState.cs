@@ -33,11 +33,6 @@ namespace Plot
 
         protected void MarkClean()
         {
-            if (_status == EntityStatus.New)
-            {
-                throw new InvalidOperationException("An item cannot be marked as clean if it has already been marked as new");
-            }
-
             _status = EntityStatus.Clean;
         }
 
@@ -87,10 +82,6 @@ namespace Plot
 
         public void Clean()
         {
-            if (Status == EntityStatus.New)
-            {
-                return;
-            }
             MarkClean();
         }
 
