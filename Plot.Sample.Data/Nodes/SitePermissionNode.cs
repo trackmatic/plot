@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
-using Plot.Sample.Model;
-
-namespace Plot.Sample.Data.Nodes
+﻿namespace Plot.Sample.Data.Nodes
 {
     public class SitePermissionNode
     {
+        public SitePermissionNode()
+        {
+            
+        }
+
+        public SitePermissionNode(SitePermission item)
+        {
+            Id = item.Id;
+        }
+
         public string Id { get; set; }
-
-        public List<SiteNode> Sites { get; set; }
-
-        public List<AccessGroupNode> AccessGroups { get; set; }
 
         public SitePermission AsSitePermission()
         {

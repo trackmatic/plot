@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Plot.Attributes;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     public class Person
     {
@@ -15,6 +15,10 @@ namespace Plot.Sample.Model
 
         [Ignore]
         public virtual Names Names { get; set; }
+
+        public virtual string Mobile { get; set; }
+
+        public virtual string Email { get; set; }
 
         [Relationship(Relationships.IsA)]
         public virtual User User { get; set; }

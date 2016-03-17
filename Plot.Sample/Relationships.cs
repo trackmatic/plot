@@ -1,4 +1,4 @@
-﻿namespace Plot.Sample.Model
+﻿namespace Plot.Sample
 {
     public static class Relationships
     {
@@ -18,6 +18,18 @@
 
         public const string Operates = "OPERATES";
 
-        public const string GrantAccessTo = "GRANT_ACCESS_TO";
+        public const string GrantsAccessTo = "GRANTS_ACCESS_TO";
+        
+        public const string ResidesAt = "RESIDES_AT";
+
+        public const string Notifies = "NOTIFIES";
+
+        public const string InterestedIn = "INTERESTED_IN";
+
+        public const string AsRole = "AS_ROLE";
+
+        public const string RequestedBy = "REQUESTED_BY";
+
+        public const string AuthenticatesWith = "AUTHENTICATES_WITH";
     }
 }

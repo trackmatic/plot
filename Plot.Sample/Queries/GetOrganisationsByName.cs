@@ -1,5 +1,4 @@
 ﻿using Plot.Queries;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Queries
 {

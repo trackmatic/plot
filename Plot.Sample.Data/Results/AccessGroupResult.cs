@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Results
 {
+
     public class AccessGroupResult : AbstractCypherQueryResult<AccessGroup>
     {
         public IEnumerable<AssetNode> Assets { get; set; }

@@ -1,12 +1,12 @@
 ﻿using Neo4jClient;
 using Neo4jClient.Cypher;
+using Plot.Metadata;
+using Plot.Neo4j;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
-using Plot.Sample.Model;
-using Plot.Sample.Queries;
-using Plot.Metadata;
 using Plot.Sample.Data.Results;
+using Plot.Sample.Queries;
 
 namespace Plot.Sample.Data.Queries
 {
@@ -22,9 +22,9 @@ namespace Plot.Sample.Data.Queries
         {
             var cypher = QueryBuilder.Create(db, new IQueryBuilderElement[]
             {
-                new Body(query),
+                new Body(query, Metadata),
                 new AsCount(),
-                new Body(query),
+                new Body(query, Metadata),
                 new Parameters(query)
             }).ReturnDistinct((organisation, site, total) => new OrganisationResult
             {
@@ -34,7 +34,7 @@ namespace Plot.Sample.Data.Queries
             });
             return cypher;
         }
-        
+       
         private class AsCount : IQueryBuilderElement
         {
             public ICypherFluentQuery Append(ICypherFluentQuery cypher)
@@ -47,15 +47,19 @@ namespace Plot.Sample.Data.Queries
         {
             private readonly GetOrganisationsByName _query;
 
-            public Body(GetOrganisationsByName query)
+            private readonly NodeMetadata _nodeMetadata;
+
+            public Body(GetOrganisationsByName query, NodeMetadata nodeMetadata)
             {
                 _query = query;
+                _nodeMetadata = nodeMetadata;
             }
 
             public ICypherFluentQuery Append(ICypherFluentQuery cypher)
             {
                 //cypher = cypher.Match("(user:User { Id: {id}})");
                 cypher = cypher.OptionalMatch("(site-[:SITE_OF]->organisation)");
+                cypher = cypher.IncludeRelationships(_nodeMetadata);
                 return cypher;
             }
 

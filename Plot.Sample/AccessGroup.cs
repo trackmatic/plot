@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Plot.Attributes;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     [Serializable]
     public class AccessGroup

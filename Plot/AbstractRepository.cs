@@ -67,7 +67,7 @@ namespace Plot
             foreach (var item in _mapper.Get(identifiers))
             {
                 var proxy = _proxyFactory.Create(item, _session);
-                var state = _entityStateCache.Get(item);
+                var state = _entityStateCache.Get(proxy);
                 items[state.GetIdentifier()] = proxy;
                 state.Populate();
             }

@@ -1,6 +1,6 @@
-﻿namespace Plot.Sample.Model
+﻿namespace Plot.Sample
 {
-    public class Role
+    public class Module
     {
         public virtual string Id { get; set; }
 

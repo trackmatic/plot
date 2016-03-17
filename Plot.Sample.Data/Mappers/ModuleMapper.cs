@@ -6,7 +6,6 @@ using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Data.Results;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
 {
@@ -19,12 +18,7 @@ namespace Plot.Sample.Data.Mappers
 
         protected override object GetData(Module item)
         {
-            var data = new
-            {
-                item.Id,
-                item.Name
-            };
-            return data;
+            return new ModuleNode(item);
         }
 
         protected override IQueryExecutor<Module> CreateQueryExecutor()

@@ -1,9 +1,9 @@
 ﻿using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Results
 {
+
     public class RoleResult : AbstractCypherQueryResult<Role>
     {
         public RoleNode Role { get; set; }

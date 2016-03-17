@@ -1,13 +1,12 @@
 ﻿using Plot.Metadata;
 
-namespace Plot.Neo4j.Queries
+namespace Plot.Neo4j.Cypher
 {
-
-    public class RelationshipSyntax
+    public class RelationshipSnippet
     {
         private readonly RelationshipMetadata _relationship;
 
-        private RelationshipSyntax(RelationshipMetadata relationship)
+        private RelationshipSnippet(RelationshipMetadata relationship)
         {
             _relationship = relationship;
         }
@@ -22,9 +21,9 @@ namespace Plot.Neo4j.Queries
             return $"-[:{_relationship.Name}]->";
         }
 
-        public static RelationshipSyntax Create(RelationshipMetadata relationship)
+        public static RelationshipSnippet Create(RelationshipMetadata relationship)
         {
-            return new RelationshipSyntax(relationship);
+            return new RelationshipSnippet(relationship);
         }
     }
 }

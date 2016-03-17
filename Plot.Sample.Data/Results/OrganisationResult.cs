@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Results
 {
+
     public class OrganisationResult : AbstractCypherQueryResult<Organisation>
     {
         public OrganisationNode Organisation { get; set; }
@@ -14,7 +14,6 @@ namespace Plot.Sample.Data.Results
         public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
         public override void Map(Organisation aggregate)
         {
-            aggregate.Name = Organisation.Name;
             Sites.Map(x => aggregate.Add(x.AsSite()));
             AccessGroups.Map(x => aggregate.Add(x.AsAccessGroup()));
         }

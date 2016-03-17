@@ -94,7 +94,7 @@ namespace Plot.Neo4j
 
         private IList<ICommand> OnInsert(ICypherFluentQuery query, T item)
         {
-            var commands = new List<ICommand> { new CreateCommandBase(new NodeSnippet(MetadataFactory.Create(item), item), () => GetData(item)) };
+            var commands = new List<ICommand> { new CreateNodeCommand(new NodeSnippet(MetadataFactory.Create(item), item), () => GetData(item)) };
 
             var metadata = MetadataFactory.Create(item);
 
@@ -125,7 +125,7 @@ namespace Plot.Neo4j
         {
             var commands = new List<ICommand>
             {
-                new DeleteCommand(new NodeSnippet(MetadataFactory.Create(item), item))
+                new DeleteNodeCommand(new NodeSnippet(MetadataFactory.Create(item), item))
             };
             return commands;
         }
@@ -161,17 +161,7 @@ namespace Plot.Neo4j
 
         private IEnumerable<ICommand> CreateDeleteRelationshipCommands(object source, ITrackableRelationship trackableRelationship, RelationshipMetadata relationship)
         {
-            var commands = new List<ICommand>();
-            foreach (var destination in trackableRelationship.Flush())
-            {
-                var command = DeleteRelationship(source, destination, relationship);
-                commands.Add(command);
-                if (relationship.DeleteOrphan)
-                {
-                    commands.Add(new DeleteWithCommand(new NodeSnippet(MetadataFactory.Create(destination), destination)));
-                }
-            }
-            return commands;
+            return (from object destination in trackableRelationship.Flush() select DeleteRelationship(source, destination, relationship)).ToList();
         }
 
         private IEnumerable<ICommand> CreateRelationshipCommands(object source, IEnumerable collection, RelationshipMetadata relationship)

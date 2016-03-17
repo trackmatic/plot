@@ -1,9 +1,18 @@
-﻿using Plot.Sample.Model;
-
-namespace Plot.Sample.Data.Nodes
+﻿namespace Plot.Sample.Data.Nodes
 {
     public class UserNode
     {
+        public UserNode()
+        {
+            
+        }
+
+        public UserNode(User user)
+        {
+            Id = user.Id;
+            Username = user.Username;
+        }
+
         public string Id { get; set; }
 
         public string Username { get; set; }

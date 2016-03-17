@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     [Serializable]
     public class Names

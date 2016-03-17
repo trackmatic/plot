@@ -3,7 +3,7 @@ using Neo4jClient.Cypher;
 
 namespace Plot.Neo4j.Cypher.Commands
 {
-    internal class CreateCommandBase : ICommand
+    internal class CreateNodeCommand : ICommand
     {
         private readonly NodeIdSnippet _id;
 
@@ -11,7 +11,7 @@ namespace Plot.Neo4j.Cypher.Commands
 
         private readonly Func<object> _factory;
         
-        public CreateCommandBase(NodeSnippet source, Func<object> factory)
+        public CreateNodeCommand(NodeSnippet source, Func<object> factory)
         {
             _source = source;
             _id = new NodeIdSnippet(source);

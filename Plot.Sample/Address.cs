@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     [Serializable]
     public class Address

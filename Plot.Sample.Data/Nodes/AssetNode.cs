@@ -1,9 +1,18 @@
-﻿using Plot.Sample.Model;
-
-namespace Plot.Sample.Data.Nodes
+﻿namespace Plot.Sample.Data.Nodes
 {
     public class AssetNode
     {
+        public AssetNode()
+        {
+            
+        }
+
+        public AssetNode(Asset item)
+        {
+            Id = item.Id;
+            FleetNumber = item.FleetNumber;
+        }
+
         public string Id { get; set; }
 
         public string FleetNumber { get; set; }

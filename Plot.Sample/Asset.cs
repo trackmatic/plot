@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     public class Asset
     {

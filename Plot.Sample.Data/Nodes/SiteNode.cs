@@ -1,9 +1,18 @@
-﻿using Plot.Sample.Model;
-
-namespace Plot.Sample.Data.Nodes
+﻿namespace Plot.Sample.Data.Nodes
 {
     public class SiteNode
     {
+        public SiteNode()
+        {
+            
+        }
+
+        public SiteNode(Site item)
+        {
+            Id = item.Id;
+            Name = item.Name;
+        }
+
         public string Id { get; set; }
 
         public string Name { get; set; }

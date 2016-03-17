@@ -84,7 +84,7 @@ namespace Plot.Neo4j
 
         public static ICypherFluentQuery IncludeRelationships(this ICypherFluentQuery cypher, NodeMetadata metadata)
         {
-            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){RelationshipSyntax.Create(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
+            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){RelationshipSnippet.Create(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
         }
     }
 }

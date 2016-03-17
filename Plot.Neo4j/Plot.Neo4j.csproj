@@ -52,11 +52,10 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="CypherTransaction.cs" />
     <Compile Include="CypherTransactionFactory.cs" />
-    <Compile Include="Cypher\Commands\CreateCommand.cs" />
-    <Compile Include="Cypher\Commands\CreateRelationshipCommand.cs" />
-    <Compile Include="Cypher\Commands\DeleteCommand.cs" />
-    <Compile Include="Cypher\Commands\DeleteRelationshipCommand.cs" />
-    <Compile Include="Cypher\Commands\DeleteWithCommand.cs" />
+    <Compile Include="Cypher.Commands\CreateNodeCommand.cs" />
+    <Compile Include="Cypher.Commands\CreateRelationshipCommand.cs" />
+    <Compile Include="Cypher.Commands\DeleteNodeCommand.cs" />
+    <Compile Include="Cypher.Commands\DeleteRelationshipCommand.cs" />
     <Compile Include="Cypher\CreateUniqueSnippet.cs" />
     <Compile Include="Cypher\IQueryBuilder.cs" />
     <Compile Include="Cypher\IQueryBuilderElement.cs" />
@@ -71,7 +70,7 @@
     <Compile Include="Dataset.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HttpClientAuthWrapper.cs" />
-    <Compile Include="ICommand.cs" />
+    <Compile Include="Cypher.Commands\ICommand.cs" />
     <Compile Include="ICypherTransaction.cs" />
     <Compile Include="ICypherTransactionFactory.cs" />
     <Compile Include="Mapper.cs" />
@@ -82,7 +81,7 @@
     <Compile Include="Queries\GetQuery.cs" />
     <Compile Include="Queries\ICypherQueryResult.cs" />
     <Compile Include="Queries\QueryExecutorFactory.cs" />
-    <Compile Include="Queries\RelationshipSyntax.cs" />
+    <Compile Include="Cypher\RelationshipSnippet.cs" />
     <Compile Include="RepositoryFactory.cs" />
   </ItemGroup>
   <ItemGroup>

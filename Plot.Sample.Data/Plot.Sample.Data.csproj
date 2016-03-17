@@ -50,21 +50,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mappers\AccessGroupMapper.cs" />
+    <Compile Include="Mappers\AddressMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
+    <Compile Include="Mappers\MembershipMapper.cs" />
     <Compile Include="Mappers\ModuleMapper.cs" />
     <Compile Include="Mappers\ModulePermissionMapper.cs" />
     <Compile Include="Mappers\OrganisationMapper.cs" />
+    <Compile Include="Mappers\PasswordMapper.cs" />
     <Compile Include="Mappers\PersonMapper.cs" />
+    <Compile Include="Mappers\ResetPasswordRequestMapper.cs" />
     <Compile Include="Mappers\RoleMapper.cs" />
     <Compile Include="Mappers\SiteMapper.cs" />
     <Compile Include="Mappers\SitePermissionMapper.cs" />
     <Compile Include="Mappers\UserMapper.cs" />
     <Compile Include="Nodes\AccessGroupNode.cs" />
+    <Compile Include="Nodes\AddressNode.cs" />
     <Compile Include="Nodes\AssetNode.cs" />
+    <Compile Include="Nodes\MembershipNode.cs" />
     <Compile Include="Nodes\ModuleNode.cs" />
     <Compile Include="Nodes\ModulePermissionNode.cs" />
     <Compile Include="Nodes\OrganisationNode.cs" />
+    <Compile Include="Nodes\PasswordNode.cs" />
     <Compile Include="Nodes\PersonNode.cs" />
+    <Compile Include="Nodes\ResetPasswordRequestNode.cs" />
     <Compile Include="Nodes\RoleNode.cs" />
     <Compile Include="Nodes\SiteNode.cs" />
     <Compile Include="Nodes\SitePermissionNode.cs" />
@@ -72,11 +80,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByNameExecutor.cs" />
     <Compile Include="Queries\GetUserByUsernameExecutor.cs" />
-    <Compile Include="Results\AccesGroupResult.cs" />
+    <Compile Include="Results\AccessGroupResult.cs" />
+    <Compile Include="Results\AddressResult.cs" />
     <Compile Include="Results\AssetResult.cs" />
+    <Compile Include="Results\MembershipResult.cs" />
+    <Compile Include="Results\ModulePermissionResult.cs" />
     <Compile Include="Results\ModuleResult.cs" />
     <Compile Include="Results\OrganisationResult.cs" />
+    <Compile Include="Results\PasswordResult.cs" />
     <Compile Include="Results\PersonResult.cs" />
+    <Compile Include="Results\ResetPasswordRequestResult.cs" />
     <Compile Include="Results\RoleResult.cs" />
     <Compile Include="Results\SiteResult.cs" />
     <Compile Include="Results\UserResult.cs" />

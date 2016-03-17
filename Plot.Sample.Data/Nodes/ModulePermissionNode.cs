@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using Plot.Sample.Model;
-
-namespace Plot.Sample.Data.Nodes
+﻿namespace Plot.Sample.Data.Nodes
 {
-    class ModulePermissionNode
+    public class ModulePermissionNode
     {
+        public ModulePermissionNode()
+        {
+            
+        }
+
+        public ModulePermissionNode(ModulePermission item)
+        {
+            Id = item.Id;
+        }
+
         public string Id { get; set; }
 
-        public ModuleNode Module { get; set; }
-
-        public List<RoleNode> Roles { get; set; }
-
-        public List<SitePermissionNode> Sites { get; set; }
-
-        public Module AsModulePermission()
+        public ModulePermission AsModulePermission()
         {
-            return new Module
+            return new ModulePermission
             {
                 Id = Id
             };

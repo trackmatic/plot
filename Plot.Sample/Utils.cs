@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Plot.Sample.Model
+namespace Plot.Sample
 {
     public static class Utils
     {
@@ -39,6 +39,16 @@ namespace Plot.Sample.Model
                 return;
             }
             list.Add(item);
+            then?.Invoke();
+        }
+
+        public static void Remove<T>(IList<T> list, T item, Action then = null)
+        {
+            if (!list.Contains(item))
+            {
+                return;
+            }
+            list.Remove(item);
             then?.Invoke();
         }
     }

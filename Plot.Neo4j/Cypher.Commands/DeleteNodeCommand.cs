@@ -2,22 +2,23 @@
 
 namespace Plot.Neo4j.Cypher.Commands
 {
-    public class DeleteWithCommand : ICommand
+    internal class DeleteNodeCommand : ICommand
     {
         private readonly NodeSnippet _source;
 
         private readonly NodeIdSnippet _id;
 
-        public DeleteWithCommand(NodeSnippet source)
+        public DeleteNodeCommand(NodeSnippet source)
         {
             _source = source;
+
             _id = new NodeIdSnippet(source);
         }
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
         {
             query = query
-                .With(new WithSnippet(_source.Param))
+                .Match(new MatchNodeSnippet(_source, _id.Param))
                 .OptionalMatch($"({_source.Param}-[r]-())")
                 .WithParam(_id.Param, ProxyUtils.GetEntityId(_source.Data))
                 .Delete(_source.Param, new ParamSnippet("r"));

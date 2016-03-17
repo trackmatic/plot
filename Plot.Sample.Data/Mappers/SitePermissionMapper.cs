@@ -3,7 +3,7 @@ using Neo4jClient;
 using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Queries;
-using Plot.Sample.Model;
+using Plot.Sample.Data.Nodes;
 
 namespace Plot.Sample.Data.Mappers
 {
@@ -17,11 +17,7 @@ namespace Plot.Sample.Data.Mappers
 
         protected override object GetData(SitePermission item)
         {
-            var data = new
-            {
-                item.Id
-            };
-            return data;
+            return new SitePermissionNode(item);
         }
 
         protected override IQueryExecutor<SitePermission> CreateQueryExecutor()

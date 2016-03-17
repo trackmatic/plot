@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Neo4jClient;
+﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Neo4j;
@@ -7,7 +6,6 @@ using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Data.Results;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
 {
@@ -20,12 +18,7 @@ namespace Plot.Sample.Data.Mappers
 
         protected override object GetData(AccessGroup item)
         {
-            var data = new
-            {
-                item.Id,
-                item.Name
-            };
-            return data;
+            return new AccessGroupNode(item);
         }
 
         protected override IQueryExecutor<AccessGroup> CreateQueryExecutor()

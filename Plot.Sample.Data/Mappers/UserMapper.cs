@@ -6,7 +6,6 @@ using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Data.Results;
-using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
 {
@@ -19,19 +18,13 @@ namespace Plot.Sample.Data.Mappers
 
         protected override object GetData(User item)
         {
-            var data = new UserNode
-            {
-                Id = item.Id,
-                Username = item.Username
-            };
-            return data;
+            return new UserNode(item);
         }
 
         protected override IQueryExecutor<User> CreateQueryExecutor()
         {
             return new GetQueryExecutor(Db, MetadataFactory);
         }
-
 
         #region Queries
 
@@ -43,9 +36,12 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((user, accessGroup) => new UserResult
+                return cypher.ReturnDistinct((user, person, memberships, password) => new UserResult
                 {
-                    User = user.As<UserNode>()
+                    User = user.As<UserNode>(),
+                    Person = person.As<PersonNode>(),
+                    Memberships = memberships.CollectAs<MembershipNode>(),
+                    Password = password.As<PasswordNode>()
                 });
             }
         }

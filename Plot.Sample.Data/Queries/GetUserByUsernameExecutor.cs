@@ -6,34 +6,32 @@ using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Data.Results;
-using Plot.Sample.Model;
 using Plot.Sample.Queries;
 
 namespace Plot.Sample.Data.Queries
 {
     public class GetUserByUsernameExecutor : AbstractQueryExecutor<User, UserResult, GetUserByUsername>
     {
-        private readonly IMetadataFactory _metadataFactory;
-
         public GetUserByUsernameExecutor(GraphClient db, IMetadataFactory metadataFactory) 
             : base(db, metadataFactory)
         {
-            _metadataFactory = metadataFactory;
+
         }
 
         protected override ICypherFluentQuery<UserResult> GetDataset(IGraphClient db, GetUserByUsername query)
         {
-            var metadata = _metadataFactory.Create(typeof(User));
-            var elements = new IQueryBuilderElement[]
+            var cypher = QueryBuilder.Create(db, new IQueryBuilderElement[]
             {
-                new Body(metadata),
+                new Body(Metadata),
                 new AsCount(),
-                new Body(metadata),
+                new Body(Metadata),
                 new Parameters(query)
-            };
-            var cypher = QueryBuilder.Create(db, elements).ReturnDistinct((user, total) => new UserResult
+            }).ReturnDistinct((user, person, memberships, password, total) => new UserResult
             {
                 User = user.As<UserNode>(),
+                Person = person.As<PersonNode>(),
+                Memberships = memberships.CollectAs<MembershipNode>(),
+                Password = password.As<PasswordNode>(),
                 Total = total.As<int>()
             });
             return cypher;
@@ -49,17 +47,17 @@ namespace Plot.Sample.Data.Queries
 
         private class Body : IQueryBuilderElement
         {
-            private readonly NodeMetadata _metadata;
+            private readonly NodeMetadata _nodeMetadata;
 
-            public Body(NodeMetadata metadata)
+            public Body(NodeMetadata nodeMetadata)
             {
-                _metadata = metadata;
+                _nodeMetadata = nodeMetadata;
             }
 
             public ICypherFluentQuery Append(ICypherFluentQuery cypher)
             {
                 cypher = cypher.Match("(user:User { Username: {username}})");
-                cypher = cypher.IncludeRelationships(_metadata);
+                cypher = cypher.IncludeRelationships(_nodeMetadata);
                 return cypher;
             }
         }
