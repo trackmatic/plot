@@ -44,7 +44,7 @@ namespace Plot.Proxies
 
         private void RegisterDependencies(RelationshipMetadata relationship, object parentItem, object item)
         {
-            if (item == null)
+            if (item == null || !_state.Contains(item))
             {
                 return;
             }

@@ -145,6 +145,11 @@ namespace Plot
 
         private void RegisterDependencies(T item)
         {
+            if (!_state.Contains(item))
+            {
+                return;
+            }
+
             var child = _state.Get(item);
 
             var parent = _state.Get(_parent);
