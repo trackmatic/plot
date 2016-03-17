@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Neo4jClient;
+﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
@@ -35,7 +35,7 @@ namespace Plot.Sample.Data.Mappers
 
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<Asset, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Asset, AssetResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
@@ -43,38 +43,12 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((asset, sites) => new GetQueryDataset
+                return cypher.ReturnDistinct((asset, sites) => new AssetResult
                 {
                     Asset = asset.As<AssetNode>(),
                     Sites = sites.CollectAs<SiteNode>()
                 });
             }
-
-            protected override Asset Create(GetQueryDataset dataset)
-            {
-                var contact = dataset.Asset.AsAsset();
-                return contact;
-            }
-
-            protected override void Map(Asset aggregate, GetQueryDataset dataset)
-            {
-                aggregate.FleetNumber = dataset.Asset.FleetNumber;
-                foreach (var site in dataset.Sites)
-                {
-                    aggregate.Add(site.AsSite());
-                }
-            }
-        }
-
-        #endregion
-
-        #region Datasets
-
-        private class GetQueryDataset : AbstractQueryResult
-        {
-            public IEnumerable<SiteNode> Sites { get; set; }
-
-            public AssetNode Asset { get; set; }
         }
 
         #endregion

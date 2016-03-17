@@ -6,7 +6,7 @@ namespace Plot.Testing
 {
     public static class Configuration
     {
-        private static ILogger _logger = new ConsoleLogger();
+        private static ILogger _logger = new NullLogger();
 
         public static void With(ILogger logger)
         {

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Neo4jClient;
+﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
@@ -35,46 +35,21 @@ namespace Plot.Sample.Data.Mappers
         
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<Organisation, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Organisation, OrganisationResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
             }
 
-            protected override Organisation Create(GetQueryDataset item)
-            {
-                return item.Organisation.AsOrganisation();
-            }
-
-            protected override void Map(Organisation aggregate, GetQueryDataset dataset)
-            {
-                aggregate.Name = dataset.Organisation.Name;
-                dataset.Sites.Map(x => aggregate.Add(x.AsSite()));
-                dataset.AccessGroups.Map(x => aggregate.Add(x.AsAccessGroup()));
-            }
-
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((organisation, sites, accessGroups) => new GetQueryDataset
+                return cypher.ReturnDistinct((organisation, sites, accessGroups) => new OrganisationResult
                 {
                     Organisation = organisation.As<OrganisationNode>(),
                     AccessGroups = accessGroups.CollectAs<AccessGroupNode>(),
                     Sites = sites.CollectAs<SiteNode>()
                 });
             }
-        }
-
-        #endregion
-
-        #region Datasets
-
-        private class GetQueryDataset : AbstractQueryResult
-        {
-            public OrganisationNode Organisation { get; set; }
-
-            public IEnumerable<SiteNode> Sites { get; set; }
-
-            public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
         }
 
         #endregion

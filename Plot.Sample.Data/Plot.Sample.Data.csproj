@@ -72,6 +72,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByNameExecutor.cs" />
     <Compile Include="Queries\GetUserByUsernameExecutor.cs" />
+    <Compile Include="Results\AccesGroupResult.cs" />
+    <Compile Include="Results\AssetResult.cs" />
+    <Compile Include="Results\ModuleResult.cs" />
+    <Compile Include="Results\OrganisationResult.cs" />
+    <Compile Include="Results\PersonResult.cs" />
+    <Compile Include="Results\RoleResult.cs" />
+    <Compile Include="Results\SiteResult.cs" />
+    <Compile Include="Results\UserResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plot.Neo4j\Plot.Neo4j.csproj">

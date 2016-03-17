@@ -4,14 +4,14 @@ using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
-using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 using Plot.Sample.Queries;
 
 namespace Plot.Sample.Data.Queries
 {
-    public class GetUserByUsernameExecutor : AbstractQueryExecutor<User, GetUserByUsernameExecutor.ResultDataset, GetUserByUsername>
+    public class GetUserByUsernameExecutor : AbstractQueryExecutor<User, UserResult, GetUserByUsername>
     {
         private readonly IMetadataFactory _metadataFactory;
 
@@ -21,7 +21,7 @@ namespace Plot.Sample.Data.Queries
             _metadataFactory = metadataFactory;
         }
 
-        protected override ICypherFluentQuery<ResultDataset> GetDataset(IGraphClient db, GetUserByUsername query)
+        protected override ICypherFluentQuery<UserResult> GetDataset(IGraphClient db, GetUserByUsername query)
         {
             var metadata = _metadataFactory.Create(typeof(User));
             var elements = new IQueryBuilderElement[]
@@ -31,21 +31,12 @@ namespace Plot.Sample.Data.Queries
                 new Body(metadata),
                 new Parameters(query)
             };
-            var cypher = QueryBuilder.Create(db, elements).ReturnDistinct((user, total) => new ResultDataset
+            var cypher = QueryBuilder.Create(db, elements).ReturnDistinct((user, total) => new UserResult
             {
                 User = user.As<UserNode>(),
                 Total = total.As<int>()
             });
             return cypher;
-        }
-
-        protected override User Create(ResultDataset item)
-        {
-            return item.User.AsUser();
-        }
-
-        protected override void Map(User aggregate, ResultDataset dataset)
-        {
         }
 
         private class AsCount : IQueryBuilderElement
@@ -88,14 +79,5 @@ namespace Plot.Sample.Data.Queries
                 return cypher;
             }
         }
-
-        #region Datasets
-
-        public class ResultDataset : AbstractQueryResult
-        {
-            public UserNode User { get; set; }
-        }
-
-        #endregion
     }
 }

@@ -76,9 +76,11 @@
     <Compile Include="ICypherTransactionFactory.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\AbstractCypherQueryResult.cs" />
     <Compile Include="Queries\AbstractQueryExecutor.cs" />
     <Compile Include="Queries\GenericQueryExecutor.cs" />
     <Compile Include="Queries\GetQuery.cs" />
+    <Compile Include="Queries\ICypherQueryResult.cs" />
     <Compile Include="Queries\QueryExecutorFactory.cs" />
     <Compile Include="Queries\RelationshipSyntax.cs" />
     <Compile Include="RepositoryFactory.cs" />

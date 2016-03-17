@@ -4,14 +4,13 @@ using System.Linq;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Queries;
-using Plot.Logging;
 using Plot.Metadata;
 
 namespace Plot.Neo4j.Queries
 {
-    public abstract class AbstractQueryExecutor<TAggregate, TDataset, TQuery> : IQueryExecutor<TAggregate>
+    public abstract class AbstractQueryExecutor<TAggregate, TResult, TQuery> : IQueryExecutor<TAggregate>
         where TQuery : IQuery<TAggregate>
-        where TDataset : IQueryResult
+        where TResult : ICypherQueryResult<TAggregate>
     {
         private readonly GraphClient _db;
 
@@ -29,7 +28,7 @@ namespace Plot.Neo4j.Queries
             var dataset = cypher.Results.ToList();
             var results = Map(item =>
             {
-                var aggregate = Create(item);
+                var aggregate = item.Create();
                 if (session.Uow.Contains(aggregate))
                 {
                     aggregate = session.Uow.Get<TAggregate>(ProxyUtils.GetEntityId(aggregate));
@@ -55,7 +54,7 @@ namespace Plot.Neo4j.Queries
             }
             var results = Map(item =>
             {
-                var aggregate = Create(item);
+                var aggregate = item.Create();
                 if (session.Uow.Contains(aggregate))
                 {
                     aggregate = session.Uow.Get<TAggregate>(ProxyUtils.GetEntityId(aggregate));
@@ -69,18 +68,11 @@ namespace Plot.Neo4j.Queries
             return new PagedGraphGraphCollection<TAggregate>(session, this, query, results, (int)total, (int)page, enlist);
         }
 
-        protected abstract ICypherFluentQuery<TDataset> GetDataset(IGraphClient db, TQuery query);
+        protected abstract ICypherFluentQuery<TResult> GetDataset(IGraphClient db, TQuery query);
         
         protected IGraphClient Db => _db;
-
-        protected abstract TAggregate Create(TDataset dataset);
-
-        protected abstract void Map(TAggregate aggregate, TDataset item);
-
-        protected NodeMetadata Metadata
-        {
-            get { return _metadataFactory.Create(typeof(TAggregate)); }
-        }
+        
+        protected NodeMetadata Metadata => _metadataFactory.Create(typeof(TAggregate));
 
         private void Log(ICypherFluentQuery query)
         {
@@ -89,7 +81,7 @@ namespace Plot.Neo4j.Queries
 
         public Type QueryType => typeof (TQuery);
 
-        private ICypherFluentQuery<TDataset> CreateCypherQuery(IQuery<TAggregate> query)
+        private ICypherFluentQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)
         {
             var cypher = GetDataset(_db, (TQuery)query);
             if (query.OrderBy != null && query.OrderBy.Any())
@@ -101,13 +93,13 @@ namespace Plot.Neo4j.Queries
             return cypher;
         }
 
-        private IEnumerable<TAggregate> Map(Func<TDataset, TAggregate> factory, IEnumerable<TDataset> dataset)
+        private IEnumerable<TAggregate> Map(Func<TResult, TAggregate> factory, IEnumerable<TResult> dataset)
         {
             var results = new List<TAggregate>();
             foreach (var item in dataset)
             {
                 var aggregate = factory(item);
-                Map(aggregate, item);
+                item.Map(aggregate);
                 results.Add(aggregate);
             }
             return results;

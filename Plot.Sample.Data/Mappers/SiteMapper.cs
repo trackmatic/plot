@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Neo4jClient;
+﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
@@ -35,50 +35,22 @@ namespace Plot.Sample.Data.Mappers
         
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<Site, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<Site, SiteResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
 
             }
-            
+
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((site, organisation, assets) => new GetQueryDataset
+                return cypher.ReturnDistinct((site, organisation, assets) => new SiteResult
                 {
                     Site = site.As<SiteNode>(),
                     Organisation = organisation.As<OrganisationNode>(),
                     Assets = assets.CollectAs<AssetNode>()
                 });
             }
-
-            protected override Site Create(GetQueryDataset item)
-            {
-                return item.Site.AsSite();
-            }
-
-            protected override void Map(Site aggregate, GetQueryDataset dataset)
-            {
-                aggregate.Name = dataset.Site.Name;
-                aggregate.Set(dataset.Organisation?.AsOrganisation());
-                foreach ( var node in dataset.Assets)
-                {
-                    aggregate.Add(node.AsAsset());
-                }
-            }
-        }
-
-        #endregion
-
-        #region Datasets
-
-        private class GetQueryDataset : AbstractQueryResult
-        {
-            public SiteNode Site { get; set; }
-
-            public OrganisationNode Organisation { get; set; }
-
-            public IEnumerable<AssetNode> Assets { get; set; }
         }
 
         #endregion

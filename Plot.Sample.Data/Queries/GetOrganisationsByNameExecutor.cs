@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using Neo4jClient;
+﻿using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
-using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Model;
 using Plot.Sample.Queries;
 using Plot.Metadata;
+using Plot.Sample.Data.Results;
 
 namespace Plot.Sample.Data.Queries
 {
-    public class GetOrganisationsByNameExecutor : AbstractQueryExecutor<Organisation, GetOrganisationsByNameExecutor.ResultDataset, GetOrganisationsByName>
+    public class GetOrganisationsByNameExecutor : AbstractQueryExecutor<Organisation, OrganisationResult, GetOrganisationsByName>
     {
         public GetOrganisationsByNameExecutor(GraphClient db, IMetadataFactory metadataFactory) 
             : base(db, metadataFactory)
@@ -19,37 +18,21 @@ namespace Plot.Sample.Data.Queries
 
         }
 
-        protected override ICypherFluentQuery<ResultDataset> GetDataset(IGraphClient db, GetOrganisationsByName query)
+        protected override ICypherFluentQuery<OrganisationResult> GetDataset(IGraphClient db, GetOrganisationsByName query)
         {
-            var elements = new IQueryBuilderElement[]
-                {
-                    new Body(query),
-                    new AsCount(),
-                    new Body(query),
-                    new Parameters(query)
-                };
-            var cypher = QueryBuilder
-                .Create(db, elements)
-                .ReturnDistinct((organisation, site, total) => new ResultDataset
-                {
-                    Organisation = organisation.As<OrganisationNode>(),
-                    Sites = site.CollectAs<SiteNode>(),
-                    Total = total.As<int>()
-                });
-            return cypher;
-        }
-
-        protected override Organisation Create(ResultDataset item)
-        {
-            return item.Organisation.AsOrganisation();
-        }
-
-        protected override void Map(Organisation aggregate, ResultDataset dataset)
-        {
-            foreach (var siteNode in dataset.Sites)
+            var cypher = QueryBuilder.Create(db, new IQueryBuilderElement[]
             {
-                aggregate.Add(siteNode.AsSite());
-            }
+                new Body(query),
+                new AsCount(),
+                new Body(query),
+                new Parameters(query)
+            }).ReturnDistinct((organisation, site, total) => new OrganisationResult
+            {
+                Organisation = organisation.As<OrganisationNode>(),
+                Sites = site.CollectAs<SiteNode>(),
+                Total = total.As<int>()
+            });
+            return cypher;
         }
         
         private class AsCount : IQueryBuilderElement
@@ -108,16 +91,5 @@ namespace Plot.Sample.Data.Queries
                 return cypher;
             }
         }
-
-        #region Datasets
-
-        public class ResultDataset : AbstractQueryResult
-        {
-            public OrganisationNode Organisation { get; set; }
-
-            public IEnumerable<SiteNode> Sites { get; set; }
-        }
-        
-        #endregion
     }
 }

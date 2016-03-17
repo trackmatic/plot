@@ -5,6 +5,7 @@ using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
@@ -34,7 +35,7 @@ namespace Plot.Sample.Data.Mappers
 
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<User, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<User, UserResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
@@ -42,30 +43,11 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((user, accessGroup) => new GetQueryDataset
+                return cypher.ReturnDistinct((user, accessGroup) => new UserResult
                 {
                     User = user.As<UserNode>()
                 });
             }
-
-            protected override User Create(GetQueryDataset dataset)
-            {
-                return dataset.User.AsUser();
-            }
-
-            protected override void Map(User aggregate, GetQueryDataset dataset)
-            {
-
-            }
-        }
-
-        #endregion
-
-        #region Datasets
-
-        private class GetQueryDataset : AbstractQueryResult
-        {
-            public UserNode User { get; set; }
         }
 
         #endregion

@@ -6,6 +6,7 @@ using Plot.Neo4j;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
+using Plot.Sample.Data.Results;
 using Plot.Sample.Model;
 
 namespace Plot.Sample.Data.Mappers
@@ -34,7 +35,7 @@ namespace Plot.Sample.Data.Mappers
         
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<AccessGroup, GetQueryDataset>
+        private class GetQueryExecutor : GenericQueryExecutor<AccessGroup, AccessGroupResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
@@ -42,37 +43,12 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((accessGroup, assets) => new GetQueryDataset
+                return cypher.ReturnDistinct((accessGroup, assets) => new AccessGroupResult
                 {
                     AccessGroup = accessGroup.As<AccessGroupNode>(),
                     Assets = assets.CollectAs<AssetNode>()
                 });
             }
-
-            protected override AccessGroup Create(GetQueryDataset dataset)
-            {
-                return dataset.AccessGroup.AsAccessGroup();
-            }
-
-            protected override void Map(AccessGroup aggregate, GetQueryDataset dataset)
-            {
-                aggregate.Name = dataset.AccessGroup.Name;
-                foreach (var node in dataset.Assets)
-                {
-                    aggregate.Add(node.AsAsset());
-                }
-            }
-        }
-
-        #endregion
-
-        #region Datasets
-
-        private class GetQueryDataset : AbstractQueryResult
-        {
-            public IEnumerable<AssetNode> Assets { get; set; }
-
-            public AccessGroupNode AccessGroup { get; set; }
         }
 
         #endregion
