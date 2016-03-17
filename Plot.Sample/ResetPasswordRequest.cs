@@ -20,16 +20,22 @@ namespace Plot.Sample
 
         public virtual bool IsComplete { get; set; }
 
-        [Relationship(Relationships.RequestedBy)]
+        [Relationship(Relationships.OnBehalfOf)]
         public virtual User User { get; set; }
+
+        [Relationship(Relationships.RequestedBy)]
+        public virtual User RequestedBy { get; set; }
+
+        [Relationship(Relationships.Reset)]
+        public virtual Password Password { get; set; }
 
         public virtual void Complete(Password password)
         {
-            if (!IsValid())
+            /*if (!IsValid())
             {
                 throw new InvalidResetPasswordRequest();
-            }
-            User.Password = password;
+            }*/
+            Password = password;
             IsComplete = true;
         }
 

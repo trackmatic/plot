@@ -36,10 +36,11 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((resetPasswordRequest, user) => new ResetPasswordRequestResult
+                return cypher.ReturnDistinct((resetPasswordRequest, user, requestedBy) => new ResetPasswordRequestResult
                 {
                     ResetPasswordRequest = resetPasswordRequest.As<ResetPasswordRequestNode>(),
-                    User = user.As<UserNode>()
+                    User = user.As<UserNode>(),
+                    RequestedBy = requestedBy.As<UserNode>()
                 });
             }
         }

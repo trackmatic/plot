@@ -14,9 +14,12 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic", typeof (UserMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var request = session.Get<ResetPasswordRequest>("bdb03431-a315-4fc3-97c5-785afe9833eb");
-                var password = session.Create(Password.Create("test"));
+                var request = session.Get<ResetPasswordRequest>("f15fab5a-f398-41f1-a46f-21e721d01891");
+                var password = session.Create(Password.Create("a test"));
                 var user = session.Get<User>(request.User.Id);
+                user.Set(password);
+                request.Complete(password);
+                session.SaveChanges();
             }
             Console.WriteLine("Done");
             Console.ReadLine();

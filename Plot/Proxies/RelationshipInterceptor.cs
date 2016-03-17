@@ -54,9 +54,7 @@ namespace Plot.Proxies
             {
                 return;
             }
-
             child.Dependencies.Register(parent.Dependencies);
-            //parent.Dependencies.Register(child.Dependencies);
         }
 
 

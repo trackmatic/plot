@@ -9,9 +9,12 @@ namespace Plot.Sample.Data.Results
 
         public UserNode User { get; set; }
 
+        public UserNode RequestedBy { get; set; }
+
         public override void Map(ResetPasswordRequest aggregate)
         {
-            aggregate.User = User.AsUser();
+            aggregate.User = User?.AsUser();
+            aggregate.RequestedBy = RequestedBy?.AsUser();
         }
 
         public override ResetPasswordRequest Create()

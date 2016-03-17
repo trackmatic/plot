@@ -31,5 +31,9 @@
         public const string RequestedBy = "REQUESTED_BY";
 
         public const string AuthenticatesWith = "AUTHENTICATES_WITH";
+
+        public const string OnBehalfOf = "ON_BEHALF_OF";
+
+        public const string Reset = "RESET";
     }
 }

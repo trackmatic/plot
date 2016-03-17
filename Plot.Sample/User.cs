@@ -16,7 +16,7 @@ namespace Plot.Sample
 
         public virtual bool IsVerfied { get; set; }
 
-        [Relationship(Relationships.AuthenticatesWith, DeleteOrphan = true)]
+        [Relationship(Relationships.AuthenticatesWith)]
         public virtual Password Password { get; set; }
 
         [Relationship(Relationships.IsA, Reverse = true)]

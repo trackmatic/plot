@@ -68,6 +68,10 @@ namespace Plot.Proxies
 
             private object Create(Type type, object item)
             {
+                if (ProxyUtils.IsProxy(item))
+                {
+                    return item;
+                }
                 var interceptors = new IInterceptor[]
                 {
                     new EntityStateInterceptor(_state),

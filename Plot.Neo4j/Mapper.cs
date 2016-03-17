@@ -161,7 +161,13 @@ namespace Plot.Neo4j
 
         private IEnumerable<ICommand> CreateDeleteRelationshipCommands(object source, ITrackableRelationship trackableRelationship, RelationshipMetadata relationship)
         {
-            return (from object destination in trackableRelationship.Flush() select DeleteRelationship(source, destination, relationship)).ToList();
+            var commands = new List<ICommand>();
+            foreach (var destination in trackableRelationship.Flush())
+            {
+                var command = DeleteRelationship(source, destination, relationship);
+                commands.Add(command);
+            }
+            return commands;
         }
 
         private IEnumerable<ICommand> CreateRelationshipCommands(object source, IEnumerable collection, RelationshipMetadata relationship)
