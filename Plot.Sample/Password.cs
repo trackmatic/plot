@@ -26,6 +26,12 @@ namespace Plot.Sample
         [Relationship(Relationships.AuthenticatesWith, Reverse = true)]
         public virtual User User { get; set; }
 
+        public virtual void Clear()
+        {
+            Hash = null;
+            Salt = null;
+        }
+
         public virtual bool Verify(string password)
         {
             var hash = GenerateHash(Encoding.UTF8.GetBytes(password), Convert.FromBase64String(Salt));

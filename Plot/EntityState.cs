@@ -119,6 +119,18 @@ namespace Plot
             return _id;
         }
 
+        internal bool IsLocked { get; private set; }
+
+        internal void Lock()
+        {
+            IsLocked = true;
+        }
+
+        internal void Unlock()
+        {
+            IsLocked = false;
+        }
+
         internal void Set(EntityStatus status)
         {
             switch (status)

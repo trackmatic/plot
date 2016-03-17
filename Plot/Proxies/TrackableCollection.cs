@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Plot.Metadata;
-using Plot.Proxies;
 
-namespace Plot
+namespace Plot.Proxies
 {
     public class TrackableCollection<T> : IList<T>, ITrackableCollection<T>
     {

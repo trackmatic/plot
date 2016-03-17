@@ -29,6 +29,7 @@ namespace Plot.Proxies
                 invocation.Proceed();
                 return;
             }
+            var item = invocation.Arguments[0];
             var metadata = _metadataFactory.Create(invocation.TargetType);
             var property = metadata[invocation.Method.Name.Substring(4)];
             if (property.IsList || !property.HasRelationship)
@@ -36,10 +37,25 @@ namespace Plot.Proxies
                 invocation.Proceed();
                 return;
             }
-            var state = GetState(property);
-            state.Push(invocation.Arguments[0]);
+            if (Contains(property))
+            {
+                var state = _state.Get(invocation.InvocationTarget);
+                if (!state.IsLocked)
+                {
+                    Get(property).Push(item);
+                }
+            }
+            else
+            {
+                Create(property, item);
+            }
             RegisterDependencies(property.Relationship, invocation.InvocationTarget, invocation.Arguments[0]);
             invocation.Proceed();
+        }
+
+        public ITrackableRelationship GetTrackableRelationship(RelationshipMetadata relationship)
+        {
+            return _relationshipState[relationship];
         }
 
         private void RegisterDependencies(RelationshipMetadata relationship, object parentItem, object item)
@@ -56,20 +72,21 @@ namespace Plot.Proxies
             }
             child.Dependencies.Register(parent.Dependencies);
         }
-
-
-        public ITrackableRelationship GetTrackableRelationship(RelationshipMetadata relationship)
+        
+        private void Create(PropertyMetadata property, object item)
         {
-            return _relationshipState[relationship];
+            var state = new RelationshipState(item);
+            _relationshipState.Add(property.Relationship, state);
         }
 
-        private RelationshipState GetState(PropertyMetadata property)
+        private RelationshipState Get(PropertyMetadata property)
         {
-            if (!_relationshipState.ContainsKey(property.Relationship))
-            {
-                _relationshipState.Add(property.Relationship, new RelationshipState());
-            }
             return _relationshipState[property.Relationship];
+        }
+
+        private bool Contains(PropertyMetadata property)
+        {
+            return _relationshipState.ContainsKey(property.Relationship);
         }
 
         private bool IsSetter(IInvocation invocation)
@@ -83,9 +100,10 @@ namespace Plot.Proxies
 
             private object _current;
 
-            public RelationshipState()
+            public RelationshipState(object current)
             {
                 _items = new List<object>();
+                _current = current;
             }
 
             public IEnumerable Flush()
@@ -96,12 +114,10 @@ namespace Plot.Proxies
             }
             public void Push(object item)
             {
-                if (_current == null)
+                if (_current != null)
                 {
-                    _current = item;
-                    return;
+                    _items.Add(_current);
                 }
-                _items.Add(_current);
                 _current = item;
             }
 

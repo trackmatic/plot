@@ -92,5 +92,10 @@ namespace Plot
         {
             return list is ITrackableCollection;
         }
+
+        public static IInterceptor[] GetInterceptors(object source)
+        {
+            return ((IProxyTargetAccessor) source).GetInterceptors();
+        }
     }
 }

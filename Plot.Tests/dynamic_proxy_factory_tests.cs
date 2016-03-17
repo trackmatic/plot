@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
@@ -6,6 +7,7 @@ using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
 using Plot.Queries;
+using Plot.Testing;
 using Plot.Tests.Model;
 using Xunit;
 
@@ -163,6 +165,52 @@ namespace Plot.Tests
                 });
                 var state = stateTracker.Get(proxy.Child);
                 Assert.Equal(EntityStatus.New, state.Status);
+            }
+        }
+
+        [Fact]
+        public void interceptors_are_not_created_for_re_entrant_proxies()
+        { 
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new RepositoryFactory(proxyFactory);
+            var parentMapper = new Mock<IMapper<Parent>>();
+            repositoryFactory.Register<Parent>(x => parentMapper.Object);
+            var childMapper = new Mock<IMapper<Child>>();
+            repositoryFactory.Register<Child>(x => childMapper.Object);
+
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker))
+            {
+                var proxy = session.Create(new Parent
+                {
+                    Id = "1"
+                });
+                proxy.Child = session.Create(new Child
+                {
+                    Id = "1"
+                });
+
+                var metadata = metadataFactory.Create(proxy);
+                var deleted = ProxyUtils.Flush(proxy, metadata["Child"].Relationship);
+                
+                Assert.Equal(0, deleted.SelectMany(x => x.Flush().Cast<object>()).Count());
+
+                var reentrant = session.Create(proxy);
+                Assert.Equal(proxy, reentrant);
+
+                metadata = metadataFactory.Create(reentrant);
+                deleted = ProxyUtils.Flush(reentrant, metadata["Child"].Relationship);
+                Assert.Equal(0, deleted.SelectMany(x => x.Flush().Cast<object>()).Count());
+
+                proxy.Child = session.Create(new Child
+                {
+                    Id = "2"
+                });
+                metadata = metadataFactory.Create(reentrant);
+                deleted = ProxyUtils.Flush(reentrant, metadata["Child"].Relationship);
+                Assert.Equal(1, deleted.SelectMany(x => x.Flush().Cast<object>()).Count());
             }
         }
 

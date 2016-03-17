@@ -47,6 +47,7 @@ namespace Plot.Sample
 
         public virtual void Set(Password password)
         {
+            Password?.Clear();
             Password = password;
             password.User = this;
         }

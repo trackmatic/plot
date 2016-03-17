@@ -68,27 +68,25 @@ namespace Plot.Proxies
 
             private object Create(Type type, object item)
             {
-                if (ProxyUtils.IsProxy(item))
-                {
-                    return item;
-                }
+                ProxyUtils.SetEntityId(item);
+                var proxy = ProxyUtils.IsProxy(item) ? item : NewProxy(type, item);
+                var state = GetState(proxy);
+                state.Lock();
+                _session.Register(proxy, state);
+                Populate(proxy);
+                state.Set(_status);
+                state.Unlock();
+                return proxy;
+            }
+
+            private object NewProxy(Type type, object source)
+            {
                 var interceptors = new IInterceptor[]
                 {
                     new EntityStateInterceptor(_state),
                     new RelationshipInterceptor(_metadataFactory, _state)
                 };
-                ProxyUtils.SetEntityId(item);
                 var proxy = _generator.CreateClassProxy(type, _options, interceptors);
-                Map(item, proxy);
-                var state = GetState(proxy);
-                _session.Register(proxy, state);
-                Populate(proxy);
-                state.Set(_status);
-                return proxy;
-            }
-
-            private void Map(object source, object proxy)
-            {
                 foreach (var property in ProxyUtils.GetTargetEntityType(source).GetProperties())
                 {
                     if (property.SetMethod == null)
@@ -104,8 +102,9 @@ namespace Plot.Proxies
                     {
                         continue;
                     }
-                    property.SetMethod.Invoke(proxy, new[] {value});
+                    property.SetMethod.Invoke(proxy, new[] { value });
                 }
+                return proxy;
             }
 
             private void Populate(object item)
