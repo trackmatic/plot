@@ -35,5 +35,13 @@
         public const string OnBehalfOf = "ON_BEHALF_OF";
 
         public const string Reset = "RESET";
+
+        public const string IssuedBy = "ISSUED_BY";
+
+        public const string AcceptedBy = "ACCEPTED_BY";
+
+        public const string CreatedBy = "CREATED_BY";
+
+        public const string InvitesUsersTo = "INVITES_USERS_TO";
     }
 }

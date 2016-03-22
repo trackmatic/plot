@@ -127,6 +127,6 @@
     <value>Id of {0} cannot be null</value>
   </data>
   <data name="MissingIdProperty" xml:space="preserve">
-    <value>The entity is required to have a property named {0} of type string</value>
+    <value>The entity is required to have a property named {0} of type string on type {1}</value>
   </data>
 </root>

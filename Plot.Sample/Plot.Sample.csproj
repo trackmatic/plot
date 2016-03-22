@@ -53,6 +53,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="Exceptions\InvalidResetPasswordRequest.cs" />
+    <Compile Include="Invitation.cs" />
     <Compile Include="Membership.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModulePermission.cs" />

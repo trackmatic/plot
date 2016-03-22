@@ -109,7 +109,12 @@ namespace Plot.Metadata
 
         private static bool IsPrimitive(Type type)
         {
-            return Primitives.Contains(type);
+            return IsNullable(type) || Primitives.Contains(type);
+        }
+
+        private static bool IsNullable(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
         }
 
         private static readonly Type[] Primitives =

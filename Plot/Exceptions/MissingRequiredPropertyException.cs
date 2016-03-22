@@ -4,7 +4,7 @@ namespace Plot.Exceptions
 {
     public class MissingRequiredPropertyException : Exception
     {
-        public MissingRequiredPropertyException() : base(string.Format(Text.MissingIdProperty, Conventions.IdPropertyName))
+        public MissingRequiredPropertyException(Type type) : base(string.Format(Text.MissingIdProperty, Conventions.IdPropertyName, type.FullName))
         {
             
         }

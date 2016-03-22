@@ -214,6 +214,31 @@ namespace Plot.Tests
             }
         }
 
+        [Fact]
+        public void nullable_types_are_ignored()
+        {
+
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new RepositoryFactory(proxyFactory);
+            var parentMapper = new Mock<IMapper<Parent>>();
+            repositoryFactory.Register<Parent>(x => parentMapper.Object);
+            var childMapper = new Mock<IMapper<Child>>();
+            repositoryFactory.Register<Child>(x => childMapper.Object);
+
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker))
+            {
+                var entity = new EntityWithNullableType
+                {
+                    Date = DateTime.Now
+                };
+                var proxy = proxyFactory.Create(entity, session);
+                Assert.NotNull(proxy.Date);
+            }
+        }
+
         public class EntityWithIgnoredProperty
         {
             public virtual string Id { get; set; }
@@ -266,6 +291,13 @@ namespace Plot.Tests
             public virtual string Id { get; set; }
 
             public virtual string Name { get; set; }
+        }
+
+        public class EntityWithNullableType
+        {
+            public virtual string Id { get; set; }
+
+            public virtual DateTime? Date { get; set; }
         }
     }
 }

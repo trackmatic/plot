@@ -26,7 +26,7 @@ namespace Plot
             var property = type.GetProperty(Conventions.IdPropertyName);
             if (property == null)
             {
-                throw new MissingRequiredPropertyException();
+                throw new MissingRequiredPropertyException(other.GetType());
             }
             Properties.Add(type, property);
             return property;

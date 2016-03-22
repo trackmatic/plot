@@ -52,6 +52,7 @@
     <Compile Include="Mappers\AccessGroupMapper.cs" />
     <Compile Include="Mappers\AddressMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
+    <Compile Include="Mappers\InvitationMapper.cs" />
     <Compile Include="Mappers\MembershipMapper.cs" />
     <Compile Include="Mappers\ModuleMapper.cs" />
     <Compile Include="Mappers\ModulePermissionMapper.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Nodes\AccessGroupNode.cs" />
     <Compile Include="Nodes\AddressNode.cs" />
     <Compile Include="Nodes\AssetNode.cs" />
+    <Compile Include="Nodes\InvitationNode.cs" />
     <Compile Include="Nodes\MembershipNode.cs" />
     <Compile Include="Nodes\ModuleNode.cs" />
     <Compile Include="Nodes\ModulePermissionNode.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Results\AccessGroupResult.cs" />
     <Compile Include="Results\AddressResult.cs" />
     <Compile Include="Results\AssetResult.cs" />
+    <Compile Include="Results\InvitationResult.cs" />
     <Compile Include="Results\MembershipResult.cs" />
     <Compile Include="Results\ModulePermissionResult.cs" />
     <Compile Include="Results\ModuleResult.cs" />

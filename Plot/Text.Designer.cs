@@ -88,7 +88,7 @@ namespace Plot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The entity is required to have a property named {0} of type string.
+        ///   Looks up a localized string similar to The entity is required to have a property named {0} of type string on type {1}.
         /// </summary>
         internal static string MissingIdProperty {
             get {
