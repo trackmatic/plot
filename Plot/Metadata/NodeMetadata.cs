@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Plot.Metadata
 {
@@ -8,7 +9,7 @@ namespace Plot.Metadata
 
         public NodeMetadata()
         {
-            _properties = new Dictionary<string, PropertyMetadata>();
+            _properties = new ConcurrentDictionary<string, PropertyMetadata>();
         }
 
         public string Name { get; set; }

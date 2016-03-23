@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
@@ -17,7 +18,7 @@ namespace Plot.Proxies
 
         public RelationshipInterceptor(IMetadataFactory metadataFactory, IEntityStateCache state)
         {
-            _relationshipState = new Dictionary<RelationshipMetadata, RelationshipState>();
+            _relationshipState = new ConcurrentDictionary<RelationshipMetadata, RelationshipState>();
             _metadataFactory = metadataFactory;
             _state = state;
         }

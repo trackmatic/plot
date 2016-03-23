@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Plot
 {
@@ -9,7 +10,7 @@ namespace Plot
         public EntityStateCache()
         {
 
-            _state = new Dictionary<object, EntityState>();
+            _state = new ConcurrentDictionary<object, EntityState>();
         }
 
         public EntityState Create(object proxy)

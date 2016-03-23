@@ -79,7 +79,7 @@ namespace Plot.Tests
                 }, session);
                 alpha.Beta = beta;
                 var metadata = metadataFactory.Create(beta);
-                Assert.True(metadata.Properties.ToList()[1].Relationship.IsReverse);
+                Assert.True(metadata["Alpha"].Relationship.IsReverse);
             }
         }
 

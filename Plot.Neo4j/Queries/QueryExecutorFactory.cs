@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,13 +11,13 @@ namespace Plot.Neo4j.Queries
 {
     public class QueryExecutorFactory : IQueryExecutorFactory
     {
-        private readonly Dictionary<Type, Func<IGraphSession, IQueryExecutor>> _queries;
+        private readonly IDictionary<Type, Func<IGraphSession, IQueryExecutor>> _queries;
 
         private readonly IMetadataFactory _metadataFactory;
 
         public QueryExecutorFactory(IMetadataFactory metadataFactory)
         {
-            _queries = new Dictionary<Type, Func<IGraphSession, IQueryExecutor>>();
+            _queries = new ConcurrentDictionary<Type, Func<IGraphSession, IQueryExecutor>>();
             _metadataFactory = metadataFactory;
         }
 

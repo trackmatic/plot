@@ -1,4 +1,6 @@
-﻿namespace Plot.Tests.Model
+﻿using Plot.Tests.Utility;
+
+namespace Plot.Tests.Model
 {
     public class Contact
     {

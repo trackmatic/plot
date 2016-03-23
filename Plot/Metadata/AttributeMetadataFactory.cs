@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace Plot.Metadata
         public AttributeMetadataFactory(ILogger logger)
         {
             _logger = logger;
-            _cache = new Dictionary<Type, NodeMetadata>();
+            _cache = new ConcurrentDictionary<Type, NodeMetadata>();
         }
 
         public NodeMetadata Create(Type type)

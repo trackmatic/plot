@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Plot.Attributes;
+using Plot.Tests.Utility;
 
 namespace Plot.Tests.Model
 {
@@ -14,17 +15,12 @@ namespace Plot.Tests.Model
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return Utils.GetHashCode(Id);
         }
 
         public override bool Equals(object obj)
         {
-            var other = obj as Person;
-            if (other == null)
-            {
-                return false;
-            }
-            return GetHashCode() == other.GetHashCode();
+            return Utils.Equals(this, obj);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace Plot.Neo4j
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        private readonly Dictionary<Type, Func<IGraphSession, IMapper>> _mappers;
+        private readonly IDictionary<Type, Func<IGraphSession, IMapper>> _mappers;
 
         private readonly ICypherTransactionFactory _cypherTransactionFactory;
 
@@ -20,7 +21,7 @@ namespace Plot.Neo4j
 
         public RepositoryFactory(ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory)
         {
-            _mappers = new Dictionary<Type, Func<IGraphSession, IMapper>>();
+            _mappers = new ConcurrentDictionary<Type, Func<IGraphSession, IMapper>>();
             _cypherTransactionFactory = cypherTransactionFactory;
             _proxyFactory = proxyFactory;
             _metadataFactory = metadataFactory;

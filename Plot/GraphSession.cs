@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Plot.Queries;
@@ -7,7 +8,7 @@ namespace Plot
 {
     public class GraphSession : IGraphSession
     {
-        private readonly Dictionary<Type, IRepository> _repositories;
+        private readonly IDictionary<Type, IRepository> _repositories;
 
         private readonly IUnitOfWork _uow;
 
@@ -23,7 +24,7 @@ namespace Plot
 
         public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache state)
         {
-            _repositories = new Dictionary<Type, IRepository>();
+            _repositories = new ConcurrentDictionary<Type, IRepository>();
             _uow = uow;
             _listeners = listeners.ToList();
             _queryExecutorFactory = queryExecutorFactory;

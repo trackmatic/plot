@@ -14,7 +14,9 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic", typeof (UserMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var memberships = session.Get<Invitation>("129585cf-09a2-440c-bb9d-24f723410543");
+                var organisation = session.Get<Organisation>("e08811bf-775f-432c-ba5f-b50150ef8964");
+                session.Evict(organisation);
+                var o = session.Get<Organisation>("e08811bf-775f-432c-ba5f-b50150ef8964");
             }
             Console.WriteLine("Done");
             Console.ReadLine();

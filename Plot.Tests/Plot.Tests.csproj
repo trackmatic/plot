@@ -78,14 +78,16 @@
   <ItemGroup>
     <Compile Include="dependencies_tests.cs" />
     <Compile Include="dynamic_proxy_factory_tests.cs" />
-    <Compile Include="graph_client_tests.cs" />
+    <Compile Include="graph_session_tests.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="metadata_factory_tests.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="trackable_relationship_tests.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Utility\MapperFixtureBase.cs" />
+    <Compile Include="Utility\Utils.cs" />
+    <Compile Include="Utility\MockMapperFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -18,7 +18,7 @@ namespace Plot
 
         public void Remove(object item)
         {
-            if (_items.Contains(item))
+            if (!_items.Contains(item))
             {
                 return;
             }

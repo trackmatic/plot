@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Plot.Proxies;
 
@@ -6,13 +7,13 @@ namespace Plot.Testing
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        private readonly Dictionary<Type, Func<IGraphSession, IMapper>> _mappers;
+        private readonly IDictionary<Type, Func<IGraphSession, IMapper>> _mappers;
         
         private readonly IProxyFactory _proxyFactory;
         
         public RepositoryFactory(IProxyFactory proxyFactory)
         {
-            _mappers = new Dictionary<Type, Func<IGraphSession, IMapper>>();
+            _mappers = new ConcurrentDictionary<Type, Func<IGraphSession, IMapper>>();
             _proxyFactory = proxyFactory;
         }
 
