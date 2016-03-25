@@ -16,8 +16,6 @@ namespace Plot.Queries
 
         public string[] OrderBy { get; set; }
 
-        public bool Descending { get; set; }
-
         public IQuery<TResult> Next()
         {
             var clone = Clone(this);

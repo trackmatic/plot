@@ -22,7 +22,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new Person
@@ -48,7 +49,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new EntityWithIgnoredProperty
@@ -71,7 +73,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var notSet = new AnotherEntity();
@@ -92,7 +95,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var parent = factory.Create(new Parent {Id = "parent"}, session);
@@ -114,7 +118,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var parent = factory.Create(new Parent { Id = "parent" }, session);
@@ -136,7 +141,8 @@ namespace Plot.Tests
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
             var repositoryFactory = new Mock<IRepositoryFactory>();
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
                 var item = new EntityWithPropertiesSetInConstructor("1", "Test");
@@ -156,7 +162,8 @@ namespace Plot.Tests
             var repositoryFactory = new Mock<IRepositoryFactory>();
             repositoryFactory.Setup(x => x.Create(It.IsAny<IGraphSession>(), It.IsAny<Type>())).Returns<IGraphSession, Type>((s, t) => new GenericAbstractRepository<Parent>(mapper.Object, s, new DynamicProxyFactory(metadataFactory, new NullLogger())));
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker))
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
                 var proxy = session.Create(new Parent
                 {
@@ -181,7 +188,7 @@ namespace Plot.Tests
             repositoryFactory.Register<Child>(x => childMapper.Object);
 
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker))
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker, proxyFactory))
             {
                 var proxy = session.Create(new Parent
                 {
@@ -228,7 +235,7 @@ namespace Plot.Tests
             repositoryFactory.Register<Child>(x => childMapper.Object);
 
             var stateTracker = new EntityStateCache();
-            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker))
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker, proxyFactory))
             {
                 var entity = new EntityWithNullableType
                 {

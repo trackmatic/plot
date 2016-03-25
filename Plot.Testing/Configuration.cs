@@ -27,14 +27,19 @@ namespace Plot.Testing
             {
                 repositoryFactory.Register(session => mapper, mapper.Type);
             }
-            return CreateTestSessionFactory(repositoryFactory);
+            var queryExecutorFactory = new QueryExecutorFactory();
+            var entityStateFactory = new EntityStateCacheFactory();
+            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory, proxyFactory);
+            return factory;
         }
 
         public static IGraphSessionFactory CreateTestSessionFactory(IRepositoryFactory repositoryFactory)
         {
             var entityStateFactory = new EntityStateCacheFactory();
             var queryExecutorFactory = new QueryExecutorFactory();
-            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory);
+            var metadataFactory = new AttributeMetadataFactory(_logger);
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, _logger);
+            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory, proxyFactory);
             return factory;
         }
     }

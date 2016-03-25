@@ -48,7 +48,7 @@ namespace Plot.Tests
             repositoryFactory.Register<AccessGroup>(session => new Mapper<AccessGroup>(session, metadataFactory));
             repositoryFactory.Register<Site>(session => new Mapper<Site>(session, metadataFactory));
             repositoryFactory.Register<Person>(session => new Mapper<Person>(session, metadataFactory));
-            var sessionFactory = new GraphSessionFactory(queryExecutorFactory.Object, repositoryFactory, stateFactory.Object);
+            var sessionFactory = new GraphSessionFactory(queryExecutorFactory.Object, repositoryFactory, stateFactory.Object, proxyFactory);
 
             using (var session = sessionFactory.OpenSession())
             {

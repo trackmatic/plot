@@ -32,7 +32,7 @@ namespace Plot.Neo4j
             var transactionFactory = new CypherTransactionFactory(db, _logger);
             var repositoryFactory = new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, mapperAssemblies);
             var queryExecutorFactory = new QueryExecutorFactory(db, metadataFactory, mapperAssemblies);
-            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory);
+            var factory = new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateFactory, proxyFactory);
             return factory;
         }
 

@@ -50,7 +50,7 @@ Use the session.Get<> method to retrieve an entity based on it's id. The entity 
     }
 
 ## Executing queries
-You can define custom queries which will be executed against the datastore. The results of these queries can be loaded into the session by setting the enlist parameter to true. This is useful if you need to modify objects which are returned from the query and require those changes to be persisted. You can choose not to enlist the object in order to prevent unescessary resources being used when the object are for read only purposes
+You can define custom queries which will be executed against the datastore. The results of these queries can be loaded into the session by setting the enlist parameter to true. This is useful if you need to modify objects which are returned from the query and require those changes to be persisted. You can choose not to enlist the object in order to prevent unescessary resources being used when the objects are for read only purposes
 
     using (var session = factory.OpenSession())
     {

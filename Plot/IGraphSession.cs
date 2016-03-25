@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Plot.Proxies;
 using Plot.Queries;
 
 namespace Plot
@@ -30,6 +31,8 @@ namespace Plot
         IUnitOfWork Uow { get; }
 
         IEntityStateCache State { get; }
+
+        IProxyFactory ProxyFactory { get; }
 
         event EventHandler<ItemRegisteredEventArgs> ItemRegistered;
 

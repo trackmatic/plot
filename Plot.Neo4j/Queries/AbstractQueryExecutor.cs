@@ -9,6 +9,7 @@ using Plot.Metadata;
 namespace Plot.Neo4j.Queries
 {
     public abstract class AbstractQueryExecutor<TAggregate, TResult, TQuery> : IQueryExecutor<TAggregate>
+        where TAggregate : class
         where TQuery : IQuery<TAggregate>
         where TResult : ICypherQueryResult<TAggregate>
     {
@@ -61,7 +62,7 @@ namespace Plot.Neo4j.Queries
                 }
                 else if (enlist)
                 {
-                    session.Register(aggregate);
+                    aggregate = session.ProxyFactory.Create(aggregate, session);
                 }
                 return aggregate;
             }, dataset);
@@ -84,10 +85,7 @@ namespace Plot.Neo4j.Queries
         private ICypherFluentQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)
         {
             var cypher = GetDataset(_db, (TQuery)query);
-            if (query.OrderBy != null && query.OrderBy.Any())
-            {
-                cypher = query.Descending ? cypher.OrderByDescending(query.OrderBy) : cypher.OrderBy(query.OrderBy);
-            }
+            cypher = OrderByHelper.OrderBy(cypher, query);
             cypher = cypher.Skip(query.Skip).Limit(query.Take);
             Log(cypher);
             return cypher;
@@ -103,6 +101,61 @@ namespace Plot.Neo4j.Queries
                 results.Add(aggregate);
             }
             return results;
+        }
+
+        private class OrderByHelper
+        {
+            private bool _started;
+
+            private ICypherFluentQuery<TResult> Append(ICypherFluentQuery<TResult> cypher, IEnumerable<Order> orders)
+            {
+                foreach (var order in orders)
+                {
+                    if (_started)
+                    {
+                        cypher = order.Continue(cypher as IOrderedCypherFluentQuery<TResult>);
+                    }
+                    else
+                    {
+                        cypher = order.Start(cypher);
+                        _started = true;
+                    }
+                }
+                return cypher;
+            }
+
+            public static ICypherFluentQuery<TResult> OrderBy(ICypherFluentQuery<TResult> cypher, IQuery<TAggregate> query)
+            {
+                if (query.OrderBy == null)
+                {
+                    return cypher;
+                }
+                var helper = new OrderByHelper();
+                return helper.Append(cypher, query.OrderBy.Select(x => new Order(x)));
+            }
+        }
+
+        private class Order
+        {
+            public Order(string value)
+            {
+                Descending = value.StartsWith("-");
+                Property = value.Trim('-');
+            }
+
+            private string Property { get; set; }
+
+            private bool Descending { get; set; }
+            
+            public ICypherFluentQuery<TResult> Start(ICypherFluentQuery<TResult> cypher)
+            {
+                return Descending ? cypher.OrderByDescending(Property) : cypher.OrderBy(Property);
+            }
+
+            public ICypherFluentQuery<TResult> Continue(IOrderedCypherFluentQuery<TResult> cypher)
+            {
+                return Descending ? cypher.ThenByDescending(Property) : cypher.ThenBy(Property);
+            }
         }
     }
 }

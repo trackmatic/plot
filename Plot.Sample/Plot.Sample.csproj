@@ -64,6 +64,7 @@
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByName.cs" />
+    <Compile Include="Queries\GetSitesByOrganisation.cs" />
     <Compile Include="Queries\GetUserByUsername.cs" />
     <Compile Include="RegionalSettings.cs" />
     <Compile Include="Relationships.cs" />

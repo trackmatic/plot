@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Plot.Proxies;
 using Plot.Queries;
 
 namespace Plot
@@ -20,9 +21,11 @@ namespace Plot
 
         private readonly IEntityStateCache _state;
 
+        private readonly IProxyFactory _proxyFactory;
+
         private bool _disposed;
 
-        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache state)
+        public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache state, IProxyFactory proxyFactory)
         {
             _repositories = new ConcurrentDictionary<Type, IRepository>();
             _uow = uow;
@@ -30,6 +33,7 @@ namespace Plot
             _queryExecutorFactory = queryExecutorFactory;
             _repositoryFactory = repositoryFactory;
             _state = state;
+            _proxyFactory = proxyFactory;
         }
 
         public T Create<T>(T item)
@@ -104,6 +108,7 @@ namespace Plot
         public IUnitOfWork Uow => _uow;
 
         public IEntityStateCache State => _state;
+        public IProxyFactory ProxyFactory => _proxyFactory;
 
         public bool Register(object item)
         {

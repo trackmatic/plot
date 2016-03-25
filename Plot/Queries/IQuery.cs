@@ -7,7 +7,5 @@
         int Skip { get; set; }
 
         string[] OrderBy { get; set; }
-
-        bool Descending { get; set; }
     }
 }
