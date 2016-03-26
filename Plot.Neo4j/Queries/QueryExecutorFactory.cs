@@ -22,7 +22,7 @@ namespace Plot.Neo4j.Queries
         }
 
 
-        public QueryExecutorFactory(GraphClient db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
+        public QueryExecutorFactory(IGraphClient db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
         {
             foreach (var assembly in assemblies)
             {

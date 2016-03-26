@@ -27,7 +27,7 @@ namespace Plot.Neo4j
             _metadataFactory = metadataFactory;
         }
 
-        public RepositoryFactory(GraphClient db, ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory, params Assembly[] assemblies) 
+        public RepositoryFactory(IGraphClient db, ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory, params Assembly[] assemblies) 
             : this(cypherTransactionFactory, proxyFactory, metadataFactory)
         {
             foreach (var assembly in assemblies)
