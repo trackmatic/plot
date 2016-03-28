@@ -83,6 +83,12 @@
     <Compile Include="metadata_factory_tests.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Person.cs" />
+    <Compile Include="Neo4j.Cypher\match_relationship_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\match_node_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\property_identifier_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\set_identifier_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\node_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\node_identifier_snippet_tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="trackable_relationship_tests.cs" />
     <Compile Include="Utility\MapperFixtureBase.cs" />
@@ -93,6 +99,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Plot.Neo4j\Plot.Neo4j.csproj">
+      <Project>{70934B7A-3CDC-42AB-B6FC-FF164F7AC2AA}</Project>
+      <Name>Plot.Neo4j</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plot.Testing\Plot.Testing.csproj">
       <Project>{7799503d-e256-4787-8fee-4712d87a91f6}</Project>
       <Name>Plot.Testing</Name>

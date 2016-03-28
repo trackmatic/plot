@@ -2,9 +2,9 @@
 {
     public class WithSnippet
     {
-        private readonly ParamSnippet _param;
+        private readonly IdentifierNameSnippet _param;
 
-        public WithSnippet(ParamSnippet param)
+        public WithSnippet(IdentifierNameSnippet param)
         {
             _param = param;
         }

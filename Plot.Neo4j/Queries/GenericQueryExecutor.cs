@@ -1,4 +1,5 @@
-﻿using Neo4jClient;
+﻿using System.Collections.Generic;
+using Neo4jClient;
 using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Proxies;
@@ -22,6 +23,5 @@ namespace Plot.Neo4j.Queries
         }
 
         protected abstract ICypherFluentQuery OnExecute(ICypherFluentQuery cypher);
-
     }
 }

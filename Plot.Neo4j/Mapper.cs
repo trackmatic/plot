@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Neo4jClient;
 using Neo4jClient.Cypher;
-using Plot.Logging;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Cypher.Commands;
@@ -192,7 +191,7 @@ namespace Plot.Neo4j
         {
             var sourceMetadata = MetadataFactory.Create(source);
             var destinationMetadata = MetadataFactory.Create(destination);
-            var command = new CreateRelationshipCommand(new ParamSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), relationship.Name);
+            var command = new CreateRelationshipCommand(new NodeIdentifierSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), new RelationshipSnippet(relationship));
             return command;
         }
 
@@ -200,7 +199,7 @@ namespace Plot.Neo4j
         {
             var sourceMetadata = MetadataFactory.Create(source);
             var destinationMetadata = MetadataFactory.Create(destination);
-            var command = new DeleteRelationshipCommand(new ParamSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), relationship.Name, relationship.DeleteOrphan);
+            var command = new DeleteRelationshipCommand(new NodeIdentifierSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), new RelationshipSnippet(new IdentifierNameSnippet("rel"), relationship), relationship.DeleteOrphan);
             return command;
         }
     }

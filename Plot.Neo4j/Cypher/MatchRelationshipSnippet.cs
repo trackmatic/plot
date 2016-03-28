@@ -4,22 +4,16 @@ namespace Plot.Neo4j.Cypher
 {
     public class MatchRelationshipSnippet
     {
-        private readonly ParamSnippet _destination;
+        private readonly IdentifierNameSnippet _destination;
 
-        private readonly ParamSnippet _source;
+        private readonly IdentifierNameSnippet _source;
 
-        private readonly ParamSnippet _name;
+        private readonly RelationshipSnippet _relationship;
 
-        private readonly string _relationship;
-
-        public MatchRelationshipSnippet(ParamSnippet source, ParamSnippet destination, ParamSnippet name, string relationship)
+        public MatchRelationshipSnippet(IdentifierNameSnippet source, IdentifierNameSnippet destination, RelationshipSnippet relationship)
         {
             _source = source;
-
-            _name = name;
-
             _destination = destination;
-
             _relationship = relationship;
         }
 
@@ -28,11 +22,7 @@ namespace Plot.Neo4j.Cypher
             var text = new StringBuilder()
                 .Append("(")
                 .Append(_source)
-                .Append("-[")
-                .Append(_name)
-                .Append(":")
                 .Append(_relationship)
-                .Append("]->")
                 .Append(_destination)
                 .Append(")")
                 .ToString();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Plot.Attributes;
 
 namespace Plot.Sample
 {
@@ -13,7 +14,11 @@ namespace Plot.Sample
 
         public virtual string FleetNumber { get; set; }
 
+        [Relationship(Relationships.Maintains)]
         public virtual IList<Site> Sites { get; set; }
+
+        [Relationship(Relationships.IsA)]
+        public virtual AssetType Type { get; set; }
 
         public virtual void Add(Site site)
         {

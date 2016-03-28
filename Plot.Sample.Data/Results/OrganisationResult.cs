@@ -12,6 +12,13 @@ namespace Plot.Sample.Data.Results
         public IEnumerable<SiteNode> Sites { get; set; }
 
         public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
+
+        public IEnumerable<ContactNode> Contacts { get; set; }
+
+        public IEnumerable<PersonNode> People { get; set; }
+
+        public AddressNode Address { get; set; }
+
         public override void Map(Organisation aggregate)
         {
             Sites.Map(x => aggregate.Add(x.AsSite()));

@@ -11,6 +11,8 @@ namespace Plot.Sample.Data.Results
 
         public AssetNode Asset { get; set; }
 
+        public AssetTypeNode Type { get; set; }
+
         public override void Map(Asset aggregate)
         {
             aggregate.FleetNumber = Asset.FleetNumber;

@@ -4,20 +4,16 @@ namespace Plot.Neo4j.Cypher.Commands
 {
     internal class CreateRelationshipCommand : ICommand
     {
-        private readonly ParamSnippet _source;
+        private readonly IdentifierNameSnippet _source;
 
         private readonly NodeSnippet _destination;
 
-        private readonly string _relationship;
+        private readonly RelationshipSnippet _relationship;
 
-        public CreateRelationshipCommand(ParamSnippet source, NodeSnippet destination, string relationship)
+        public CreateRelationshipCommand(IdentifierNameSnippet source, NodeSnippet destination, RelationshipSnippet relationship)
         {
             _source = source;
-
             _destination = destination;
-
-            _destination = destination;
-
             _relationship = relationship;
         }
 
@@ -25,9 +21,9 @@ namespace Plot.Neo4j.Cypher.Commands
         {
             query = query
                 .With(new WithSnippet(_source))
-                .Match(new MatchNodeSnippet(_destination, new ParamSnippet(_destination.Param, "id")))
-                .CreateUnique(new CreateUniqueSnippet(_source, _destination.Param, _relationship))
-                .WithParam(new ParamSnippet(_destination.Param, "id"), ProxyUtils.GetEntityId(_destination.Data));
+                .Match(new MatchPropertySnippet(_destination, new IdentifierNameSnippet(_destination.IdentifierName, "id")))
+                .CreateUnique(new MatchRelationshipSnippet(_source, _destination.IdentifierName, _relationship))
+                .WithParam(new IdentifierNameSnippet(_destination.IdentifierName, "id"), ProxyUtils.GetEntityId(_destination.Data));
             return query;
         }
     }

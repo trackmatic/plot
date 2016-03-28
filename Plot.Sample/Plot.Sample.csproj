@@ -51,8 +51,10 @@
     <Compile Include="AccessGroup.cs" />
     <Compile Include="Address.cs" />
     <Compile Include="Asset.cs" />
+    <Compile Include="AssetType.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="Exceptions\InvalidResetPasswordRequest.cs" />
+    <Compile Include="Forklift.cs" />
     <Compile Include="Invitation.cs" />
     <Compile Include="Membership.cs" />
     <Compile Include="Module.cs" />
@@ -73,8 +75,10 @@
     <Compile Include="Roles.cs" />
     <Compile Include="Site.cs" />
     <Compile Include="SitePermission.cs" />
+    <Compile Include="Trailer.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Vehicle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

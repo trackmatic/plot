@@ -7,9 +7,7 @@ namespace Plot.Neo4j.Cypher
 {
     public class NodeSnippet
     {
-        private readonly ParamSnippet _name;
-
-        private readonly string _label;
+        private readonly IdentifierNameSnippet _identifierName;
 
         public NodeSnippet(NodeMetadata metadata, object data) 
             : this(metadata, data, new List<string>())
@@ -17,29 +15,25 @@ namespace Plot.Neo4j.Cypher
 
         }
 
-        public NodeSnippet(NodeMetadata metadata, object data, IEnumerable<string> segments)
-            : this(new ParamSnippet(metadata, data, segments.ToArray()), metadata.Name, data)
+        protected NodeSnippet(NodeMetadata metadata, object data, IEnumerable<string> segments)
         {
+            _identifierName = new NodeIdentifierSnippet(metadata, data, segments.ToArray());
             Data = data;
             Metadata = metadata;
-        }
-
-        public NodeSnippet(ParamSnippet name, string label, object data)
-        {
-            _name = name;
-            _label = label;
             Data = data;
         }
-
+        
         public override string ToString()
         {
-            return new StringBuilder().Append(_name).Append(":").Append(_label).ToString();
+            return new StringBuilder()
+                .Append(_identifierName)
+                .Append(":")
+                .Append(Metadata.Name)
+                .ToString();
         }
 
-        public ParamSnippet Param => _name;
-
-        public string Label => _label;
-
+        public IdentifierNameSnippet IdentifierName => _identifierName;
+        
         public object Data { get; }
 
         public NodeMetadata Metadata { get; }

@@ -64,9 +64,12 @@
     <Compile Include="Mappers\SiteMapper.cs" />
     <Compile Include="Mappers\SitePermissionMapper.cs" />
     <Compile Include="Mappers\UserMapper.cs" />
+    <Compile Include="Mappers\VehicleMapper.cs" />
     <Compile Include="Nodes\AccessGroupNode.cs" />
     <Compile Include="Nodes\AddressNode.cs" />
     <Compile Include="Nodes\AssetNode.cs" />
+    <Compile Include="Nodes\AssetTypeNode.cs" />
+    <Compile Include="Nodes\ContactNode.cs" />
     <Compile Include="Nodes\InvitationNode.cs" />
     <Compile Include="Nodes\MembershipNode.cs" />
     <Compile Include="Nodes\ModuleNode.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="Nodes\SiteNode.cs" />
     <Compile Include="Nodes\SitePermissionNode.cs" />
     <Compile Include="Nodes\UserNode.cs" />
+    <Compile Include="Nodes\VehicleNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetOrganisationsByNameExecutor.cs" />
     <Compile Include="Queries\GetSitesByOrganisationExecutor.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="Results\RoleResult.cs" />
     <Compile Include="Results\SiteResult.cs" />
     <Compile Include="Results\UserResult.cs" />
+    <Compile Include="Results\VehicleResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plot.Neo4j\Plot.Neo4j.csproj">

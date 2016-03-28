@@ -6,22 +6,21 @@ namespace Plot.Neo4j.Cypher.Commands
     {
         private readonly NodeSnippet _source;
 
-        private readonly NodeIdSnippet _id;
+        private readonly PropertyIdentifierSnippet _nodeIdentifierSnippet;
 
         public DeleteNodeCommand(NodeSnippet source)
         {
             _source = source;
-
-            _id = new NodeIdSnippet(source);
+            _nodeIdentifierSnippet = new PropertyIdentifierSnippet(source);
         }
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
         {
             query = query
-                .Match(new MatchNodeSnippet(_source, _id.Param))
-                .OptionalMatch($"({_source.Param}-[r]-())")
-                .WithParam(_id.Param, ProxyUtils.GetEntityId(_source.Data))
-                .Delete(_source.Param, new ParamSnippet("r"));
+                .Match(new MatchPropertySnippet(_source, _nodeIdentifierSnippet))
+                .OptionalMatch($"({_source.IdentifierName}-[r]-())")
+                .WithParam(_nodeIdentifierSnippet, ProxyUtils.GetEntityId(_source.Data))
+                .Delete(_source.IdentifierName, new IdentifierNameSnippet("r"));
             return query;
         }
     }

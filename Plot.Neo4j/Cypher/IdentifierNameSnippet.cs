@@ -5,24 +5,11 @@ using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher
 {
-    public class ParamSnippet
+    public class IdentifierNameSnippet
     {
         private readonly List<string> _segments;
-        public ParamSnippet(NodeMetadata metadata, object item, params string[] segments) : this(metadata, item)
-        {
-            foreach (var segment in segments)
-            {
-                Add(segment);
-            }
-        }
-
-        public ParamSnippet(NodeMetadata metadata, object item)
-            : this(metadata.Name, ProxyUtils.GetEntityId(item))
-        {
-
-        }
-
-        public ParamSnippet(ParamSnippet parent, params string[] segments)
+        
+        public IdentifierNameSnippet(IdentifierNameSnippet parent, params string[] segments)
         {
             _segments = new List<string>();
 
@@ -42,7 +29,7 @@ namespace Plot.Neo4j.Cypher
             }
         }
         
-        public ParamSnippet(params string[] segments)
+        public IdentifierNameSnippet(params string[] segments)
         {
             if (segments.Any(string.IsNullOrEmpty))
             {
@@ -58,16 +45,16 @@ namespace Plot.Neo4j.Cypher
                 .Select(x => x
                 .Replace("/", "_")
                 .Replace("-", "_")
-                .Replace(".", "")
-                .Replace(",", "")
-                .Replace(":","")
-                .Replace("#","")
-                .Replace("(","")
-                .Replace("?","")
-                .Replace(")","")
-                .Replace("'", "")
-                .Replace("\"","")
-                .Replace("=","")));
+                .Replace(".", string.Empty)
+                .Replace(",", string.Empty)
+                .Replace(":", string.Empty)
+                .Replace("#", string.Empty)
+                .Replace("(", string.Empty)
+                .Replace("?", string.Empty)
+                .Replace(")", string.Empty)
+                .Replace("'", string.Empty)
+                .Replace("\"", string.Empty)
+                .Replace("=", string.Empty)));
         }
 
         protected void Add(string segment)

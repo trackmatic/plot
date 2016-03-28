@@ -2,11 +2,11 @@
 
 namespace Plot.Neo4j.Cypher
 {
-    public class SetSnippet
+    public class SetIdentifierSnippet
     {
-        private readonly ParamSnippet _param;
+        private readonly IdentifierNameSnippet _param;
 
-        public SetSnippet(ParamSnippet param)
+        public SetIdentifierSnippet(IdentifierNameSnippet param)
         {
             _param = param;
         }

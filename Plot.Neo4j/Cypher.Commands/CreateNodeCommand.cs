@@ -5,7 +5,7 @@ namespace Plot.Neo4j.Cypher.Commands
 {
     internal class CreateNodeCommand : ICommand
     {
-        private readonly NodeIdSnippet _id;
+        private readonly PropertyIdentifierSnippet _id;
 
         private readonly NodeSnippet _source;
 
@@ -14,20 +14,20 @@ namespace Plot.Neo4j.Cypher.Commands
         public CreateNodeCommand(NodeSnippet source, Func<object> factory)
         {
             _source = source;
-            _id = new NodeIdSnippet(source);
+            _id = new PropertyIdentifierSnippet(source);
             _factory = factory;
         }
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
         {
             query = query
-                .Merge(new MatchNodeSnippet(_source, _id.Param))
+                .Merge(new MatchPropertySnippet(_source, _id))
                 .OnCreate()
-                .Set(new SetSnippet(_source.Param))
+                .Set(new SetIdentifierSnippet(_source.IdentifierName))
                 .OnMatch()
-                .Set(new SetSnippet(_source.Param))
-                .WithParam(_id.Param, ProxyUtils.GetEntityId(_source.Data))
-                .WithParam(_source.Param, _factory());
+                .Set(new SetIdentifierSnippet(_source.IdentifierName))
+                .WithParam(_id, ProxyUtils.GetEntityId(_source.Data))
+                .WithParam(_source.IdentifierName, _factory());
             return query;
         }
     }

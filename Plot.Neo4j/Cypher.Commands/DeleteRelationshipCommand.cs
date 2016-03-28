@@ -5,23 +5,20 @@ namespace Plot.Neo4j.Cypher.Commands
 {
     internal class DeleteRelationshipCommand : ICommand
     {
-        private readonly ParamSnippet _source;
+        private readonly IdentifierNameSnippet _source;
 
         private readonly NodeSnippet _destination;
 
-        private readonly string _relationship;
-
-        private readonly ParamSnippet _relationshipName;
+        private readonly RelationshipSnippet _relationship;
 
         private readonly bool _deleteOrphan;
 
-        public DeleteRelationshipCommand(ParamSnippet source, NodeSnippet destination, string relationship, bool deleteOrphan)
+        public DeleteRelationshipCommand(IdentifierNameSnippet source, NodeSnippet destination, RelationshipSnippet relationship, bool deleteOrphan)
         {
             _source = source;
             _destination = destination;
             _destination = destination;
             _relationship = relationship;
-            _relationshipName = new ParamSnippet(source, "rel");
             _deleteOrphan = deleteOrphan;
         }
 
@@ -29,20 +26,19 @@ namespace Plot.Neo4j.Cypher.Commands
         {
             query = query
                 .With(new WithSnippet(_source))
-                .Match(new MatchNodeSnippet(_destination, new ParamSnippet(_destination.Param, "id")))
-                .Match(new MatchRelationshipSnippet(_source, _destination.Param, _relationshipName, _relationship))
-                .WithParam(new ParamSnippet(_destination.Param, "id"), ProxyUtils.GetEntityId(_destination.Data))
+                .Match(new MatchPropertySnippet(_destination, new IdentifierNameSnippet(_destination.IdentifierName, "id")))
+                .Match(new MatchRelationshipSnippet(_source, _destination.IdentifierName, _relationship))
+                .WithParam(new IdentifierNameSnippet(_destination.IdentifierName, "id"), ProxyUtils.GetEntityId(_destination.Data))
                 .Delete(GetNodesToDelete());
             return query;
         }
 
-        private ParamSnippet[] GetNodesToDelete()
+        private IdentifierNameSnippet[] GetNodesToDelete()
         {
-            var nodes = new List<ParamSnippet>();
-            nodes.Add(_relationshipName);
+            var nodes = new List<IdentifierNameSnippet> {_relationship.Identifier};
             if (_deleteOrphan)
             {
-                nodes.Add(_destination.Param);
+                nodes.Add(_destination.IdentifierName);
             }
             return nodes.ToArray();
         }

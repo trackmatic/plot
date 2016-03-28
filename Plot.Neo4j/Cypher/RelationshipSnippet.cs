@@ -6,24 +6,29 @@ namespace Plot.Neo4j.Cypher
     {
         private readonly RelationshipMetadata _relationship;
 
-        private RelationshipSnippet(RelationshipMetadata relationship)
+        private readonly IdentifierNameSnippet _identifier;
+
+        public RelationshipSnippet(IdentifierNameSnippet identifier, RelationshipMetadata relationship)
         {
+            _identifier = identifier;
             _relationship = relationship;
+        }
+
+        public RelationshipSnippet(RelationshipMetadata relationship) 
+            : this(null, relationship)
+        {
         }
 
         public override string ToString()
         {
-            if (_relationship.IsReverse)
-            {
-                return $"<-[:{_relationship.Name}]-";
-            }
-
-            return $"-[:{_relationship.Name}]->";
+            return _relationship.IsReverse ? $"<{Inner()}" : $"{Inner()}>";
         }
 
-        public static RelationshipSnippet Create(RelationshipMetadata relationship)
+        private string Inner()
         {
-            return new RelationshipSnippet(relationship);
+            return $"-[{_identifier}:{_relationship.Name}]-";
         }
+
+        public IdentifierNameSnippet Identifier => _identifier;
     }
 }

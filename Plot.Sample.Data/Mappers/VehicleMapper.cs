@@ -9,45 +9,41 @@ using Plot.Sample.Data.Results;
 
 namespace Plot.Sample.Data.Mappers
 {
-    public class AssetMapper : Mapper<Asset>
+    public class VehicleMapper : Mapper<Vehicle>
     {
-        public AssetMapper(GraphClient db, IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory) 
+        public VehicleMapper(GraphClient db, IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory) 
             : base(db, session, transactionFactory, metadataFactory)
         {
+
         }
 
-        protected override object GetData(Asset item)
+        protected override object GetData(Vehicle item)
         {
-            return new AssetNode(item);
+            return new VehicleNode(item);
         }
 
-        protected override IQueryExecutor<Asset> CreateQueryExecutor()
+        protected override IQueryExecutor<Vehicle> CreateQueryExecutor()
         {
             return new GetQueryExecutor(Db, MetadataFactory);
         }
 
-
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<Asset, AssetResult>
+        private class GetQueryExecutor : GenericQueryExecutor<Vehicle, VehicleResult>
         {
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
+
             }
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((asset, sites, type) => new AssetResult
+                return cypher.ReturnDistinct(vehicle => new VehicleResult
                 {
-                    Asset = asset.As<AssetNode>(),
-                    Sites = sites.CollectAs<SiteNode>()
+                    Vehicle= vehicle.As<VehicleNode>()
                 });
             }
         }
-
-        #endregion
-
-        #region Datasets
 
         #endregion
     }
