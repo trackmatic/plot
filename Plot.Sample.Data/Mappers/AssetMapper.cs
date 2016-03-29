@@ -35,13 +35,32 @@ namespace Plot.Sample.Data.Mappers
             {
             }
 
+            protected override ICypherFluentQuery<AssetResult> GetDataset(IGraphClient db, GetAbstractQuery<Asset> abstractQuery)
+            {
+                var cypher = db.Cypher.MatchById(Metadata);
+                cypher = cypher.IncludeRelationships(Metadata);
+                cypher = IsA(cypher, "Trailer");
+                cypher = IsA(cypher, "Vehicle");
+                cypher = IsA(cypher, "Forklift");
+                cypher = cypher.WithParam("id", abstractQuery.Id);
+                return (ICypherFluentQuery<AssetResult>)OnExecute(cypher);
+            }
+
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((asset, sites, type) => new AssetResult
+                return cypher.ReturnDistinct((asset, sites, vehicle, trailer, forklift) => new AssetResult
                 {
                     Asset = asset.As<AssetNode>(),
-                    Sites = sites.CollectAs<SiteNode>()
+                    Sites = sites.CollectAs<SiteNode>(),
+                    Vehicle = vehicle.As<VehicleNode>(),
+                    Trailer = trailer.As<TrailerNode>(),
+                    Forklift = forklift.As<ForkliftNode>()
                 });
+            }
+
+            private ICypherFluentQuery IsA(ICypherFluentQuery cypher, string type)
+            {
+                return cypher.OptionalMatch($"(asset)-[:{Relationships.IsA}]->({type.ToLower()}:{type})");
             }
         }
 

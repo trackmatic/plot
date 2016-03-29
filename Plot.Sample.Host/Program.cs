@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Plot.Logging;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
-using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
 {
@@ -16,14 +14,8 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic", typeof (UserMapper).Assembly);
             using (var session = factory.OpenSession())
             {
-                var organisation = session.Get<Organisation>("e08811bf-775f-432c-ba5f-b50150ef8964");
 
-                var person = session.Get<Person>("0bae303d-2ac1-4942-a455-4a87caa4205b");
-
-                foreach (var site in organisation.Sites)
-                {
-                    site.Add(person);
-                }
+                var asset = session.Get<Asset>("1");
 
                 session.SaveChanges();
             }

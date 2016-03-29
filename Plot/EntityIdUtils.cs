@@ -8,11 +8,16 @@ namespace Plot
 {
     internal static class EntityIdUtils
     {
+        private static readonly object Sync = new object();
+
         private static readonly IDictionary<Type, PropertyInfo> Properties = new ConcurrentDictionary<Type, PropertyInfo>();
 
         public static PropertyInfo GetId(object source)
         {
-            return Properties.ContainsKey(source.GetType()) ? Get(source) : Create(source);
+            lock (Sync)
+            {
+                return Properties.ContainsKey(source.GetType()) ? Get(source) : Create(source);
+            }
         }
 
         private static PropertyInfo Get(object other)

@@ -154,12 +154,12 @@ namespace Plot.Proxies
 
             private object Relationship(NodeMetadata metadata, PropertyInfo property, object parent)
             {
-                var type = property.PropertyType;
                 var item = property.GetValue(parent);
                 if (item == null)
                 {
                     return null;
                 }
+                var type = item.GetType();
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
                 
                 return Create(type, entity);

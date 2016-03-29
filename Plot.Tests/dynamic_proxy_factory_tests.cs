@@ -224,7 +224,6 @@ namespace Plot.Tests
         [Fact]
         public void nullable_types_are_ignored()
         {
-
             var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
@@ -243,6 +242,31 @@ namespace Plot.Tests
                 };
                 var proxy = proxyFactory.Create(entity, session);
                 Assert.NotNull(proxy.Date);
+            }
+        }
+
+        [Fact]
+        public void objects_with_inheritance_chain_are_proxied_correctly()
+        {
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new RepositoryFactory(proxyFactory);
+            var parentMapper = new Mock<IMapper<Parent>>();
+            repositoryFactory.Register<Parent>(x => parentMapper.Object);
+            var childMapper = new Mock<IMapper<Child>>();
+            repositoryFactory.Register<Child>(x => childMapper.Object);
+
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker, proxyFactory))
+            {
+                var entity = new ParentWithInheritedChild
+                {
+                    Id = "1",
+                    Type = new SuperTypeA { Id = "1"}
+                };
+                var proxy = proxyFactory.Create(entity, session);
+                Assert.True(proxy.Type is SuperTypeA);
             }
         }
 
@@ -305,6 +329,23 @@ namespace Plot.Tests
             public virtual string Id { get; set; }
 
             public virtual DateTime? Date { get; set; }
+        }
+
+        public class ParentWithInheritedChild
+        {
+            public virtual string Id { get; set; }
+
+            public virtual BaseType Type { get; set; }
+        }
+
+        public class BaseType
+        {
+            public virtual string Id { get; set; }
+        }
+
+        public class SuperTypeA : BaseType
+        {
+            
         }
     }
 }

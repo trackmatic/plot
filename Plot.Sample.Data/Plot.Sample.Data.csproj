@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Neo4jClient, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4jClient.1.1.0.29\lib\net45\Neo4jClient.dll</HintPath>
+      <HintPath>..\packages\Neo4jClient.1.1.0.33\lib\net45\Neo4jClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -52,6 +52,7 @@
     <Compile Include="Mappers\AccessGroupMapper.cs" />
     <Compile Include="Mappers\AddressMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
+    <Compile Include="Mappers\ForkliftMapper.cs" />
     <Compile Include="Mappers\InvitationMapper.cs" />
     <Compile Include="Mappers\MembershipMapper.cs" />
     <Compile Include="Mappers\ModuleMapper.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Mappers\RoleMapper.cs" />
     <Compile Include="Mappers\SiteMapper.cs" />
     <Compile Include="Mappers\SitePermissionMapper.cs" />
+    <Compile Include="Mappers\TrailerMapper.cs" />
     <Compile Include="Mappers\UserMapper.cs" />
     <Compile Include="Mappers\VehicleMapper.cs" />
     <Compile Include="Nodes\AccessGroupNode.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Nodes\AssetNode.cs" />
     <Compile Include="Nodes\AssetTypeNode.cs" />
     <Compile Include="Nodes\ContactNode.cs" />
+    <Compile Include="Nodes\ForkliftNode.cs" />
     <Compile Include="Nodes\InvitationNode.cs" />
     <Compile Include="Nodes\MembershipNode.cs" />
     <Compile Include="Nodes\ModuleNode.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="Nodes\RoleNode.cs" />
     <Compile Include="Nodes\SiteNode.cs" />
     <Compile Include="Nodes\SitePermissionNode.cs" />
+    <Compile Include="Nodes\TrailerNode.cs" />
     <Compile Include="Nodes\UserNode.cs" />
     <Compile Include="Nodes\VehicleNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="Results\AccessGroupResult.cs" />
     <Compile Include="Results\AddressResult.cs" />
     <Compile Include="Results\AssetResult.cs" />
+    <Compile Include="Results\ForkliftResult.cs" />
     <Compile Include="Results\InvitationResult.cs" />
     <Compile Include="Results\MembershipResult.cs" />
     <Compile Include="Results\ModulePermissionResult.cs" />
@@ -100,6 +105,7 @@
     <Compile Include="Results\ResetPasswordRequestResult.cs" />
     <Compile Include="Results\RoleResult.cs" />
     <Compile Include="Results\SiteResult.cs" />
+    <Compile Include="Results\TrailerResult.cs" />
     <Compile Include="Results\UserResult.cs" />
     <Compile Include="Results\VehicleResult.cs" />
   </ItemGroup>

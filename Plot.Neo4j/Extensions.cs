@@ -89,35 +89,5 @@ namespace Plot.Neo4j
         {
             return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){new RelationshipSnippet(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
         }
-
-        public static ICypherFluentQuery<TResult> Return<TResult>(this ICypherFluentQuery cypher, NodeMetadata metadata)
-        {
-            var items = new List<object> {new AsSnippet(metadata)};
-            foreach (var propertyMetadata in metadata.Properties)
-            {
-                if (propertyMetadata.IsPrimitive)
-                {
-                    continue;
-                }
-                if (propertyMetadata.IsIgnored)
-                {
-                    continue;
-                }
-                if (propertyMetadata.Relationship.Lazy)
-                {
-                    continue;
-                }
-                if (propertyMetadata.IsList)
-                {
-                    items.Add(new CollectPropertyAsSnippet(propertyMetadata));
-                }
-                else
-                {
-                    items.Add(new PropertyAsSnippet(propertyMetadata));
-                }
-            }
-            var identifier = string.Join(",", items.Select(x => x.ToString()).ToArray());
-            return cypher.ReturnDistinct<TResult>(identifier);
-        }
     }
 }

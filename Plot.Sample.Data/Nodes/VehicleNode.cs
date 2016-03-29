@@ -10,7 +10,6 @@
         public VehicleNode(Vehicle vehicle)
         {
             Id = vehicle.Id;
-            TypeName = vehicle.TypeName;
         }
 
         public string TypeName { get; set; }
@@ -19,8 +18,7 @@
         {
             return new Vehicle
             {
-                Id = Id,
-                TypeName = TypeName
+                Id = Id
             };
         }
     }
