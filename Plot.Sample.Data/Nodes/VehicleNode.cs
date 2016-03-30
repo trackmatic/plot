@@ -1,6 +1,6 @@
 ﻿namespace Plot.Sample.Data.Nodes
 {
-    public class VehicleNode : AssetTypeNode
+    public class VehicleNode
     {
         public VehicleNode()
         {
@@ -12,13 +12,13 @@
             Id = vehicle.Id;
         }
 
-        public string TypeName { get; set; }
-
+        public string Id { get; set; }
+        
         public Vehicle AsVehicle()
         {
             return new Vehicle
             {
-                Id = Id
+                Id = Id,
             };
         }
     }

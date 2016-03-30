@@ -9,13 +9,23 @@ namespace Plot.Sample.Data.Results
     {
         public PersonNode Person { get; set; }
 
+        public UserNode User { get; set; }
+
+        public CrewNode Crew { get; set; }
+
+        public DriverNode Driver { get; set; }
+
         public IEnumerable<SiteNode> Sites { get; set; }
 
         public IEnumerable<OrganisationNode> Organisations { get; set; }
+
         public override void Map(Person aggregate)
         {
             Organisations.Map(x => aggregate.Add(x.AsOrganisation()));
             Sites.Map(x => aggregate.Add(x.AsSite()));
+            aggregate.User = User?.AsUser();
+            aggregate.Driver = Driver?.AsDriver();
+            aggregate.Crew = Crew?.AsCrew();
         }
 
         public override Person Create()

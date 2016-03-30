@@ -23,10 +23,10 @@ namespace Plot.Sample
         [Relationship(Relationships.Runs, Reverse = true)]
         public virtual Organisation Organisation { get; set; }
 
-        [Relationship(Relationships.Contracts)]
+        [Relationship(Relationships.Contracts, Lazy = true)]
         public virtual IList<Person> People { get; set; }
-
-        [Relationship(Relationships.ResidesAt)]
+        
+        [Relationship(Relationships.LocatedAt)]
         public virtual Address Address { get; set; }
 
         public virtual void Set(Organisation organisation)
@@ -44,9 +44,19 @@ namespace Plot.Sample
             Utils.Add(Assets, asset, () => asset.Add(this));
         }
 
+        public virtual void Remove(Asset asset)
+        {
+            Utils.Remove(Assets, asset, () => asset.Remove(this));
+        }
+
         public virtual void Add(Person person)
         {
             Utils.Add(People, person, () => person.Add(this));
+        }
+
+        public virtual void Remove(Person person)
+        {
+            Utils.Remove(People, person, () => person.Remove(this));
         }
 
         public override int GetHashCode()

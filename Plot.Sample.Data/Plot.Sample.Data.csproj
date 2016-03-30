@@ -52,6 +52,8 @@
     <Compile Include="Mappers\AccessGroupMapper.cs" />
     <Compile Include="Mappers\AddressMapper.cs" />
     <Compile Include="Mappers\AssetMapper.cs" />
+    <Compile Include="Mappers\CrewMapper.cs" />
+    <Compile Include="Mappers\DriverMapper.cs" />
     <Compile Include="Mappers\ForkliftMapper.cs" />
     <Compile Include="Mappers\InvitationMapper.cs" />
     <Compile Include="Mappers\MembershipMapper.cs" />
@@ -72,6 +74,8 @@
     <Compile Include="Nodes\AssetNode.cs" />
     <Compile Include="Nodes\AssetTypeNode.cs" />
     <Compile Include="Nodes\ContactNode.cs" />
+    <Compile Include="Nodes\CrewNode.cs" />
+    <Compile Include="Nodes\DriverNode.cs" />
     <Compile Include="Nodes\ForkliftNode.cs" />
     <Compile Include="Nodes\InvitationNode.cs" />
     <Compile Include="Nodes\MembershipNode.cs" />
@@ -94,6 +98,8 @@
     <Compile Include="Results\AccessGroupResult.cs" />
     <Compile Include="Results\AddressResult.cs" />
     <Compile Include="Results\AssetResult.cs" />
+    <Compile Include="Results\CrewResult.cs" />
+    <Compile Include="Results\DriverResult.cs" />
     <Compile Include="Results\ForkliftResult.cs" />
     <Compile Include="Results\InvitationResult.cs" />
     <Compile Include="Results\MembershipResult.cs" />

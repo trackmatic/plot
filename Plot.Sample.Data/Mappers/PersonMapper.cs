@@ -36,11 +36,14 @@ namespace Plot.Sample.Data.Mappers
             
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((person, sites, organisations) => new PersonResult
+                return cypher.ReturnDistinct((person, sites, organisations, user, crew, driver) => new PersonResult
                 {
                     Person = person.As<PersonNode>(),
                     Sites = sites.CollectAs<SiteNode>(),
-                    Organisations = organisations.CollectAs<OrganisationNode>()
+                    Organisations = organisations.CollectAs<OrganisationNode>(),
+                    User = user.As<UserNode>(),
+                    Driver = driver.As<DriverNode>(),
+                    Crew = crew.As<CrewNode>()
                 });
             }
         }

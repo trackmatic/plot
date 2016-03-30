@@ -37,12 +37,13 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((membership, organisation, accessGroups, modulePermissions) => new MembershipResult
+                return cypher.ReturnDistinct((membership, organisation, modulePermissions, createdBy, user) => new MembershipResult
                 {
                     Membership = membership.As<MembershipNode>(),
                     Organisation = organisation.As<OrganisationNode>(),
-                    AccessGroups = accessGroups.CollectAs<AccessGroupNode>(),
-                    ModulePermissions = modulePermissions.CollectAs<ModulePermissionNode>()
+                    ModulePermissions = modulePermissions.CollectAs<ModulePermissionNode>(),
+                    CreatedBy = createdBy.As<UserNode>(),
+                    User = user.As<UserNode>()
                 });
             }
         }

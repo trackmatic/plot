@@ -11,6 +11,8 @@ namespace Plot.Sample.Data.Results
 
         public AccessGroupNode AccessGroup { get; set; }
 
+        public IEnumerable<ModulePermissionNode> ModulePermissions { get; set; }
+
         public override void Map(AccessGroup aggregate)
         {
             aggregate.Name = AccessGroup.Name;
@@ -18,6 +20,8 @@ namespace Plot.Sample.Data.Results
             {
                 aggregate.Add(node.AsAsset());
             }
+            Assets.Map(x => aggregate.Add(x.AsAsset()));
+            ModulePermissions?.Map(x => aggregate.Add(x.AsModulePermission()));
         }
 
         public override AccessGroup Create()

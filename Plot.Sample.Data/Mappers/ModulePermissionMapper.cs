@@ -32,19 +32,37 @@ namespace Plot.Sample.Data.Mappers
 
         private class GetQueryExecutor : GenericQueryExecutor<ModulePermission, ModulePermissionResult>
         {
+            private readonly IMetadataFactory _metadataFactory;
+
             public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
+                _metadataFactory = metadataFactory;
+            }
+
+            protected override ICypherFluentQuery<ModulePermissionResult> GetDataset(IGraphClient db, GetAbstractQuery<ModulePermission> abstractQuery)
+            {
+
+                var cypher = db.Cypher.MatchById(Metadata);
+                cypher = cypher.IncludeRelationships(Metadata);
+                cypher = cypher.IncludeRelationships(_metadataFactory.Create(typeof (Membership)));
+                cypher = cypher.IncludeRelationships(_metadataFactory.Create(typeof(User)));
+                cypher = cypher.WithParam("id", abstractQuery.Id);
+                return (ICypherFluentQuery<ModulePermissionResult>)OnExecute(cypher);
             }
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((modulePermission, roles, sitePermissions, membership, module) => new ModulePermissionResult
+                return cypher.ReturnDistinct((modulePermission, roles, accessGroups, sites, membership, module, modulePermissions, user, person) => new ModulePermissionResult
                 {
                     ModulePermission = modulePermission.As<ModulePermissionNode>(),
-                    SitePermissions = sitePermissions.CollectAs<SitePermissionNode>(),
+                    AccessGroups = accessGroups.CollectAs<AccessGroupNode>(),
+                    Sites = sites.CollectAs<SiteNode>(),
                     Roles = roles.CollectAs<RoleNode>(),
                     Module = module.As<ModuleNode>(),
-                    Membership = membership.As<MembershipNode>()
+                    Membership = membership.As<MembershipNode>(),
+                    ModulePermissions = modulePermissions.CollectAs<ModulePermissionNode>(),
+                    User = user.As<UserNode>(),
+                    Person = person.As<PersonNode>()
                 });
             }
         }

@@ -9,6 +9,8 @@ namespace Plot.Sample.Data.Results
     {
         public IEnumerable<SiteNode> Sites { get; set; }
 
+        public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
+
         public AssetNode Asset { get; set; }
 
         public VehicleNode Vehicle { get; set; }
@@ -19,12 +21,9 @@ namespace Plot.Sample.Data.Results
 
         public override void Map(Asset aggregate)
         {
-            aggregate.FleetNumber = Asset.FleetNumber;
             aggregate.Type = GetAssetType();
-            foreach (var site in Sites)
-            {
-                aggregate.Add(site.AsSite());
-            }
+            Sites?.Map(x => aggregate.Add(x.AsSite()));
+            AccessGroups?.Map(x => aggregate.Add(x.AsAccessGroup()));
         }
 
         private AssetType GetAssetType()

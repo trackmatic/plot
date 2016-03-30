@@ -25,6 +25,8 @@ namespace Plot.Sample.Data.Nodes
 
         public bool IsComplete { get; set; }
 
+        public DateTime? Completed { get; set; }
+
         public ResetPasswordRequest AsResetPasswordRequest()
         {
             return new ResetPasswordRequest

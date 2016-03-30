@@ -10,15 +10,19 @@ namespace Plot.Sample.Data.Results
         public MembershipNode Membership { get; set; }
 
         public OrganisationNode Organisation { get; set; }
+        
+        public UserNode CreatedBy { get; set; }
 
-        public IEnumerable<AccessGroupNode> AccessGroups { get; set; }
+        public UserNode User { get; set; }
 
         public IEnumerable<ModulePermissionNode> ModulePermissions { get; set; }
+
         public override void Map(Membership aggregate)
         {
             aggregate.Organisation = Organisation.AsOrganisation();
+            aggregate.CreatedBy = CreatedBy?.AsUser();
+            aggregate.User = User?.AsUser();
             ModulePermissions.Map(x => aggregate.Add(x.AsModulePermission()));
-            AccessGroups.Map(x => aggregate.Add(x.AsAccessGroup()));
         }
 
         public override Membership Create()

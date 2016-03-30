@@ -7,6 +7,7 @@ namespace Plot.Sample
     {
         public Person()
         {
+            Names = new Names();
             Organisations = new List<Organisation>();
             Sites = new List<Site>();
         }
@@ -16,11 +17,28 @@ namespace Plot.Sample
         [Ignore]
         public virtual Names Names { get; set; }
 
-        public virtual string Mobile { get; set; }
+        [Ignore]
+        public virtual Numbers Numbers { get; set; }
 
         public virtual string Email { get; set; }
 
-        [Relationship(Relationships.IsA)]
+        public virtual string IdentityNumber { get; set; }
+
+        public virtual string Title { get; set; }
+
+        public virtual string Position { get; set; }
+
+        public virtual string Department { get; set; }
+
+        public virtual string Gender { get; set; }
+
+        [Relationship(Relationships.IsA, DeleteOrphan = true)]
+        public virtual Crew Crew { get; set; }
+
+        [Relationship(Relationships.IsA, DeleteOrphan = true)]
+        public virtual Driver Driver { get; set; }
+
+        [Relationship(Relationships.IsA, DeleteOrphan = true)]
         public virtual User User { get; set; }
 
         [Relationship(Relationships.MemberOf)]
@@ -37,6 +55,11 @@ namespace Plot.Sample
         public virtual void Add(Site site)
         {
             Utils.Add(Sites, site, () => site.Add(this));
+        }
+
+        public virtual void Remove(Site site)
+        {
+            Utils.Remove(Sites, site, () => site.Remove(this));
         }
 
         public virtual void Set(User user)

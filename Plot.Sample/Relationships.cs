@@ -20,7 +20,7 @@
 
         public const string GrantsAccessTo = "GRANTS_ACCESS_TO";
         
-        public const string ResidesAt = "RESIDES_AT";
+        public const string LocatedAt = "LOCATED_AT";
 
         public const string Notifies = "NOTIFIES";
 
@@ -30,18 +30,18 @@
 
         public const string RequestedBy = "REQUESTED_BY";
 
-        public const string AuthenticatesWith = "AUTHENTICATES_WITH";
-
         public const string OnBehalfOf = "ON_BEHALF_OF";
 
+        public const string AuthenticatesWith = "AUTHENTICATES_WITH";
+
         public const string Reset = "RESET";
+
+        public const string InvitesUsersTo = "INVITES_USERS_TO";
 
         public const string IssuedBy = "ISSUED_BY";
 
         public const string AcceptedBy = "ACCEPTED_BY";
 
         public const string CreatedBy = "CREATED_BY";
-
-        public const string InvitesUsersTo = "INVITES_USERS_TO";
     }
 }

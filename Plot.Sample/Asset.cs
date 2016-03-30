@@ -8,26 +8,42 @@ namespace Plot.Sample
         public Asset()
         {
             Sites = new List<Site>();
+            AccessGroups = new List<AccessGroup>();
         }
 
         public virtual string Id { get; set; }
 
         public virtual string FleetNumber { get; set; }
 
-        [Relationship(Relationships.Maintains)]
+        public virtual string Reference { get; set; }
+        
+        [Relationship(Relationships.Operates, Reverse = true)]
         public virtual IList<Site> Sites { get; set; }
 
-        [Relationship(Relationships.IsA)]
+        [Relationship(Relationships.RestrictsAccessTo, Reverse = true)]
+        public virtual IList<AccessGroup> AccessGroups { get; set; }
+
+        [Relationship(Relationships.IsA, DeleteOrphan = true, Lazy = true)]
         public virtual AssetType Type { get; set; }
 
         public virtual void Add(Site site)
         {
-            if (Sites.Contains(site))
-            {
-                return;
-            }
-            Sites.Add(site);
-            site.Add(this);
+            Utils.Add(Sites, site, () => site.Add(this));
+
+        }
+        public virtual void Remove(Site site)
+        {
+            Utils.Remove(Sites, site, () => site.Remove(this));
+        }
+
+        public virtual void Add(AccessGroup accessGroup)
+        {
+            Utils.Add(AccessGroups, accessGroup, () => accessGroup.Add(this));
+        }
+
+        public virtual void Remove(AccessGroup accessGroup)
+        {
+            Utils.Remove(AccessGroups, accessGroup, () => accessGroup.Remove(this));
         }
 
         public override int GetHashCode()

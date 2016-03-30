@@ -31,6 +31,8 @@ namespace Plot.Sample.Data.Nodes
 
         public DateTime? AcceptedOn { get; set; }
 
+        public bool Cancelled { get; set; }
+
         public Invitation AsInvitation()
         {
             return new Invitation

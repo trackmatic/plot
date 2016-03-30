@@ -46,6 +46,8 @@ namespace Plot.Proxies
 
             private readonly EntityStatus _status;
 
+            private readonly Stack<TraceKey> _callStack;
+
             public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, EntityStatus status = EntityStatus.Clean)
             {
                 _generator = generator;
@@ -54,6 +56,7 @@ namespace Plot.Proxies
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
                 _state = session.State;
                 _status = status;
+                _callStack = new Stack<TraceKey>();
             }
 
             public T Create<T>(T item)
@@ -69,6 +72,13 @@ namespace Plot.Proxies
             private object Create(Type type, object item)
             {
                 ProxyUtils.SetEntityId(item);
+                var id = ProxyUtils.GetEntityId(item);
+                var key = new TraceKey(id, type);
+                if (IsBusyCreatingProxy(key))
+                {
+                    return _session.Uow.Get(id, type);
+                }
+                _callStack.Push(key);
                 var proxy = ProxyUtils.IsProxy(item) ? item : NewProxy(type, item);
                 var state = GetState(proxy);
                 state.Lock();
@@ -76,6 +86,7 @@ namespace Plot.Proxies
                 Populate(proxy);
                 state.Set(_status);
                 state.Unlock();
+                _callStack.Pop();
                 return proxy;
             }
 
@@ -123,49 +134,43 @@ namespace Plot.Proxies
                     {
                         continue;
                     }
-                    var proxy = Factory(propertyMetadata)(metadata, property, item);
+                    var value = property.GetValue(item);
+                    if (value == null)
+                    {
+                        continue;
+                    }
+                    var proxy = Factory(propertyMetadata)(metadata, property, value, item);
                     property.SetValue(item, proxy);
                 }
             }
 
-            private Func<NodeMetadata, PropertyInfo, object, object> Factory(PropertyMetadata property)
+            private Func<NodeMetadata, PropertyInfo, object, object, object> Factory(PropertyMetadata property)
             {
                 if (property.IsList)
                 {
                     return List;
                 }
-                return Relationship;
+                return Entity;
             }
 
-            private object List(NodeMetadata metadata, PropertyInfo property, object parent)
+            private object List(NodeMetadata metadata, PropertyInfo property, object item, object parent)
             {
                 var type = property.PropertyType;
-                var source = property.GetValue(parent);
-                if (source == null)
-                {
-                    return null;
-                }
                 var genericType = typeof (TrackableCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
-                var items = Populate(((IEnumerable<object>)source).ToList());
+                var items = ProxyListItems(((IEnumerable<object>)item).ToList());
                 var args = new[] { parent, metadata[property.Name].Relationship, items, _state};
                 var proxy = Activator.CreateInstance(genericType, args, null);
                 return proxy;
             }
 
-            private object Relationship(NodeMetadata metadata, PropertyInfo property, object parent)
+            private object Entity(NodeMetadata metadata, PropertyInfo property, object item, object parent)
             {
-                var item = property.GetValue(parent);
-                if (item == null)
-                {
-                    return null;
-                }
-                var type = item.GetType();
+                var type = ProxyUtils.GetTargetType(item);
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
-                
                 return Create(type, entity);
             }
 
-            private List<object> Populate(IList<object> source)
+            private List<object> ProxyListItems(IList<object> source)
             {
                 var destination = new List<object>();
                 for (int i = 0; i < source.Count; i++)
@@ -177,16 +182,43 @@ namespace Plot.Proxies
                 }
                 return destination;
             }
-
-            private static MethodBase CreateGenericMethod(Type type)
-            {
-                var method = typeof (Generator).GetMethod("CreateTrackableList").MakeGenericMethod(type.GetGenericArguments()[0]);
-                return method;
-            }
-
+            
             private EntityState GetState(object proxy)
             {
                 return _state.Contains(proxy) ? _state.Get(proxy) : _state.Create(proxy);
+            }
+
+            private bool IsBusyCreatingProxy(TraceKey key)
+            {
+                return _callStack.Contains(key);
+            }
+
+            private class TraceKey
+            {
+                public TraceKey(string id, Type type)
+                {
+                    Id = id;
+                    Type = type;
+                }
+
+                public string Id { get;}
+
+                public Type Type { get; }
+
+                public override int GetHashCode()
+                {
+                    return Id.GetHashCode() ^ Type.GetHashCode();
+                }
+
+                public override bool Equals(object obj)
+                {
+                    var other = obj as TraceKey;
+                    if (other == null)
+                    {
+                        return false;
+                    }
+                    return GetHashCode() == other.GetHashCode();
+                }
             }
         }
     }

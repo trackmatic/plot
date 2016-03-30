@@ -48,13 +48,14 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((asset, sites, vehicle, trailer, forklift) => new AssetResult
+                return cypher.ReturnDistinct((asset, sites, vehicle, trailer, forklift, accessGroups) => new AssetResult
                 {
                     Asset = asset.As<AssetNode>(),
                     Sites = sites.CollectAs<SiteNode>(),
                     Vehicle = vehicle.As<VehicleNode>(),
                     Trailer = trailer.As<TrailerNode>(),
-                    Forklift = forklift.As<ForkliftNode>()
+                    Forklift = forklift.As<ForkliftNode>(),
+                    AccessGroups = accessGroups.CollectAs<AccessGroupNode>()
                 });
             }
 
@@ -63,10 +64,6 @@ namespace Plot.Sample.Data.Mappers
                 return cypher.OptionalMatch($"(asset)-[:{Relationships.IsA}]->({type.ToLower()}:{type})");
             }
         }
-
-        #endregion
-
-        #region Datasets
 
         #endregion
     }

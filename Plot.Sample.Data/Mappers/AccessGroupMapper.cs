@@ -3,7 +3,6 @@ using Neo4jClient.Cypher;
 using Plot.Metadata;
 using Plot.Neo4j;
 using Plot.Neo4j.Queries;
-using Plot.Proxies;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
 using Plot.Sample.Data.Results;
@@ -37,10 +36,11 @@ namespace Plot.Sample.Data.Mappers
 
             protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
             {
-                return cypher.ReturnDistinct((accessGroup, assets) => new AccessGroupResult
+                return cypher.ReturnDistinct((accessGroup, assets, modulePermissions) => new AccessGroupResult
                 {
                     AccessGroup = accessGroup.As<AccessGroupNode>(),
-                    Assets = assets.CollectAs<AssetNode>()
+                    Assets = assets.CollectAs<AssetNode>(),
+                    ModulePermissions = modulePermissions.CollectAs<ModulePermissionNode>()
                 });
             }
         }

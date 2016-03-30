@@ -53,6 +53,8 @@
     <Compile Include="Asset.cs" />
     <Compile Include="AssetType.cs" />
     <Compile Include="Contact.cs" />
+    <Compile Include="Crew.cs" />
+    <Compile Include="Driver.cs" />
     <Compile Include="Exceptions\InvalidResetPasswordRequest.cs" />
     <Compile Include="Forklift.cs" />
     <Compile Include="Invitation.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="ModulePermission.cs" />
     <Compile Include="Modules.cs" />
     <Compile Include="Names.cs" />
+    <Compile Include="Numbers.cs" />
     <Compile Include="Organisation.cs" />
     <Compile Include="Password.cs" />
     <Compile Include="Person.cs" />

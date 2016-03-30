@@ -8,6 +8,7 @@ namespace Plot.Sample
         public User()
         {
             Memberships = new List<Membership>();
+            ResetPasswordRequests = new List<ResetPasswordRequest>();
         }
 
         public virtual string Id { get; set; }
@@ -24,6 +25,9 @@ namespace Plot.Sample
 
         [Relationship(Relationships.MemberOf, DeleteOrphan = true)]
         public virtual IList<Membership> Memberships { get; set; }
+
+        [Relationship(Relationships.Reset, Reverse = true, Lazy = true)]
+        public virtual IList<ResetPasswordRequest> ResetPasswordRequests { get; set; }
 
         public virtual void Add(Membership membership)
         {
@@ -50,6 +54,16 @@ namespace Plot.Sample
             Password?.Clear();
             Password = password;
             password.User = this;
+        }
+
+        public virtual void Add(ResetPasswordRequest resetPasswordRequest)
+        {
+            if (ResetPasswordRequests.Contains(resetPasswordRequest))
+            {
+                return;
+            }
+            ResetPasswordRequests.Add(resetPasswordRequest);
+            resetPasswordRequest.User = this;
         }
 
         public override int GetHashCode()

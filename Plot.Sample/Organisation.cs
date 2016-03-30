@@ -24,7 +24,7 @@ namespace Plot.Sample
         [Ignore]
         public virtual RegionalSettings RegionalSettings { get; set; }
         
-        [Relationship(Relationships.ResidesAt)]
+        [Relationship(Relationships.LocatedAt)]
         public virtual Address Address { get; set; }
 
         [Relationship(Relationships.Runs, DeleteOrphan = true)]

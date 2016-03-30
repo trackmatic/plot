@@ -11,18 +11,22 @@
         {
             Id = item.Id;
             FleetNumber = item.FleetNumber;
+            Reference = item.Reference;
         }
 
         public string Id { get; set; }
 
         public string FleetNumber { get; set; }
 
+        public string Reference { get; set; }
+
         public Asset AsAsset()
         {
             var asset = new Asset
             {
                 Id = Id,
-                FleetNumber = FleetNumber
+                FleetNumber = FleetNumber,
+                Reference = Reference
             };
             return asset;
         }
