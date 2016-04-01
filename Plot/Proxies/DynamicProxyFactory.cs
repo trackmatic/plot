@@ -46,7 +46,7 @@ namespace Plot.Proxies
 
             private readonly EntityStatus _status;
 
-            private readonly Stack<TraceKey> _callStack;
+            private readonly Stack<EntityReference> _dependencyStack;
 
             public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, EntityStatus status = EntityStatus.Clean)
             {
@@ -56,7 +56,7 @@ namespace Plot.Proxies
                 _options = new ProxyGenerationOptions(new ProxyGenerationHook());
                 _state = session.State;
                 _status = status;
-                _callStack = new Stack<TraceKey>();
+                _dependencyStack = new Stack<EntityReference>();
             }
 
             public T Create<T>(T item)
@@ -73,12 +73,12 @@ namespace Plot.Proxies
             {
                 ProxyUtils.SetEntityId(item);
                 var id = ProxyUtils.GetEntityId(item);
-                var key = new TraceKey(id, type);
-                if (IsBusyCreatingProxy(key))
+                var reference = new EntityReference(id, type);
+                if (IsBusyCreatingProxy(reference))
                 {
                     return _session.Uow.Get(id, type);
                 }
-                _callStack.Push(key);
+                _dependencyStack.Push(reference);
                 var proxy = ProxyUtils.IsProxy(item) ? item : NewProxy(type, item);
                 var state = GetState(proxy);
                 state.Lock();
@@ -86,7 +86,7 @@ namespace Plot.Proxies
                 Populate(proxy);
                 state.Set(_status);
                 state.Unlock();
-                _callStack.Pop();
+                _dependencyStack.Pop();
                 return proxy;
             }
 
@@ -188,14 +188,14 @@ namespace Plot.Proxies
                 return _state.Contains(proxy) ? _state.Get(proxy) : _state.Create(proxy);
             }
 
-            private bool IsBusyCreatingProxy(TraceKey key)
+            private bool IsBusyCreatingProxy(EntityReference key)
             {
-                return _callStack.Contains(key);
+                return _dependencyStack.Contains(key);
             }
 
-            private class TraceKey
+            private class EntityReference
             {
-                public TraceKey(string id, Type type)
+                public EntityReference(string id, Type type)
                 {
                     Id = id;
                     Type = type;
@@ -212,7 +212,7 @@ namespace Plot.Proxies
 
                 public override bool Equals(object obj)
                 {
-                    var other = obj as TraceKey;
+                    var other = obj as EntityReference;
                     if (other == null)
                     {
                         return false;

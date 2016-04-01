@@ -270,6 +270,39 @@ namespace Plot.Tests
             }
         }
 
+        [Fact]
+        public void circular_dependencies_are_proxied_correctly()
+        {
+            var metadataFactory = new AttributeMetadataFactory(new NullLogger());
+            var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+            var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
+            var repositoryFactory = new RepositoryFactory(proxyFactory);
+            var parentMapper = new Mock<IMapper<Parent>>();
+            repositoryFactory.Register<Parent>(x => parentMapper.Object);
+            var childMapper = new Mock<IMapper<Child>>();
+            repositoryFactory.Register<Child>(x => childMapper.Object);
+
+            var stateTracker = new EntityStateCache();
+            using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory, stateTracker, proxyFactory))
+            {
+                var a = new EntityA
+                {
+                    Id = "a"
+                };
+                var b = new EntityB
+                {
+                    Id = "b"
+                };
+                a.EntityB = b;
+                b.EntityA = a;
+                var proxy = proxyFactory.Create(a, session);
+                Assert.NotNull(proxy);
+                Assert.NotNull(proxy.EntityB);
+                Assert.NotNull(proxy.EntityB.EntityA);
+                Assert.Same(proxy, proxy.EntityB.EntityA);
+            }
+        }
+
         public class EntityWithIgnoredProperty
         {
             public virtual string Id { get; set; }
@@ -346,6 +379,20 @@ namespace Plot.Tests
         public class SuperTypeA : BaseType
         {
             
+        }
+
+        public class EntityA
+        {
+            public virtual string Id { get; set; }
+
+            public virtual EntityB EntityB { get; set; }
+        }
+
+        public class EntityB
+        {
+            public virtual string Id { get; set; }
+
+            public virtual EntityA EntityA { get; set; }
         }
     }
 }

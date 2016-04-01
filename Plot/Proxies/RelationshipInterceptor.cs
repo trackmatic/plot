@@ -54,8 +54,18 @@ namespace Plot.Proxies
             invocation.Proceed();
         }
 
+        public bool Contains(RelationshipMetadata relationship)
+        {
+            return _relationshipState.ContainsKey(relationship);
+        }
+
         public ITrackableRelationship GetTrackableRelationship(RelationshipMetadata relationship)
         {
+            if (!Contains(relationship))
+            {
+                throw new KeyNotFoundException($"Relationship {relationship.Name} has not been registered");
+            }
+
             return _relationshipState[relationship];
         }
 

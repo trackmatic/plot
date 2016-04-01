@@ -72,7 +72,6 @@
     <Compile Include="Cypher\QueryBuilder.cs" />
     <Compile Include="Cypher\SetIdentifierSnippet.cs" />
     <Compile Include="Cypher\WithSnippet.cs" />
-    <Compile Include="Dataset.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HttpClientAuthWrapper.cs" />
     <Compile Include="Cypher.Commands\ICommand.cs" />

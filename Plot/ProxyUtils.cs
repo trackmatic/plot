@@ -84,8 +84,8 @@ namespace Plot
             {
                 throw new TrackableRelationshipException(Text.FlushTrackablerelationshipException);
             }
-            var interceptors = source.GetInterceptors().Where(x => x is RelationshipInterceptor).Cast<RelationshipInterceptor>();
-            return interceptors.Select(x => x.GetTrackableRelationship(relationship));
+            var interceptors = GetInterceptors<RelationshipInterceptor>(source);
+            return interceptors.Where(x => x.Contains(relationship)).Select(x => x.GetTrackableRelationship(relationship));
         }
 
         public static bool IsTrackable(IEnumerable list)
@@ -96,6 +96,12 @@ namespace Plot
         public static IInterceptor[] GetInterceptors(object source)
         {
             return ((IProxyTargetAccessor) source).GetInterceptors();
+        }
+
+        public static IEnumerable<T> GetInterceptors<T>(IProxyTargetAccessor item)
+            where T : IInterceptor
+        {
+            return item.GetInterceptors().Where(x => x is T).Cast<T>();
         }
     }
 }
