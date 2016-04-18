@@ -16,18 +16,21 @@ namespace Plot.Proxies
 
         private readonly ProxyGenerator _generator;
 
+        private readonly ProxyGenerationOptions _options;
+
         public DynamicProxyFactory(IMetadataFactory metadataFactory, ILogger logger)
         {
             _metadataFactory = metadataFactory;
             _logger = logger;
             _generator = new ProxyGenerator();
+            _options = new ProxyGenerationOptions(new ProxyGenerationHook());
         }
 
         public T Create<T>(T item, IGraphSession session, EntityStatus status = EntityStatus.Clean) where T : class
         {
             using (Timer.Start("Proxy Creation", _logger))
             {
-                var generator = new Generator(session, _metadataFactory, _generator, status);
+                var generator = new Generator(session, _metadataFactory, _generator, _options, status);
                 return generator.Create(item);
             }
         }
@@ -48,25 +51,20 @@ namespace Plot.Proxies
 
             private readonly Stack<EntityReference> _dependencyStack;
 
-            public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, EntityStatus status = EntityStatus.Clean)
+            public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, ProxyGenerationOptions options, EntityStatus status = EntityStatus.Clean)
             {
                 _generator = generator;
                 _session = session;
                 _metadataFactory = metadataFactory;
-                _options = new ProxyGenerationOptions(new ProxyGenerationHook());
                 _state = session.State;
                 _status = status;
                 _dependencyStack = new Stack<EntityReference>();
+                _options = options;
             }
 
             public T Create<T>(T item)
             {
-                var proxy = (T)Create(typeof(T), item);
-                if (proxy is IRequireSession)
-                {
-                    ((IRequireSession) proxy).Set(_session);
-                }
-                return proxy;
+                return (T) Create(typeof (T), item);
             }
 
             private object Create(Type type, object item)
@@ -87,6 +85,10 @@ namespace Plot.Proxies
                 state.Set(_status);
                 state.Unlock();
                 _dependencyStack.Pop();
+                if (proxy is IRequireSession)
+                {
+                    ((IRequireSession)proxy).Set(_session);
+                }
                 return proxy;
             }
 

@@ -10,35 +10,28 @@ namespace Plot.Sample.Host
     {
         private static void Main(string[] args)
         {
-            var uri = new Uri("http://localhost:7474/db/data");
+            var uri = new Uri("http://n4j.trackmatic.co.za:7474/db/data");
             Configuration.Logger = () => new ConsoleLogger();
-            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic", typeof (UserMapper).Assembly);
-            using (var session = factory.OpenSession())
+            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
+            while (true)
             {
-                var id = Guid.NewGuid().ToString();
-                var person = session.Create(new Person
+                var start = DateTime.UtcNow;
+                using (var session = factory.OpenSession())
                 {
-                    Id = id,
-                    Names = new Names(),
-                    Numbers = new Numbers(),
-                    Email = "",
-                    Title = "",
-                    Gender = "",
-                    Position = "",
-                    Department = "",
-                    IdentityNumber = ""
-                });
-                var user = session.Create(new User
-                {
-                    Id = id,
-                    Username = "ross"
-                });
-                var request = session.Create(new ResetPasswordRequest());
-                request.RequestedBy = user;
-                user.Add(request);
-                person.User = user;
-                session.SaveChanges();
+
+                    var user = session.Get<User>("0b732bbf-16a3-41f5-a3f2-e3ee9eb6e635");
+
+
+                    /*var membershipIds = user.Memberships.Where(x => x.IsActive).Select(x => x.Id).ToArray();
+                    var memberships = session.Get<Membership>(membershipIds).ToList();*/
+                }
+
+                Console.WriteLine(DateTime.UtcNow.Subtract(start));
+
+                Console.ReadLine();
             }
+
+            Console.ReadLine();
             Console.WriteLine("Done");
             Console.ReadLine();
         }
