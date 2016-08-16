@@ -6,9 +6,7 @@ namespace Plot
     public interface IUnitOfWork : IDisposable
     {
         void Register(object item);
-
-        void Merge(object item);
-
+        
         IEnumerable<object> Items { get; }
 
         IEnumerable<object> Flush();

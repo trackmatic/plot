@@ -26,23 +26,6 @@ namespace Plot
             _items.Remove(item);
         }
 
-        public void Merge(object item)
-        {
-            var state = _entityStateCache.Get(item);
-
-            if (state.IsReadonly)
-            {
-                return;
-            }
-
-            foreach (var other in _items.Where(x => x.Equals(item)).ToList())
-            {
-                _items.Remove(other);
-            }
-
-            _items.Add(item);
-        }
-
         public void Register(object item)
         {
             var state = _entityStateCache.Get(item);
