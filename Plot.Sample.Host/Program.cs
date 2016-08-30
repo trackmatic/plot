@@ -12,7 +12,7 @@ namespace Plot.Sample.Host
         {
             var uri = new Uri("http://n4j.tm.local:7474/db/data");
             Configuration.Logger = () => new ConsoleLogger();
-            var factory = Configuration.CreateGraphSessionFactory("sample", uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
+            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
             while (true)
             {
                 var start = DateTime.UtcNow;

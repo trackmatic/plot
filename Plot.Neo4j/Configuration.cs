@@ -30,7 +30,7 @@ namespace Plot.Neo4j
 
         public static Func<IQueryExecutorFactory, IRepositoryFactory, IEntityStateCacheFactory, IProxyFactory, IGraphSessionFactory> GraphSessionFactory = (queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory) => new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory);
 
-        public static IGraphSessionFactory CreateGraphSessionFactory(string app, Uri uri, string username, string password, params Assembly[] mapperAssemblies)
+        public static IGraphSessionFactory CreateGraphSessionFactory(Uri uri, string username, string password, params Assembly[] mapperAssemblies)
         {
             var db = new GraphClient(uri, new HttpClientAuthWrapper(username, password));
             db.ExecutionConfiguration.ResourceManagerId = ResourceManagerId();
