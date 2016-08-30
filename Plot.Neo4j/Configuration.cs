@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using Neo4jClient;
 using Neo4jClient.Transactions;
 using Plot.Logging;
@@ -15,6 +12,8 @@ namespace Plot.Neo4j
 {
     public static class Configuration
     {
+        public static Func<Guid> ResourceManagerId = () => Guid.Parse("5c62baaa-2c28-4a2d-b55f-36b96503ffc3");
+
         public static Func<ILogger> Logger = () => new NullLogger();
 
         public static Func<IEntityStateCacheFactory> EntityStateCacheFactory = () => new EntityStateCacheFactory();
@@ -34,7 +33,7 @@ namespace Plot.Neo4j
         public static IGraphSessionFactory CreateGraphSessionFactory(string app, Uri uri, string username, string password, params Assembly[] mapperAssemblies)
         {
             var db = new GraphClient(uri, new HttpClientAuthWrapper(username, password));
-            db.ExecutionConfiguration.ResourceManagerId = GetResourceManagerIdForEndpoint(app);
+            db.ExecutionConfiguration.ResourceManagerId = ResourceManagerId();
             db.Connect();
             var entityStateCacheFactory = EntityStateCacheFactory();
             var logger = Logger();
@@ -45,21 +44,6 @@ namespace Plot.Neo4j
             var queryExecutorFactory = QueryExecutorFactory(db, metadataFactory, mapperAssemblies);
             var factory = GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory);
             return factory;
-        }
-
-        private static Guid GetResourceManagerIdForEndpoint(string name)
-        {
-            var resourceManagerId = name + "@" + Environment.MachineName + "_trackmatic_5568";
-            return DeterministicGuidBuilder(resourceManagerId);
-        }
-
-        [DebuggerNonUserCode]
-        private static Guid DeterministicGuidBuilder(string input)
-        {
-            var provider = new MD5CryptoServiceProvider();
-            byte[] inputBytes = Encoding.Default.GetBytes(input);
-            byte[] hashBytes = provider.ComputeHash(inputBytes);
-            return new Guid(hashBytes);
         }
     }
 }
