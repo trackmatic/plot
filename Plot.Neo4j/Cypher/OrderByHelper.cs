@@ -15,7 +15,7 @@ namespace Plot.Neo4j.Cypher
             {
                 if (_started)
                 {
-                    cypher = order.Continue(cypher as IOrderedCypherFluentQuery<TResult>);
+                    cypher = order.Continue(cypher);
                 }
                 else
                 {

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using Plot.Logging;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
+using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
 {
@@ -10,16 +10,16 @@ namespace Plot.Sample.Host
     {
         private static void Main(string[] args)
         {
-            var uri = new Uri("http://n4j.trackmatic.co.za:7474/db/data");
+            var uri = new Uri("http://n4j.tm.local:7474/db/data");
             Configuration.Logger = () => new ConsoleLogger();
-            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
+            var factory = Configuration.CreateGraphSessionFactory("sample", uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
             while (true)
             {
                 var start = DateTime.UtcNow;
                 using (var session = factory.OpenSession())
                 {
 
-                    var user = session.Get<User>("0b732bbf-16a3-41f5-a3f2-e3ee9eb6e635");
+                    var user = session.Query(new GetOrganisationsByName());
 
 
                     /*var membershipIds = user.Memberships.Where(x => x.IsActive).Select(x => x.Id).ToArray();

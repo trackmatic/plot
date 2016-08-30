@@ -17,16 +17,16 @@ namespace Plot.Sample
 
         public virtual string Reference { get; set; }
 
-        [Relationship(Relationships.Operates)]
+        //[Relationship(Relationships.Operates)]
         public virtual IList<Asset> Assets { get; set; }
 
-        [Relationship(Relationships.Runs, Reverse = true)]
+        //[Relationship(Relationships.Runs, Reverse = true)]
         public virtual Organisation Organisation { get; set; }
 
-        [Relationship(Relationships.Contracts, Lazy = true)]
+        //[Relationship(Relationships.Contracts, Lazy = true)]
         public virtual IList<Person> People { get; set; }
         
-        [Relationship(Relationships.LocatedAt)]
+        //[Relationship(Relationships.LocatedAt)]
         public virtual Address Address { get; set; }
 
         public virtual void Set(Organisation organisation)

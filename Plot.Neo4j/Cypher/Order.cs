@@ -19,9 +19,9 @@ namespace Plot.Neo4j.Cypher
             return Descending ? cypher.OrderByDescending(Property) : cypher.OrderBy(Property);
         }
 
-        public ICypherFluentQuery<TResult> Continue(IOrderedCypherFluentQuery<TResult> cypher)
+        public ICypherFluentQuery<TResult> Continue(ICypherFluentQuery<TResult> cypher)
         {
-            return Descending ? cypher.ThenByDescending(Property) : cypher.ThenBy(Property);
+            return Descending ? cypher.OrderByDescending(Property) : cypher.OrderBy(Property);
         }
     }
 }

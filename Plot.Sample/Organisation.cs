@@ -7,10 +7,10 @@ namespace Plot.Sample
     {
         public Organisation()
         {
-            Sites = new List<Site>();
-            AccessGroups = new List<AccessGroup>();
-            People = new List<Person>();
-            Contacts = new List<Contact>();
+            //Sites = new List<Site>();
+            //AccessGroups = new List<AccessGroup>();
+            //People = new List<Person>();
+            //Contacts = new List<Contact>();
         }
 
         public virtual string Id { get; set; }
@@ -24,19 +24,19 @@ namespace Plot.Sample
         [Ignore]
         public virtual RegionalSettings RegionalSettings { get; set; }
         
-        [Relationship(Relationships.LocatedAt)]
+        //[Relationship(Relationships.LocatedAt)]
         public virtual Address Address { get; set; }
 
-        [Relationship(Relationships.Runs, DeleteOrphan = true)]
+        //[Relationship(Relationships.Runs, DeleteOrphan = true)]
         public virtual IList<Site> Sites { get; set; }
 
-        [Relationship(Relationships.Maintains, DeleteOrphan = true)]
+        //[Relationship(Relationships.Maintains, DeleteOrphan = true)]
         public virtual IList<AccessGroup> AccessGroups { get; set; }
 
-        [Relationship(Relationships.MemberOf, Reverse = true)]
+        //[Relationship(Relationships.MemberOf, Reverse = true)]
         public virtual IList<Person> People { get; set; }
 
-        [Relationship(Relationships.Notifies)]
+        //[Relationship(Relationships.Notifies)]
         public virtual IList<Contact> Contacts { get; set; }
 
         public virtual void Add(Person person)
@@ -52,7 +52,7 @@ namespace Plot.Sample
         public virtual void Add(Site site)
         {
             Utils.Add(Sites, site, () => site.Set(this));
-        } 
+        }
 
         public override int GetHashCode()
         {

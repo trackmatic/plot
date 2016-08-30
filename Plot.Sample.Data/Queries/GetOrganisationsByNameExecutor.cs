@@ -26,10 +26,10 @@ namespace Plot.Sample.Data.Queries
                 new AsCount(),
                 new Body(query, Metadata),
                 new Parameters(query)
-            }).ReturnDistinct((organisation, site, total) => new OrganisationResult
+            }).ReturnDistinct((organisation, total) => new OrganisationResult
             {
                 Organisation = organisation.As<OrganisationNode>(),
-                Sites = site.CollectAs<SiteNode>(),
+                //Sites = site.CollectAs<SiteNode>(),
                 Total = total.As<int>()
             });
             return cypher;
@@ -57,9 +57,10 @@ namespace Plot.Sample.Data.Queries
 
             public ICypherFluentQuery Append(ICypherFluentQuery cypher)
             {
+                cypher = cypher.Match("(organisation:Organisation)");
                 //cypher = cypher.Match("(user:User { Id: {id}})");
-                cypher = cypher.OptionalMatch("(site-[:SITE_OF]->organisation)");
-                cypher = cypher.IncludeRelationships(_nodeMetadata);
+                //cypher = cypher.OptionalMatch("(site-[:SITE_OF]->organisation)");
+                //cypher = cypher.IncludeRelationships(_nodeMetadata);
                 return cypher;
             }
 
