@@ -11,11 +11,8 @@ namespace Plot.Proxies
     public class DynamicProxyFactory : IProxyFactory
     {
         private readonly IMetadataFactory _metadataFactory;
-
         private readonly ILogger _logger;
-
         private readonly ProxyGenerator _generator;
-
         private readonly ProxyGenerationOptions _options;
 
         public DynamicProxyFactory(IMetadataFactory metadataFactory, ILogger logger)
@@ -38,17 +35,11 @@ namespace Plot.Proxies
         private class Generator
         {
             private readonly ProxyGenerator _generator;
-
             private readonly IGraphSession _session;
-
             private readonly IMetadataFactory _metadataFactory;
-
             private readonly ProxyGenerationOptions _options;
-
             private readonly IEntityStateCache _state;
-
             private readonly EntityStatus _status;
-
             private readonly Stack<EntityReference> _dependencyStack;
 
             public Generator(IGraphSession session, IMetadataFactory metadataFactory, ProxyGenerator generator, ProxyGenerationOptions options, EntityStatus status = EntityStatus.Clean)

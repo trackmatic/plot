@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher
 {

@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Neo4jClient;
-using Neo4jClient.Cypher;
 
 namespace Plot.Neo4j.Cypher
 {
@@ -14,14 +11,19 @@ namespace Plot.Neo4j.Cypher
             _elements = elements;
         }
 
-        public ICypherFluentQuery Build(IGraphClient db)
+        public ICypherFluentQuery Build(ICypherFluentQuery query)
         {
-            return _elements.Aggregate(db.Cypher, (current, element) => element.Append(current));
+            var current = query;
+            foreach (var element in _elements)
+            {
+                current = element.Append(current);
+            }
+            return current;
         }
 
-        public static ICypherFluentQuery Create(IGraphClient db, IEnumerable<IQueryBuilderElement> elements)
+        public static ICypherFluentQuery Create(ICypherFluentQuery query, IEnumerable<IQueryBuilderElement> elements)
         {
-            return new QueryBuilder(elements).Build(db);
+            return new QueryBuilder(elements).Build(query);
         }
     }
 }

@@ -112,7 +112,7 @@ namespace Plot
 
         public bool Register(object item)
         {
-            var state = GetState(item); ;
+            var state = GetState(item);
             var result = Register(item, state);
             state.New();
             return result;

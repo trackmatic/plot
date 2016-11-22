@@ -1,5 +1,4 @@
 ﻿using System;
-using Neo4jClient.Cypher;
 
 namespace Plot.Neo4j.Cypher.Commands
 {
@@ -27,7 +26,7 @@ namespace Plot.Neo4j.Cypher.Commands
                 .OnMatch()
                 .Set(new SetIdentifierSnippet(_source.IdentifierName))
                 .WithParam(_id, ProxyUtils.GetEntityId(_source.Data))
-                .WithParam(_source.IdentifierName, _factory());
+                .WithParam(_source.IdentifierName, _factory().ToDictionary());
             return query;
         }
     }

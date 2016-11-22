@@ -1,17 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using Neo4jClient.Cypher;
+using System.Reflection;
 using Plot.Neo4j.Cypher;
 using Plot.Metadata;
-using Plot.Neo4j.Queries;
 
 namespace Plot.Neo4j
 {
     public static class Extensions
     {
+        private static class PropertiesCache
+        {
+            private static readonly Dictionary<Type, IEnumerable<PropertyInfo>> Cache = new Dictionary<Type, IEnumerable<PropertyInfo>>();
+            
+            public static IEnumerable<PropertyInfo> GetProperties(object item)
+            {
+                if (item == null)
+                {
+                    return new List<PropertyInfo>();
+                }
+
+                lock (Cache)
+                {
+                    var key = item.GetType();
+                    return Cache.ContainsKey(key) ? Cache[key] : Populate(key, item);
+                }
+            }
+
+            private static IEnumerable<PropertyInfo> Populate(Type key, object item)
+            {
+                lock (Cache)
+                {
+                    var properties = item.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                    Cache[key] = properties;
+                    return properties;
+                }
+            }
+        }
+
+        public static IDictionary<string, object> ToDictionary(this object item)
+        {
+            return PropertiesCache.GetProperties(item).ToDictionary(prop => prop.Name, prop => prop.GetValue(item, null));
+        }
+
         public static long ToUnixTimestamp(this DateTime datetime)
         {
             var unixRef = new DateTime(1970, 1, 1, 0, 0, 0);
@@ -46,11 +77,10 @@ namespace Plot.Neo4j
 
         public static ICypherFluentQuery WithParam(this ICypherFluentQuery query, IdentifierNameSnippet snippet, object value)
         {
-            if (query.Query.QueryParameters.ContainsKey(snippet.ToString()))
+            if (query.ContainsParameter(snippet.ToString()))
             {
                 return query;
             }
-
             return query.WithParam(snippet.ToString(), value);
         }
 

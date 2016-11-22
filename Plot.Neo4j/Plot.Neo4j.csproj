@@ -30,16 +30,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Neo4jClient, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Trackmatic.Neo4jClient.0.0.0.1\lib\net45\Neo4jClient.dll</HintPath>
+    <Reference Include="Neo4j.Driver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.1.0.2\lib\dotnet\Neo4j.Driver.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Sockets.Plugin, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\rda.SocketsForPCL.1.2.2\lib\net45\Sockets.Plugin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sockets.Plugin.Abstractions, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\rda.SocketsForPCL.1.2.2\lib\net45\Sockets.Plugin.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -58,6 +67,11 @@
     <Compile Include="Cypher.Commands\DeleteRelationshipCommand.cs" />
     <Compile Include="Cypher\AsSnippet.cs" />
     <Compile Include="Cypher\CollectPropertyAsSnippet.cs" />
+    <Compile Include="Cypher\CypherFluentQuery%27.cs" />
+    <Compile Include="Cypher\CypherReturn.cs" />
+    <Compile Include="Cypher\ICypherFluentQuery%27.cs" />
+    <Compile Include="Cypher\ICypherFluentQuery.cs" />
+    <Compile Include="Cypher\ICypherReturn.cs" />
     <Compile Include="Cypher\IQueryBuilder.cs" />
     <Compile Include="Cypher\IQueryBuilderElement.cs" />
     <Compile Include="Cypher\MatchPropertySnippet.cs" />
@@ -70,10 +84,10 @@
     <Compile Include="Cypher\OrderByHelper.cs" />
     <Compile Include="Cypher\IdentifierNameSnippet.cs" />
     <Compile Include="Cypher\QueryBuilder.cs" />
+    <Compile Include="Cypher\Return.cs" />
     <Compile Include="Cypher\SetIdentifierSnippet.cs" />
     <Compile Include="Cypher\WithSnippet.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="HttpClientAuthWrapper.cs" />
     <Compile Include="Cypher.Commands\ICommand.cs" />
     <Compile Include="ICypherTransaction.cs" />
     <Compile Include="ICypherTransactionFactory.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Neo4jClient;
+using Neo4j.Driver.V1;
 using Plot.Queries;
 using Plot.Metadata;
 
@@ -22,7 +22,7 @@ namespace Plot.Neo4j.Queries
         }
 
 
-        public QueryExecutorFactory(IGraphClient db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
+        public QueryExecutorFactory(IDriver db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
         {
             foreach (var assembly in assemblies)
             {

@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Neo4jClient;
-using Neo4jClient.Cypher;
+using Neo4j.Driver.V1;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Cypher.Commands;
@@ -13,15 +12,13 @@ using Plot.Queries;
 
 namespace Plot.Neo4j
 {
-    public abstract class Mapper<T> : IMapper<T>
+    public abstract class Mapper<T> : IMapper<T> where T : class
     {
         private readonly IGraphSession _session;
-
         private readonly ICypherTransactionFactory _transactionFactory;
 
-        protected Mapper(GraphClient db, IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory)
+        protected Mapper(IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory)
         {
-            Db = db;
             _session = session;
             _transactionFactory = transactionFactory;
             MetadataFactory = metadataFactory;
@@ -64,14 +61,14 @@ namespace Plot.Neo4j
         }
 
         public Type Type => typeof(T);
-
-        protected GraphClient Db { get; }
-
+        
         protected abstract object GetData(T item);
 
         protected abstract IQueryExecutor<T> CreateQueryExecutor();
 
         protected IGraphSession Session => _session;
+
+        protected ICypherTransactionFactory TransactionFactory => _transactionFactory;
         
         private void Execute(T item, Func<ICypherFluentQuery, T, IEnumerable<ICommand>> operation)
         {
@@ -201,6 +198,32 @@ namespace Plot.Neo4j
             var destinationMetadata = MetadataFactory.Create(destination);
             var command = new DeleteRelationshipCommand(new NodeIdentifierSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), new RelationshipSnippet(new IdentifierNameSnippet("rel"), relationship), relationship.DeleteOrphan);
             return command;
+        }
+
+        protected GenericQueryExecutor<T, TResult> CreateGenericExecutor<TResult>(Func<IRecord, TResult> map, Func<ICypherReturn<TResult>, ICypherReturn<TResult>> returnFactory)
+            where TResult : ICypherQueryResult<T>
+        {
+            return new GetQueryExecutor<TResult>(_transactionFactory, MetadataFactory, map, returnFactory);
+        }
+
+        private class GetQueryExecutor<TResult> : GenericQueryExecutor<T, TResult> where TResult : ICypherQueryResult<T>
+        {
+            private readonly Func<IRecord, TResult> _map;
+            private readonly Func<ICypherReturn<TResult>, ICypherReturn<TResult>> _returnFactory;
+
+            public GetQueryExecutor(ICypherTransactionFactory transactionFactory,
+                IMetadataFactory metadataFactory,
+                Func<IRecord, TResult> map, Func<ICypherReturn<TResult>,
+                ICypherReturn<TResult>> returnFactory) : base(transactionFactory, metadataFactory)
+            {
+                _map = map;
+                _returnFactory = returnFactory;
+            }
+
+            protected override ICypherFluentQuery<TResult> OnExecute(ICypherFluentQuery<TResult> cypher)
+            {
+                return cypher.ReturnDistinct(_map, _returnFactory);
+            }
         }
     }
 }

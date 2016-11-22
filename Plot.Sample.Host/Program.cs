@@ -2,7 +2,6 @@
 using Plot.Logging;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
-using Plot.Sample.Queries;
 
 namespace Plot.Sample.Host
 {
@@ -10,30 +9,28 @@ namespace Plot.Sample.Host
     {
         private static void Main(string[] args)
         {
-            var uri = new Uri("http://n4j.tm.local:7474/db/data");
+            var uri = new Uri("bolt://n4j.tm.local:7687/db/data");
             Configuration.Logger = () => new ConsoleLogger();
-            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (UserMapper).Assembly);
+            var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (MovieMapper).Assembly);
             while (true)
             {
                 var start = DateTime.UtcNow;
                 using (var session = factory.OpenSession())
                 {
-
-                    var user = session.Query(new GetOrganisationsByName());
-
-
-                    /*var membershipIds = user.Memberships.Where(x => x.IsActive).Select(x => x.Id).ToArray();
-                    var memberships = session.Get<Membership>(membershipIds).ToList();*/
+                    /*session.Create(new Movie
+                    {
+                        Id = "1",
+                        Title = "test",
+                        TagLine = "hello"
+                    });
+                    session.SaveChanges();*/
+                    var movie = session.Get<Movie>("1");
+                    
                 }
 
                 Console.WriteLine(DateTime.UtcNow.Subtract(start));
-
                 Console.ReadLine();
             }
-
-            Console.ReadLine();
-            Console.WriteLine("Done");
-            Console.ReadLine();
         }
     }
 }

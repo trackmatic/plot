@@ -9,15 +9,10 @@ namespace Plot
     public abstract class AbstractRepository<T> : IRepository<T> where T : class
     {
         private readonly IMapper<T> _mapper;
-
         private readonly IGraphSession _session;
-
         private const int Max = 100;
-
         private int _counter;
-
         private readonly IProxyFactory _proxyFactory;
-
         private readonly IEntityStateCache _entityStateCache;
 
         protected AbstractRepository(IMapper<T> mapper, IGraphSession session, IProxyFactory proxyFactory)

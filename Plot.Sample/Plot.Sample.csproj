@@ -48,40 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessGroup.cs" />
-    <Compile Include="Address.cs" />
-    <Compile Include="Asset.cs" />
-    <Compile Include="AssetType.cs" />
-    <Compile Include="Contact.cs" />
-    <Compile Include="Crew.cs" />
-    <Compile Include="Driver.cs" />
     <Compile Include="Exceptions\InvalidResetPasswordRequest.cs" />
-    <Compile Include="Forklift.cs" />
-    <Compile Include="Invitation.cs" />
-    <Compile Include="Membership.cs" />
-    <Compile Include="Module.cs" />
-    <Compile Include="ModulePermission.cs" />
-    <Compile Include="Modules.cs" />
-    <Compile Include="Names.cs" />
-    <Compile Include="Numbers.cs" />
-    <Compile Include="Organisation.cs" />
-    <Compile Include="Password.cs" />
-    <Compile Include="Person.cs" />
+    <Compile Include="Movie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries\GetOrganisationsByName.cs" />
-    <Compile Include="Queries\GetSitesByOrganisation.cs" />
-    <Compile Include="Queries\GetUserByUsername.cs" />
-    <Compile Include="RegionalSettings.cs" />
     <Compile Include="Relationships.cs" />
-    <Compile Include="ResetPasswordRequest.cs" />
-    <Compile Include="Role.cs" />
-    <Compile Include="Roles.cs" />
-    <Compile Include="Site.cs" />
-    <Compile Include="SitePermission.cs" />
-    <Compile Include="Trailer.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Person.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Vehicle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

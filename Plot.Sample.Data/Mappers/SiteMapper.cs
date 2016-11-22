@@ -1,7 +1,7 @@
-﻿using Neo4jClient;
-using Neo4jClient.Cypher;
+﻿using System;
 using Plot.Metadata;
 using Plot.Neo4j;
+using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
 using Plot.Queries;
 using Plot.Sample.Data.Nodes;
@@ -9,41 +9,42 @@ using Plot.Sample.Data.Results;
 
 namespace Plot.Sample.Data.Mappers
 {
-    public class SiteMapper : Mapper<Site>
+    public class SiteMapper : Mapper<Person>
     {
-        public SiteMapper(GraphClient db, IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory) 
-            : base(db, session, transactionFactory, metadataFactory)
+        public SiteMapper(IGraphSession session, ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory) 
+            : base(session, transactionFactory, metadataFactory)
         {
 
         }
         
-        protected override object GetData(Site item)
+        protected override object GetData(Person item)
         {
-            return new SiteNode(item);
+            return new PersonNode(item);
         }
 
-        protected override IQueryExecutor<Site> CreateQueryExecutor()
+        protected override IQueryExecutor<Person> CreateQueryExecutor()
         {
-            return new GetQueryExecutor(Db, MetadataFactory);
+            return new GetQueryExecutor(TransactionFactory, MetadataFactory);
         }
         
         #region Queries
 
-        private class GetQueryExecutor : GenericQueryExecutor<Site, SiteResult>
+        private class GetQueryExecutor : GenericQueryExecutor<Person, PersonResult>
         {
-            public GetQueryExecutor(GraphClient db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
+            public GetQueryExecutor(ICypherTransactionFactory db, IMetadataFactory metadataFactory) : base(db, metadataFactory)
             {
 
             }
             
-            protected override ICypherFluentQuery OnExecute(ICypherFluentQuery cypher)
+            protected override ICypherFluentQuery<PersonResult> OnExecute(ICypherFluentQuery<PersonResult> cypher)
             {
-                return cypher.ReturnDistinct((site, organisation, assets) => new SiteResult
+                /*return cypher.ReturnDistinct((site, organisation, assets) => new SiteResult
                 {
                     Site = site.As<SiteNode>(),
                     Organisation = organisation.As<OrganisationNode>(),
                     Assets = assets.CollectAs<AssetNode>()
-                });
+                });*/
+                throw new NotImplementedException();
             }
         }
 

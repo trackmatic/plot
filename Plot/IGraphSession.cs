@@ -20,6 +20,7 @@ namespace Plot
         void Evict<T>(T item);
 
         IPagedGraphCollection<TResult> Query<TResult>(IQuery<TResult> query, bool enlist = false);
+
         bool Register(object model);
 
         bool Register(object model, EntityState state);

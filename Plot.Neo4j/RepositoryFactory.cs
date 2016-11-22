@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Neo4jClient;
+using Neo4j.Driver.V1;
 using Plot.Metadata;
 using Plot.Proxies;
 
@@ -12,11 +12,8 @@ namespace Plot.Neo4j
     public class RepositoryFactory : IRepositoryFactory
     {
         private readonly IDictionary<Type, Func<IGraphSession, IMapper>> _mappers;
-
         private readonly ICypherTransactionFactory _cypherTransactionFactory;
-
         private readonly IProxyFactory _proxyFactory;
-
         private readonly IMetadataFactory _metadataFactory;
 
         public RepositoryFactory(ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory)
@@ -27,7 +24,7 @@ namespace Plot.Neo4j
             _metadataFactory = metadataFactory;
         }
 
-        public RepositoryFactory(IGraphClient db, ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory, params Assembly[] assemblies) 
+        public RepositoryFactory(IDriver db, ICypherTransactionFactory cypherTransactionFactory, IProxyFactory proxyFactory, IMetadataFactory metadataFactory, params Assembly[] assemblies) 
             : this(cypherTransactionFactory, proxyFactory, metadataFactory)
         {
             foreach (var assembly in assemblies)
@@ -41,7 +38,7 @@ namespace Plot.Neo4j
                         if (arguments.Any())
                         {
                             var local = type;
-                            Register(session => (IMapper)Activator.CreateInstance(local, db, session, _cypherTransactionFactory, _metadataFactory), arguments[0]);
+                            Register(session => (IMapper)Activator.CreateInstance(local, session, _cypherTransactionFactory, _metadataFactory), arguments[0]);
                         }
                     }
                 }

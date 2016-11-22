@@ -1,19 +1,19 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Neo4jClient.Transactions;
-using Plot.Logging;
+using System.Linq;
+using Neo4j.Driver.V1;
+using Plot.Neo4j.Cypher;
+using ILogger = Plot.Logging.ILogger;
 
 namespace Plot.Neo4j
 {
     public class CypherTransactionFactory : ICypherTransactionFactory
     {
-        private readonly ITransactionalGraphClient _db;
-
+        private readonly IDriver _db;
         private readonly IDictionary<IGraphSession, ICypherTransaction> _transactions;
-
         private readonly ILogger _logger;
 
-        public CypherTransactionFactory(ITransactionalGraphClient db, ILogger logger)
+        public CypherTransactionFactory(IDriver db, ILogger logger)
         {
             _db = db;
             _logger = logger;
@@ -31,6 +31,15 @@ namespace Plot.Neo4j
             session.Flushed += OnFlushed;
             session.Disposed += OnDisposed;
             return transaction;
+        }
+
+        public IList<T> Run<T>(ICypherFluentQuery<T> query)
+        {
+            using (var session = _db.Session())
+            {
+                var results = session.Run(query.Statement, query.Parameters).ToList();
+                return results.Select(query.Map).ToList();
+            }
         }
 
         private void OnDisposed(object sender, GraphSessionDisposedEventArgs e)

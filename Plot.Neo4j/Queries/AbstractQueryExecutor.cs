@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Neo4jClient;
-using Neo4jClient.Cypher;
+using Neo4j.Driver.V1;
 using Plot.Queries;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
@@ -14,13 +13,12 @@ namespace Plot.Neo4j.Queries
         where TQuery : IQuery<TAggregate>
         where TResult : ICypherQueryResult<TAggregate>
     {
-        private readonly GraphClient _db;
-
+        private readonly ICypherTransactionFactory _transactionFactory;
         private readonly IMetadataFactory _metadataFactory;
 
-        protected AbstractQueryExecutor(GraphClient db, IMetadataFactory metadataFactory)
+        protected AbstractQueryExecutor(ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory)
         {
-            _db = db;
+            _transactionFactory = transactionFactory;
             _metadataFactory = metadataFactory;
         }
 
@@ -65,9 +63,7 @@ namespace Plot.Neo4j.Queries
             return new PagedGraphGraphCollection<TAggregate>(session, this, query, results, (int)total, (int)page, enlist);
         }
 
-        protected abstract ICypherFluentQuery<TResult> GetDataset(IGraphClient db, TQuery query);
-        
-        protected IGraphClient Db => _db;
+        protected abstract ICypherFluentQuery<TResult> GetDataset(ICypherFluentQuery<TResult> db, TQuery query);
         
         protected NodeMetadata Metadata => _metadataFactory.Create(typeof(TAggregate));
 
@@ -80,7 +76,8 @@ namespace Plot.Neo4j.Queries
 
         private ICypherFluentQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)
         {
-            var cypher = GetDataset(_db, (TQuery)query);
+            var session = CreateFluentQuery();
+            var cypher = GetDataset(session, (TQuery)query);
             cypher = OrderByHelper<TResult, TAggregate>.OrderBy(cypher, query);
             cypher = cypher.Skip(query.Skip).Limit(query.Take);
             Log(cypher);
@@ -102,8 +99,13 @@ namespace Plot.Neo4j.Queries
         private IList<TResult> Execute(IQuery<TAggregate> query)
         {
             var cypher = CreateCypherQuery(query);
-            var dataset = cypher.Results.ToList();
+            var dataset = _transactionFactory.Run<TResult>(cypher);
             return dataset;
+        }
+
+        private ICypherFluentQuery<TResult> CreateFluentQuery()
+        {
+            return new CypherFluentQuery<TResult>();
         }
     }
 }

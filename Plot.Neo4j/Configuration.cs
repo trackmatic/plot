@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reflection;
-using Neo4jClient;
-using Neo4jClient.Transactions;
+using Neo4j.Driver.V1;
 using Plot.Logging;
 using Plot.Metadata;
 using Plot.Neo4j.Queries;
 using Plot.Proxies;
 using Plot.Queries;
+using ILogger = Plot.Logging.ILogger;
 
 namespace Plot.Neo4j
 {
@@ -22,19 +22,18 @@ namespace Plot.Neo4j
 
         public static Func<IMetadataFactory, ILogger, IProxyFactory> ProxyFactory = (metadataFactory, logger) => new DynamicProxyFactory(metadataFactory, logger);
 
-        public static Func<ITransactionalGraphClient, ILogger, ICypherTransactionFactory> CypherTransactionFactory = (db, logger) => new CypherTransactionFactory(db, logger);
+        public static Func<IDriver, ILogger, ICypherTransactionFactory> CypherTransactionFactory = (db, logger) => new CypherTransactionFactory(db, logger);
 
-        public static  Func<ITransactionalGraphClient, ICypherTransactionFactory, IProxyFactory, IMetadataFactory, Assembly[], IRepositoryFactory> RepositoryFactory = (db, transactionFactory, proxyFactory, metadataFactory, assemblies) => new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, assemblies);
+        public static  Func<IDriver, ICypherTransactionFactory, IProxyFactory, IMetadataFactory, Assembly[], IRepositoryFactory> RepositoryFactory = (db, transactionFactory, proxyFactory, metadataFactory, assemblies) => new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, assemblies);
 
-        public static Func<ITransactionalGraphClient, IMetadataFactory, Assembly[], IQueryExecutorFactory> QueryExecutorFactory = (db, metadataFactory, assemblies) => new QueryExecutorFactory(db, metadataFactory, assemblies);
+        public static Func<IDriver, IMetadataFactory, Assembly[], IQueryExecutorFactory> QueryExecutorFactory = (db, metadataFactory, assemblies) => new QueryExecutorFactory(db, metadataFactory, assemblies);
 
         public static Func<IQueryExecutorFactory, IRepositoryFactory, IEntityStateCacheFactory, IProxyFactory, IGraphSessionFactory> GraphSessionFactory = (queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory) => new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory);
 
         public static IGraphSessionFactory CreateGraphSessionFactory(Uri uri, string username, string password, params Assembly[] mapperAssemblies)
         {
-            var db = new GraphClient(uri, new HttpClientAuthWrapper(username, password));
-            db.ExecutionConfiguration.ResourceManagerId = ResourceManagerId();
-            db.Connect();
+            var token = AuthTokens.Basic(username, password);
+            var db = GraphDatabase.Driver(uri, token);
             var entityStateCacheFactory = EntityStateCacheFactory();
             var logger = Logger();
             var metadataFactory = MetadataFactory(logger);
