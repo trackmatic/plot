@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Conventions.cs" />
     <Compile Include="Cypher.Commands\CreateNodeCommand.cs" />
     <Compile Include="Cypher.Commands\CreateRelationshipCommand.cs" />
     <Compile Include="Cypher.Commands\DeleteNodeCommand.cs" />

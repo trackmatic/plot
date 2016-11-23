@@ -10,6 +10,27 @@ namespace Plot.Neo4j
 {
     public static class Extensions
     {
+        public static List<T> ReadList<T>(this IRecord record, string key, Func<INode, T> factory)
+        {
+            key = Conventions.NamedParameterCase(key);
+            if (!record.Keys.Contains(key))
+            {
+                return null;
+            }
+            return record[key].As<List<INode>>().Select(factory).ToList();
+        }
+
+        public static T Read<T>(this IRecord record, string key, Func<INode,T> factory)
+        {
+            key = Conventions.NamedParameterCase(key);
+            if (!record.Keys.Contains(key))
+            {
+                return default(T);
+            }
+            var node = record[key].As<INode>();
+            return factory(node);
+        }
+
         public static T Read<T>(this INode node, string key)
         {
             if (!node.Properties.ContainsKey(key))
@@ -63,27 +84,6 @@ namespace Plot.Neo4j
         {
             var unixRef = new DateTime(1970, 1, 1, 0, 0, 0);
             return unixRef.AddSeconds(timestamp);
-        }
-
-        public static string CamelCase(string value)
-        {
-            if (char.IsUpper(value[0]))
-            {
-                var start = new[] { char.ToLower(value[0]) };
-                var remainder = value.Skip(1).Take(value.Length).ToArray();
-                return new string(start.Concat(remainder).ToArray());
-            }
-            return value;
-        }
-
-        public static ICypherQuery MatchById(this ICypherQuery cypher, NodeMetadata metadata)
-        {
-            return cypher.Match($"({CamelCase(metadata.Name)}:{metadata.Name})").Where($"{CamelCase(metadata.Name)}.Id in {{id}}");
-        }
-
-        public static ICypherQuery IncludeRelationships(this ICypherQuery cypher, NodeMetadata metadata)
-        {
-            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
         }
     }
 }

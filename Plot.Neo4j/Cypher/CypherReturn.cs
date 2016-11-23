@@ -20,21 +20,21 @@ namespace Plot.Neo4j.Cypher
 
         public ICypherReturn<TResult> Collect(Return item)
         {
-            Append("COLLECT({0}) AS {1}", item.Property, item.Alias);
+            Append("COLLECT({0}) AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }
 
         public ICypherReturn<TResult> CollectDistinct(Return item)
         {
-            Append("COLLECT(DISTINCT {0}) AS {1}", item.Property, item.Alias);
+            Append("COLLECT(DISTINCT {0}) AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }
 
         public ICypherReturn<TResult> Return(Return item)
         {
-            Append("{0} AS {1}", item.Property, item.Alias);
+            Append("{0} AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }

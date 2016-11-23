@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Neo4j.Driver.V1;
+using Plot.Neo4j;
 using Plot.Neo4j.Cypher;
 using Plot.Neo4j.Queries;
 using Plot.Sample.Data.Nodes;
@@ -12,8 +12,8 @@ namespace Plot.Sample.Data.Results
     {
         public PersonResult(IRecord record)
         {
-            Person = new PersonNode(record[Keys.Person].As<INode>());
-            Movies = record[Keys.Movies].As<List<INode>>().Select(x => new MovieNode(x));
+            Person = record.Read(Keys.Person, node => new PersonNode(node));
+            Movies = record.ReadList(Keys.Movies, node => new MovieNode(node));
         }
 
         public PersonNode Person { get; set; }
@@ -36,7 +36,7 @@ namespace Plot.Sample.Data.Results
 
         public static ICypherReturn<PersonResult> Return(ICypherReturn<PersonResult> builder)
         {
-            return builder.Return("person", "Person").CollectDistinct("movies", "Movies");
+            return builder.Return("Person").CollectDistinct("Movies");
         }
 
         private static class Keys

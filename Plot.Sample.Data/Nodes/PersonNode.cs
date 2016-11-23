@@ -1,4 +1,5 @@
 ﻿using Neo4j.Driver.V1;
+using Plot.Neo4j;
 
 namespace Plot.Sample.Data.Nodes
 {
@@ -6,9 +7,9 @@ namespace Plot.Sample.Data.Nodes
     {
         public PersonNode(INode node)
         {
-            Id = node[Keys.Id].As<string>();
-            Name = node[Keys.Name].As<string>();
-            Born = node[Keys.Born].As<int>();
+            Id = node.Read<string>(Keys.Id);
+            Name = node.Read<string>(Keys.Name);
+            Born = node.Read<int>(Keys.Born);
         }
 
         public PersonNode(Person item)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher
 {
@@ -21,5 +22,6 @@ namespace Plot.Neo4j.Cypher
         ICypherQuery OnMatch();
         bool ContainsParameter(string key);
         ICypherQuery<T> AsTypedQuery<T>();
+        ICypherQuery IncludeRelationships(NodeMetadata metadata);
     }
 }

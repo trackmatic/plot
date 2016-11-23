@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Neo4j.Driver.V1;
+using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher
 {
@@ -121,7 +123,12 @@ namespace Plot.Neo4j.Cypher
         {
             return (ICypherQuery<T1>)this;
         }
-        
+
+        public ICypherQuery IncludeRelationships(NodeMetadata metadata)
+        {
+            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate((ICypherQuery)this, (current, property) => current.OptionalMatch($"(({Conventions.NamedParameterCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({Conventions.NamedParameterCase(property.Name)}:{property.Type.Name}))"));
+        }
+
         public ICypherQuery<T> Skip(int count)
         {
             return Mutate(Append(Keywords.Skip, count));
