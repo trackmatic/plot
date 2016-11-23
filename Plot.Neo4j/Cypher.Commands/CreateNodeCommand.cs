@@ -1,25 +1,24 @@
 ﻿using System;
-using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher.Commands
 {
     internal class CreateNodeCommand : ICommand
     {
-        private readonly Entity _entity;
+        private readonly Node _node;
         private readonly Func<object> _factory;
         
-        public CreateNodeCommand(Entity entity, Func<object> factory)
+        public CreateNodeCommand(Node node, Func<object> factory)
         {
-            _entity = entity;
+            _node = node;
             _factory = factory;
         }
 
-        public ICypherFluentQuery Execute(ICypherFluentQuery query)
+        public ICypherQuery Execute(ICypherQuery query)
         {
-            var node = StatementFactory.Parameter(_entity);
-            var id = StatementFactory.IdParameter(_entity);
-            var merge = StatementFactory.Merge(_entity, id);
-            var set = StatementFactory.Set(_entity, node);
+            var node = StatementFactory.Parameter(_node);
+            var id = StatementFactory.IdParameter(_node);
+            var merge = StatementFactory.Merge(_node, id);
+            var set = StatementFactory.Set(_node, node);
             query = query
                 .Merge(merge)
                 .OnCreate()
@@ -27,7 +26,7 @@ namespace Plot.Neo4j.Cypher.Commands
                 .OnMatch()
                 .Set(set)
                 .WithParam(node, _factory().ToDictionary())
-                .WithParam(id, ProxyUtils.GetEntityId(_entity));
+                .WithParam(id, ProxyUtils.GetEntityId(_node));
             return query;
         }
     }

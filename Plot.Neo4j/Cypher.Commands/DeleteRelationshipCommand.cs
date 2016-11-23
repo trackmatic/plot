@@ -4,18 +4,18 @@ namespace Plot.Neo4j.Cypher.Commands
 {
     internal class DeleteRelationshipCommand : ICommand
     {
-        private readonly Entity _source;
-        private readonly Entity _destination;
+        private readonly Node _source;
+        private readonly Node _destination;
         private readonly RelationshipMetadata _relationship;
 
-        public DeleteRelationshipCommand(Entity source, Entity destination, RelationshipMetadata relationship)
+        public DeleteRelationshipCommand(Node source, Node destination, RelationshipMetadata relationship)
         {
             _source = source;
             _destination = destination;
             _relationship = relationship;
         }
 
-        public ICypherFluentQuery Execute(ICypherFluentQuery query)
+        public ICypherQuery Execute(ICypherQuery query)
         {
             query = query
                 .With(StatementFactory.With(_source))

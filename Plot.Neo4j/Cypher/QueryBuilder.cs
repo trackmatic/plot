@@ -11,7 +11,7 @@ namespace Plot.Neo4j.Cypher
             _elements = elements;
         }
 
-        public ICypherFluentQuery Build(ICypherFluentQuery query)
+        public ICypherQuery Build(ICypherQuery query)
         {
             var current = query;
             foreach (var element in _elements)
@@ -21,7 +21,7 @@ namespace Plot.Neo4j.Cypher
             return current;
         }
 
-        public static ICypherFluentQuery Create(ICypherFluentQuery query, IEnumerable<IQueryBuilderElement> elements)
+        public static ICypherQuery Create(ICypherQuery query, IEnumerable<IQueryBuilderElement> elements)
         {
             return new QueryBuilder(elements).Build(query);
         }

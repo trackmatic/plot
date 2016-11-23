@@ -9,7 +9,7 @@ namespace Plot.Neo4j
     public class CypherTransaction : ICypherTransaction
     {
         private readonly IDriver _db;
-        private readonly List<ICypherFluentQuery> _items;
+        private readonly List<ICypherQuery> _items;
         private bool _disposed;
         private readonly Guid _id;
         private readonly ILogger _logger;
@@ -18,7 +18,7 @@ namespace Plot.Neo4j
         {
             _id = Guid.NewGuid();
             _db = db;
-            _items = new List<ICypherFluentQuery>();
+            _items = new List<ICypherQuery>();
             _logger = logger;
         }
 
@@ -37,14 +37,14 @@ namespace Plot.Neo4j
             }
         }
 
-        public void Enlist(IMapper mapper, Func<ICypherFluentQuery, ICypherFluentQuery> callback)
+        public void Enlist(IMapper mapper, Func<ICypherQuery, ICypherQuery> callback)
         {
             var query = CreateFluentQuery(mapper.Type);
             query = callback(query);
             _items.Add(query);
         }
 
-        private void Log(ICypherFluentQuery query)
+        private void Log(ICypherQuery query)
         {
             _logger.Info(query.GetDebugText());
         }
@@ -63,9 +63,9 @@ namespace Plot.Neo4j
             _disposed = true;
         }
 
-        private ICypherFluentQuery CreateFluentQuery(Type type)
+        private ICypherQuery CreateFluentQuery(Type type)
         {
-            return (ICypherFluentQuery)Activator.CreateInstance(typeof(CypherFluentQuery<>).MakeGenericType(type));
+            return (ICypherQuery)Activator.CreateInstance(typeof(CypherQuery<>).MakeGenericType(type));
         }
     }
 }

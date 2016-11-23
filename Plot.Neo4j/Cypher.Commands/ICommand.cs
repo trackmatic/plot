@@ -2,6 +2,6 @@
 {
     public interface ICommand
     {
-        ICypherFluentQuery Execute(ICypherFluentQuery query);
+        ICypherQuery Execute(ICypherQuery query);
     }
 }

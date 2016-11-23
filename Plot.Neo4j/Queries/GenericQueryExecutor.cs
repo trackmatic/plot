@@ -12,14 +12,14 @@ namespace Plot.Neo4j.Queries
         {
         }
 
-        protected override ICypherFluentQuery<TResult> GetDataset(ICypherFluentQuery<TResult> query, GetAbstractQuery<TAggregate> abstractQuery)
+        protected override ICypherQuery<TResult> GetDataset(ICypherQuery<TResult> query, GetAbstractQuery<TAggregate> abstractQuery)
         {
             var cypher = query.MatchById(Metadata);
             cypher = cypher.IncludeRelationships(Metadata);
             cypher = cypher.WithParam("id", abstractQuery.Id);
-            return OnExecute((ICypherFluentQuery<TResult>)cypher);
+            return OnExecute((ICypherQuery<TResult>)cypher);
         }
 
-        protected abstract ICypherFluentQuery<TResult> OnExecute(ICypherFluentQuery<TResult> cypher);
+        protected abstract ICypherQuery<TResult> OnExecute(ICypherQuery<TResult> cypher);
     }
 }

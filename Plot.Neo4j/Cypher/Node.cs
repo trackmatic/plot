@@ -2,11 +2,9 @@
 
 namespace Plot.Neo4j.Cypher
 {
-    public class Entity
+    public class Node
     {
-
-
-        public Entity(NodeMetadata metadata, object value)
+        public Node(NodeMetadata metadata, object value)
         {
             Metadata = metadata;
             Value = value;
@@ -14,7 +12,6 @@ namespace Plot.Neo4j.Cypher
 
         public NodeMetadata Metadata { get; }
         public object Value { get; }
-
         public string Id => ProxyUtils.GetEntityId(Value);
     }
 }

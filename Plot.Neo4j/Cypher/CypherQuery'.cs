@@ -5,17 +5,17 @@ using Neo4j.Driver.V1;
 
 namespace Plot.Neo4j.Cypher
 {
-    public class CypherFluentQuery<T> : ICypherFluentQuery<T>
+    public class CypherQuery<T> : ICypherQuery<T>
     {
         private readonly StringBuilder _builder;
         private ICypherReturn<T> _return;
            
-        public CypherFluentQuery() : this(new StringBuilder(), null, new Dictionary<string, object>())
+        public CypherQuery() : this(new StringBuilder(), null, new Dictionary<string, object>())
         {
             
         }
 
-        private CypherFluentQuery(StringBuilder builder, ICypherReturn<T> @return, IDictionary<string, object> parameters)
+        private CypherQuery(StringBuilder builder, ICypherReturn<T> @return, IDictionary<string, object> parameters)
         {
             _builder = builder;
             _return = @return;
@@ -30,76 +30,76 @@ namespace Plot.Neo4j.Cypher
             return _builder.ToString();
         }
 
-        public ICypherFluentQuery Match(string statement)
+        public ICypherQuery Match(string statement)
         {
             return Mutate(Append(Keywords.Match, statement));
         }
 
-        public ICypherFluentQuery Set(string statement)
+        public ICypherQuery Set(string statement)
         {
             return Mutate(Append(Keywords.Set, statement));
         }
 
-        public ICypherFluentQuery Merge(string statement)
+        public ICypherQuery Merge(string statement)
         {
             return Mutate(Append(Keywords.Merge, statement));
         }
 
-        public ICypherFluentQuery With(string statement)
+        public ICypherQuery With(string statement)
         {
             return Mutate(Append(Keywords.With, statement));
         }
 
-        public ICypherFluentQuery CreateUnique(string statement)
+        public ICypherQuery CreateUnique(string statement)
         {
             return Mutate(Append(Keywords.CreateUnique, statement));
         }
 
-        public ICypherFluentQuery Delete(string statement)
+        public ICypherQuery Delete(string statement)
         {
             return Mutate(Append(Keywords.Delete, statement));
         }
 
-        public ICypherFluentQuery Where(string statement)
+        public ICypherQuery Where(string statement)
         {
             return Mutate(Append(Keywords.Where, statement));
         }
 
-        public ICypherFluentQuery OptionalMatch(string statement)
+        public ICypherQuery OptionalMatch(string statement)
         {
             return Mutate(Append(Keywords.OptionalMatch, statement));
         }
 
-        public ICypherFluentQuery WithParam(string key, object value)
+        public ICypherQuery WithParam(string key, object value)
         {
             Parameters.Add(key, value);
             return Mutate(_builder);
         }
 
-        public ICypherFluentQuery WithParam(string key, object[] value)
+        public ICypherQuery WithParam(string key, object[] value)
         {
             Parameters.Add(key, value);
             return Mutate(_builder);
         }
 
-        public ICypherFluentQuery OnCreate()
+        public ICypherQuery OnCreate()
         {
             return Mutate(Append(Keywords.OnCreate));
         }
 
-        public ICypherFluentQuery OnMatch()
+        public ICypherQuery OnMatch()
         {
             return Mutate(Append(Keywords.OnMatch));
         }
 
-        public ICypherFluentQuery<T> Return(Func<IRecord, T> map, Func<ICypherReturn<T>, ICypherReturn<T>> factory)
+        public ICypherQuery<T> Return(Func<IRecord, T> map, Func<ICypherReturn<T>, ICypherReturn<T>> factory)
         {
             Append(Keywords.Return);
             _return = factory(new CypherReturn<T>(map, _builder));
             return this;
         }
 
-        public ICypherFluentQuery<T> ReturnDistinct(Func<IRecord, T> map, Func<ICypherReturn<T>, ICypherReturn<T>> factory)
+        public ICypherQuery<T> ReturnDistinct(Func<IRecord, T> map, Func<ICypherReturn<T>, ICypherReturn<T>> factory)
         {
             Append(Keywords.ReturnDistinct);
             _return = factory(new CypherReturn<T>(map, _builder));
@@ -117,22 +117,27 @@ namespace Plot.Neo4j.Cypher
             return Parameters.ContainsKey(key);
         }
 
-        public ICypherFluentQuery<T> Skip(int count)
+        public ICypherQuery<T1> AsTypedQuery<T1>()
+        {
+            return (ICypherQuery<T1>)this;
+        }
+        
+        public ICypherQuery<T> Skip(int count)
         {
             return Mutate(Append(Keywords.Skip, count));
         }
 
-        public ICypherFluentQuery<T> Limit(int count)
+        public ICypherQuery<T> Limit(int count)
         {
             return Mutate(Append(Keywords.Limit, count));
         }
 
-        public ICypherFluentQuery<T> OrderByDescending(string property)
+        public ICypherQuery<T> OrderByDescending(string property)
         {
             return Mutate(Append(string.Format(Keywords.OrderByDescending, property)));
         }
 
-        public ICypherFluentQuery<T> OrderBy(string property)
+        public ICypherQuery<T> OrderBy(string property)
         {
             return Mutate(Append(Keywords.OrderBy, property));
         }
@@ -142,9 +147,9 @@ namespace Plot.Neo4j.Cypher
             return _builder.AppendLine().Append(string.Join(" ", items));
         }
 
-        private CypherFluentQuery<T> Mutate(StringBuilder builder)
+        private CypherQuery<T> Mutate(StringBuilder builder)
         {
-            return new CypherFluentQuery<T>(builder, _return, Parameters);
+            return new CypherQuery<T>(builder, _return, Parameters);
         }
         
         private static class Keywords

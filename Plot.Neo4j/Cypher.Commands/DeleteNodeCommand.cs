@@ -2,20 +2,20 @@
 {
     internal class DeleteNodeCommand : ICommand
     {
-        private readonly Entity _entity;
+        private readonly Node _node;
 
-        public DeleteNodeCommand(Entity entity)
+        public DeleteNodeCommand(Node node)
         {
-            _entity = entity;
+            _node = node;
         }
 
-        public ICypherFluentQuery Execute(ICypherFluentQuery query)
+        public ICypherQuery Execute(ICypherQuery query)
         {
             query = query
-                .Match(StatementFactory.Match(_entity, StatementFactory.IdParameter(_entity)))
-                .OptionalMatch($"({StatementFactory.ExistingNode(_entity)}-[r]-())")
-                .WithParam(StatementFactory.IdParameter(_entity), _entity.Id)
-                .Delete($"r, {StatementFactory.ExistingNode(_entity)}");
+                .Match(StatementFactory.Match(_node, StatementFactory.IdParameter(_node)))
+                .OptionalMatch($"({StatementFactory.ExistingNode(_node)}-[r]-())")
+                .WithParam(StatementFactory.IdParameter(_node), _node.Id)
+                .Delete($"r, {StatementFactory.ExistingNode(_node)}");
             return query;
         }
     }

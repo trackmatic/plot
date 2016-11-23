@@ -70,7 +70,7 @@ namespace Plot.Neo4j
 
         protected ICypherTransactionFactory TransactionFactory => _transactionFactory;
         
-        private void Execute(T item, Func<ICypherFluentQuery, T, IEnumerable<ICommand>> operation)
+        private void Execute(T item, Func<ICypherQuery, T, IEnumerable<ICommand>> operation)
         {
             var transaction = _transactionFactory.Create(_session);
             transaction.Enlist(this, query =>
@@ -83,14 +83,14 @@ namespace Plot.Neo4j
             });
         }
 
-        private IList<ICommand> OnUpdate(ICypherFluentQuery query, T item)
+        private IList<ICommand> OnUpdate(ICypherQuery query, T item)
         {
             return OnInsert(query, item);
         }
 
-        private IList<ICommand> OnInsert(ICypherFluentQuery query, T item)
+        private IList<ICommand> OnInsert(ICypherQuery query, T item)
         {
-            var commands = new List<ICommand> { new CreateNodeCommand(CreateEntity(item), () => GetData(item)) };
+            var commands = new List<ICommand> { new CreateNodeCommand(CreateNode(item), () => GetData(item)) };
 
             var metadata = MetadataFactory.Create(item);
 
@@ -117,9 +117,9 @@ namespace Plot.Neo4j
             return commands;
         }
 
-        private IList<ICommand> OnDelete(ICypherFluentQuery query, T item)
+        private IList<ICommand> OnDelete(ICypherQuery query, T item)
         {
-            var commands = new List<ICommand>{ new DeleteNodeCommand(CreateEntity(item)) };
+            var commands = new List<ICommand>{ new DeleteNodeCommand(CreateNode(item)) };
             return commands;
         }
 
@@ -183,13 +183,13 @@ namespace Plot.Neo4j
         
         private ICommand CreateRelationship(object source, object destination, RelationshipMetadata relationship)
         {
-            var command = new CreateRelationshipCommand(CreateEntity(source), CreateEntity(destination), relationship);
+            var command = new CreateRelationshipCommand(CreateNode(source), CreateNode(destination), relationship);
             return command;
         }
 
         private ICommand DeleteRelationship(object source, object destination, RelationshipMetadata relationship)
         {
-            var command = new DeleteRelationshipCommand(CreateEntity(source), CreateEntity(destination), relationship);
+            var command = new DeleteRelationshipCommand(CreateNode(source), CreateNode(destination), relationship);
             return command;
         }
 
@@ -213,15 +213,15 @@ namespace Plot.Neo4j
                 _returnFactory = returnFactory;
             }
 
-            protected override ICypherFluentQuery<TResult> OnExecute(ICypherFluentQuery<TResult> cypher)
+            protected override ICypherQuery<TResult> OnExecute(ICypherQuery<TResult> cypher)
             {
                 return cypher.ReturnDistinct(_map, _returnFactory);
             }
         }
 
-        private Entity CreateEntity(object value)
+        private Node CreateNode(object value)
         {
-            return new Entity(MetadataFactory.Create(value), value);
+            return new Node(MetadataFactory.Create(value), value);
         }
     }
 }

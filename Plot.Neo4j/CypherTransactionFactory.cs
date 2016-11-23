@@ -33,7 +33,7 @@ namespace Plot.Neo4j
             return transaction;
         }
 
-        public IList<T> Run<T>(ICypherFluentQuery<T> query)
+        public IList<T> Run<T>(ICypherQuery<T> query)
         {
             using (var session = _db.Session())
             {

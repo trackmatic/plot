@@ -62,18 +62,18 @@ namespace Plot.Neo4j.Queries
             return new PagedGraphGraphCollection<TAggregate>(session, this, query, results, (int)total, (int)page, enlist);
         }
 
-        protected abstract ICypherFluentQuery<TResult> GetDataset(ICypherFluentQuery<TResult> db, TQuery query);
+        public Type QueryType => typeof(TQuery);
+
+        protected abstract ICypherQuery<TResult> GetDataset(ICypherQuery<TResult> db, TQuery query);
         
         protected NodeMetadata Metadata => _metadataFactory.Create(typeof(TAggregate));
-
-        private void Log(ICypherFluentQuery query)
+        
+        private void Log(ICypherQuery query)
         {
 
         }
 
-        public Type QueryType => typeof (TQuery);
-
-        private ICypherFluentQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)
+        private ICypherQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)
         {
             var session = CreateFluentQuery();
             var cypher = GetDataset(session, (TQuery)query);
@@ -102,9 +102,9 @@ namespace Plot.Neo4j.Queries
             return dataset;
         }
 
-        private ICypherFluentQuery<TResult> CreateFluentQuery()
+        private ICypherQuery<TResult> CreateFluentQuery()
         {
-            return new CypherFluentQuery<TResult>();
+            return new CypherQuery<TResult>();
         }
     }
 }

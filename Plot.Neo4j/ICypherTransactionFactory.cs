@@ -6,6 +6,6 @@ namespace Plot.Neo4j
     public interface ICypherTransactionFactory
     {
         ICypherTransaction Create(IGraphSession session);
-        IList<T> Run<T>(ICypherFluentQuery<T> query);
+        IList<T> Run<T>(ICypherQuery<T> query);
     }
 }

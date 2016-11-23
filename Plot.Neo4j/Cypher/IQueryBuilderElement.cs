@@ -2,6 +2,6 @@
 {
     public interface IQueryBuilderElement
     {
-        ICypherFluentQuery Append(ICypherFluentQuery cypher);
+        ICypherQuery Append(ICypherQuery cypher);
     }
 }

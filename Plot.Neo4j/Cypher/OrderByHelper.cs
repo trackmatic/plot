@@ -8,7 +8,7 @@ namespace Plot.Neo4j.Cypher
     {
         private bool _started;
 
-        private ICypherFluentQuery<TResult> Append(ICypherFluentQuery<TResult> cypher, IEnumerable<Order<TResult>> orders)
+        private ICypherQuery<TResult> Append(ICypherQuery<TResult> cypher, IEnumerable<Order<TResult>> orders)
         {
             foreach (var order in orders)
             {
@@ -25,7 +25,7 @@ namespace Plot.Neo4j.Cypher
             return cypher;
         }
 
-        public static ICypherFluentQuery<TResult> OrderBy(ICypherFluentQuery<TResult> cypher, IQuery<TAggregate> query)
+        public static ICypherQuery<TResult> OrderBy(ICypherQuery<TResult> cypher, IQuery<TAggregate> query)
         {
             if (query.OrderBy == null)
             {

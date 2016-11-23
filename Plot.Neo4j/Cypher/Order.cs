@@ -8,16 +8,16 @@
             Property = value.Trim('-');
         }
 
-        private string Property { get; set; }
+        private string Property { get; }
 
-        private bool Descending { get; set; }
+        private bool Descending { get; }
 
-        public ICypherFluentQuery<TResult> Start(ICypherFluentQuery<TResult> cypher)
+        public ICypherQuery<TResult> Start(ICypherQuery<TResult> cypher)
         {
             return Descending ? cypher.OrderByDescending(Property) : cypher.OrderBy(Property);
         }
 
-        public ICypherFluentQuery<TResult> Continue(ICypherFluentQuery<TResult> cypher)
+        public ICypherQuery<TResult> Continue(ICypherQuery<TResult> cypher)
         {
             return Descending ? cypher.OrderByDescending(Property) : cypher.OrderBy(Property);
         }

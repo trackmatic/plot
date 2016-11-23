@@ -1,44 +1,43 @@
-﻿using System.Linq;
-using Plot.Metadata;
+﻿using Plot.Metadata;
 
 namespace Plot.Neo4j.Cypher
 {
     public static class StatementFactory
     {
-        public static string With(Entity entity)
+        public static string With(Node node)
         {
-            return $"{Parameter(entity)}";
+            return $"{Parameter(node)}";
         }
 
-        public static string Match(Entity entity, string parameter)
+        public static string Match(Node node, string parameter)
         {
-            return $"({Parameter(entity)}:{entity.Metadata.Name} {{ Id:{{{parameter}}}}})";
+            return $"({Parameter(node)}:{node.Metadata.Name} {{ Id:{{{parameter}}}}})";
         }
 
-        public static string Merge(Entity entity, string parameter)
+        public static string Merge(Node node, string parameter)
         {
-            return $"({Parameter(entity)}:{entity.Metadata.Name} {{ Id:{{{parameter}}}}})";
+            return $"({Parameter(node)}:{node.Metadata.Name} {{ Id:{{{parameter}}}}})";
         }
         
-        public static string Set(Entity entity, string parameter)
+        public static string Set(Node node, string parameter)
         {
-            return $"{Parameter(entity)} = {{{parameter}}}";
+            return $"{Parameter(node)} = {{{parameter}}}";
         }
 
-        public static string Node(Entity entity)
+        public static string Node(Node node)
         {
-            return $"({Parameter(entity)}:{entity.Metadata.Name})";
+            return $"({Parameter(node)}:{node.Metadata.Name})";
         }
 
-        public static string Parameter(Entity entity)
+        public static string Parameter(Node node)
         {
-            var parameter = Parameter(entity.Metadata.Name, entity.Id);
+            var parameter = Parameter(node.Metadata.Name, node.Id);
             return parameter;
         }
 
-        public static string IdParameter(Entity entity)
+        public static string IdParameter(Node node)
         {
-            var parameter = Parameter(entity.Metadata.Name, $"{entity.Id}_id");
+            var parameter = Parameter(node.Metadata.Name, $"{node.Id}_id");
             return parameter;
         }
 
@@ -47,11 +46,11 @@ namespace Plot.Neo4j.Cypher
             return $"{name}_{MakeSafe(property)}";
         }
 
-        public static string Relationship(Entity source, Entity destination, RelationshipMetadata relationship, string name = null)
+        public static string Relationship(Node source, Node destination, RelationshipMetadata relationship, string name = null)
         {
             return $"{ExistingNode(source)}{Relationship(relationship)}{ExistingNode(destination)}";
         }
-        public static string ExistingNode(Entity entity)
+        public static string ExistingNode(Node entity)
         {
             return $"({Parameter(entity)})";
         }

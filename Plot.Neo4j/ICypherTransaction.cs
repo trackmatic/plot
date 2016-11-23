@@ -7,6 +7,6 @@ namespace Plot.Neo4j
     public interface ICypherTransaction : IDisposable
     {
         void Commit();
-        void Enlist(IMapper mapper, Func<ICypherFluentQuery, ICypherFluentQuery> callback);
+        void Enlist(IMapper mapper, Func<ICypherQuery, ICypherQuery> callback);
     }
 }

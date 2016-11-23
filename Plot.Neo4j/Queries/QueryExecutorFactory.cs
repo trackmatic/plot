@@ -22,7 +22,7 @@ namespace Plot.Neo4j.Queries
         }
 
 
-        public QueryExecutorFactory(IDriver db, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
+        public QueryExecutorFactory(ICypherTransactionFactory transactionFactory, IMetadataFactory metadataFactory, params Assembly[] assemblies) : this(metadataFactory)
         {
             foreach (var assembly in assemblies)
             {
@@ -41,7 +41,7 @@ namespace Plot.Neo4j.Queries
                     {
                         var local = type;
 
-                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, db, _metadataFactory), arguments[2]);
+                        Register(session => (IQueryExecutor) Activator.CreateInstance(local, transactionFactory, _metadataFactory), arguments[2]);
                     }
                 }
             }

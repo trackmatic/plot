@@ -25,7 +25,7 @@ namespace Plot.Neo4j
 
         public static  Func<IDriver, ICypherTransactionFactory, IProxyFactory, IMetadataFactory, Assembly[], IRepositoryFactory> RepositoryFactory = (db, transactionFactory, proxyFactory, metadataFactory, assemblies) => new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, assemblies);
 
-        public static Func<IDriver, IMetadataFactory, Assembly[], IQueryExecutorFactory> QueryExecutorFactory = (db, metadataFactory, assemblies) => new QueryExecutorFactory(db, metadataFactory, assemblies);
+        public static Func<ICypherTransactionFactory, IMetadataFactory, Assembly[], IQueryExecutorFactory> QueryExecutorFactory = (transactionFactory, metadataFactory, assemblies) => new QueryExecutorFactory(transactionFactory, metadataFactory, assemblies);
 
         public static Func<IQueryExecutorFactory, IRepositoryFactory, IEntityStateCacheFactory, IProxyFactory, IGraphSessionFactory> GraphSessionFactory = (queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory) => new GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory);
 
@@ -39,7 +39,7 @@ namespace Plot.Neo4j
             var proxyFactory = ProxyFactory(metadataFactory, logger);
             var transactionFactory = CypherTransactionFactory(db, logger);
             var repositoryFactory = RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, mapperAssemblies);
-            var queryExecutorFactory = QueryExecutorFactory(db, metadataFactory, mapperAssemblies);
+            var queryExecutorFactory = QueryExecutorFactory(transactionFactory, metadataFactory, mapperAssemblies);
             var factory = GraphSessionFactory(queryExecutorFactory, repositoryFactory, entityStateCacheFactory, proxyFactory);
             return factory;
         }

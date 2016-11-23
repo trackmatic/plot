@@ -14,7 +14,7 @@ namespace Plot.Tests.Neo4j.Cypher
             var factory = new AttributeMetadataFactory(new NullLogger());
             var person = new Person { Id = "1" };
             var metadata = factory.Create(person);
-            var entity = new Entity(factory.Create(person), person);
+            var entity = new Node(factory.Create(person), person);
             var result = StatementFactory.Set(entity, "y");
             Assert.Equal("Person_1 = {y}", result);
         }
@@ -24,7 +24,7 @@ namespace Plot.Tests.Neo4j.Cypher
         {
             var factory = new AttributeMetadataFactory(new NullLogger());
             var person = new Person {Id = "1"};
-            var entity = new Entity(factory.Create(person), person);
+            var entity = new Node(factory.Create(person), person);
             var result = StatementFactory.Parameter(entity);
             Assert.Equal("Person_1", result);
         }
@@ -34,7 +34,7 @@ namespace Plot.Tests.Neo4j.Cypher
         {
             var factory = new AttributeMetadataFactory(new NullLogger());
             var person = new Person { Id = "1" };
-            var entity = new Entity(factory.Create(person), person);
+            var entity = new Node(factory.Create(person), person);
             var id = StatementFactory.IdParameter(entity);
             var result = StatementFactory.Merge(entity, id);
             Assert.Equal("(Person_1:Person { Id:{Person_1_id}})", result);

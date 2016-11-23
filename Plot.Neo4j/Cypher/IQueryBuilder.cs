@@ -2,6 +2,6 @@
 {
     public interface IQueryBuilder
     {
-        ICypherFluentQuery Build(ICypherFluentQuery db);
+        ICypherQuery Build(ICypherQuery db);
     }
 }

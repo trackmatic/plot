@@ -5,17 +5,17 @@ namespace Plot.Neo4j.Cypher.Commands
     internal class CreateRelationshipCommand : ICommand
     {
         private readonly RelationshipMetadata _relationship;
-        private readonly Entity _source;
-        private readonly Entity _destination;
+        private readonly Node _source;
+        private readonly Node _destination;
 
-        public CreateRelationshipCommand(Entity source, Entity destination, RelationshipMetadata relationship)
+        public CreateRelationshipCommand(Node source, Node destination, RelationshipMetadata relationship)
         {
             _source = source;
             _destination = destination;
             _relationship = relationship;
         }
 
-        public ICypherFluentQuery Execute(ICypherFluentQuery query)
+        public ICypherQuery Execute(ICypherQuery query)
         {
             query
                 .With(StatementFactory.With(_source))

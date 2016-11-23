@@ -76,12 +76,12 @@ namespace Plot.Neo4j
             return value;
         }
 
-        public static ICypherFluentQuery MatchById(this ICypherFluentQuery cypher, NodeMetadata metadata)
+        public static ICypherQuery MatchById(this ICypherQuery cypher, NodeMetadata metadata)
         {
             return cypher.Match($"({CamelCase(metadata.Name)}:{metadata.Name})").Where($"{CamelCase(metadata.Name)}.Id in {{id}}");
         }
 
-        public static ICypherFluentQuery IncludeRelationships(this ICypherFluentQuery cypher, NodeMetadata metadata)
+        public static ICypherQuery IncludeRelationships(this ICypherQuery cypher, NodeMetadata metadata)
         {
             return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
         }

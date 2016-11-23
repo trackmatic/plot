@@ -61,7 +61,12 @@
     <Compile Include="Mappers\PersonMapper.cs" />
     <Compile Include="Nodes\MovieNode.cs" />
     <Compile Include="Nodes\PersonNode.cs" />
+    <Compile Include="Params\Parameter.cs" />
+    <Compile Include="Params\Parameters.cs" />
+    <Compile Include="Params\ParameterUtils.cs" />
+    <Compile Include="Params\Term.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetMoviesByTitleExecutor.cs" />
     <Compile Include="Results\MovieResult.cs" />
     <Compile Include="Results\PersonResult.cs" />
   </ItemGroup>
