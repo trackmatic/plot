@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Plot.Logging;
 using Plot.Neo4j.Cypher;
 
 namespace Plot.Neo4j
@@ -7,5 +8,6 @@ namespace Plot.Neo4j
     {
         ICypherTransaction Create(IGraphSession session);
         IList<T> Run<T>(ICypherQuery<T> query);
+        ILogger Logger { get; }
     }
 }

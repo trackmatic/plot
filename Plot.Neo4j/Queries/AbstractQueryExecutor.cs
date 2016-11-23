@@ -70,7 +70,7 @@ namespace Plot.Neo4j.Queries
         
         private void Log(ICypherQuery query)
         {
-
+            _transactionFactory.Logger.Info(query.Statement);
         }
 
         private ICypherQuery<TResult> CreateCypherQuery(IQuery<TAggregate> query)

@@ -5,7 +5,7 @@
         public Order(string value)
         {
             Descending = value.StartsWith("-");
-            Property = value.Trim('-');
+            Property = Conventions.NamedParameterCase(value.Trim('-'));
         }
 
         private string Property { get; }

@@ -42,6 +42,8 @@ namespace Plot.Neo4j
             }
         }
 
+        public ILogger Logger => _logger;
+
         private void OnDisposed(object sender, GraphSessionDisposedEventArgs e)
         {
             try
