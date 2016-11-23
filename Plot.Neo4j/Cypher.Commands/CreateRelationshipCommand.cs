@@ -1,14 +1,14 @@
-﻿namespace Plot.Neo4j.Cypher.Commands
+﻿using Plot.Metadata;
+
+namespace Plot.Neo4j.Cypher.Commands
 {
     internal class CreateRelationshipCommand : ICommand
     {
-        private readonly IdentifierNameSnippet _source;
+        private readonly RelationshipMetadata _relationship;
+        private readonly Entity _source;
+        private readonly Entity _destination;
 
-        private readonly NodeSnippet _destination;
-
-        private readonly RelationshipSnippet _relationship;
-
-        public CreateRelationshipCommand(IdentifierNameSnippet source, NodeSnippet destination, RelationshipSnippet relationship)
+        public CreateRelationshipCommand(Entity source, Entity destination, RelationshipMetadata relationship)
         {
             _source = source;
             _destination = destination;
@@ -17,11 +17,11 @@
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
         {
-            query = query
-                .With(new WithSnippet(_source))
-                .Match(new MatchPropertySnippet(_destination, new IdentifierNameSnippet(_destination.IdentifierName, "id")))
-                .CreateUnique(new MatchRelationshipSnippet(_source, _destination.IdentifierName, _relationship))
-                .WithParam(new IdentifierNameSnippet(_destination.IdentifierName, "id"), ProxyUtils.GetEntityId(_destination.Data));
+            query
+                .With(StatementFactory.With(_source))
+                .Match(StatementFactory.Match(_destination, StatementFactory.IdParameter(_destination)))
+                .CreateUnique(StatementFactory.Relationship(_source, _destination, _relationship))
+                .WithParam(StatementFactory.IdParameter(_destination), _destination.Id);
             return query;
         }
     }

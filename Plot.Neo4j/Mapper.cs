@@ -90,7 +90,7 @@ namespace Plot.Neo4j
 
         private IList<ICommand> OnInsert(ICypherFluentQuery query, T item)
         {
-            var commands = new List<ICommand> { new CreateNodeCommand(new NodeSnippet(MetadataFactory.Create(item), item), () => GetData(item)) };
+            var commands = new List<ICommand> { new CreateNodeCommand(CreateEntity(item), () => GetData(item)) };
 
             var metadata = MetadataFactory.Create(item);
 
@@ -119,10 +119,7 @@ namespace Plot.Neo4j
 
         private IList<ICommand> OnDelete(ICypherFluentQuery query, T item)
         {
-            var commands = new List<ICommand>
-            {
-                new DeleteNodeCommand(new NodeSnippet(MetadataFactory.Create(item), item))
-            };
+            var commands = new List<ICommand>{ new DeleteNodeCommand(CreateEntity(item)) };
             return commands;
         }
 
@@ -186,17 +183,13 @@ namespace Plot.Neo4j
         
         private ICommand CreateRelationship(object source, object destination, RelationshipMetadata relationship)
         {
-            var sourceMetadata = MetadataFactory.Create(source);
-            var destinationMetadata = MetadataFactory.Create(destination);
-            var command = new CreateRelationshipCommand(new NodeIdentifierSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), new RelationshipSnippet(relationship));
+            var command = new CreateRelationshipCommand(CreateEntity(source), CreateEntity(destination), relationship);
             return command;
         }
 
         private ICommand DeleteRelationship(object source, object destination, RelationshipMetadata relationship)
         {
-            var sourceMetadata = MetadataFactory.Create(source);
-            var destinationMetadata = MetadataFactory.Create(destination);
-            var command = new DeleteRelationshipCommand(new NodeIdentifierSnippet(sourceMetadata, source), new NodeSnippet(destinationMetadata, destination), new RelationshipSnippet(new IdentifierNameSnippet("rel"), relationship), relationship.DeleteOrphan);
+            var command = new DeleteRelationshipCommand(CreateEntity(source), CreateEntity(destination), relationship);
             return command;
         }
 
@@ -224,6 +217,11 @@ namespace Plot.Neo4j
             {
                 return cypher.ReturnDistinct(_map, _returnFactory);
             }
+        }
+
+        private Entity CreateEntity(object value)
+        {
+            return new Entity(MetadataFactory.Create(value), value);
         }
     }
 }

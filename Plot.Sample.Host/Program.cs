@@ -17,15 +17,11 @@ namespace Plot.Sample.Host
                 var start = DateTime.UtcNow;
                 using (var session = factory.OpenSession())
                 {
-                    /*session.Create(new Movie
-                    {
-                        Id = "1",
-                        Title = "test",
-                        TagLine = "hello"
-                    });
-                    session.SaveChanges();*/
-                    var movie = session.Get<Movie>("1");
-                    
+                    var movie = session.Get<Movie>("movie1");
+
+                    session.Delete(movie);
+
+                    session.SaveChanges();
                 }
 
                 Console.WriteLine(DateTime.UtcNow.Subtract(start));

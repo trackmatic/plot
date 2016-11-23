@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Neo4j.Driver.V1;
 using Plot.Neo4j.Cypher;
 using Plot.Metadata;
 
@@ -9,6 +10,15 @@ namespace Plot.Neo4j
 {
     public static class Extensions
     {
+        public static T Read<T>(this INode node, string key)
+        {
+            if (!node.Properties.ContainsKey(key))
+            {
+                return default(T);
+            }
+            return node[key].As<T>();
+        }
+
         private static class PropertiesCache
         {
             private static readonly Dictionary<Type, IEnumerable<PropertyInfo>> Cache = new Dictionary<Type, IEnumerable<PropertyInfo>>();
@@ -55,50 +65,6 @@ namespace Plot.Neo4j
             return unixRef.AddSeconds(timestamp);
         }
 
-        public static ICypherFluentQuery Merge(this ICypherFluentQuery query, MatchPropertySnippet snippet)
-        {
-            return query.Merge(snippet.ToString());
-        }
-
-        public static ICypherFluentQuery Match(this ICypherFluentQuery query, MatchPropertySnippet snippet)
-        {
-            return query.Match(snippet.ToString());
-        }
-
-        public static ICypherFluentQuery Set(this ICypherFluentQuery query, SetIdentifierSnippet snippet)
-        {
-            return query.Set(snippet.ToString());
-        }
-
-        public static ICypherFluentQuery With(this ICypherFluentQuery query, params WithSnippet[] snippets)
-        {
-            return query.With(string.Join(",", snippets.Select(x => x.ToString())));
-        }
-
-        public static ICypherFluentQuery WithParam(this ICypherFluentQuery query, IdentifierNameSnippet snippet, object value)
-        {
-            if (query.ContainsParameter(snippet.ToString()))
-            {
-                return query;
-            }
-            return query.WithParam(snippet.ToString(), value);
-        }
-
-        public static ICypherFluentQuery CreateUnique(this ICypherFluentQuery query, MatchRelationshipSnippet snippet)
-        {
-            return query.CreateUnique(snippet.ToString());
-        }
-
-        public static ICypherFluentQuery Match(this ICypherFluentQuery query, MatchRelationshipSnippet snippet)
-        {
-            return query.Match(snippet.ToString());
-        }
-
-        public static ICypherFluentQuery Delete(this ICypherFluentQuery query, params IdentifierNameSnippet[] snippets)
-        {
-            return query.Delete(string.Join(",", snippets.Select(x => x.ToString())));
-        }
-
         public static string CamelCase(string value)
         {
             if (char.IsUpper(value[0]))
@@ -117,7 +83,7 @@ namespace Plot.Neo4j
 
         public static ICypherFluentQuery IncludeRelationships(this ICypherFluentQuery cypher, NodeMetadata metadata)
         {
-            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){new RelationshipSnippet(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
+            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate(cypher, (current, property) => current.OptionalMatch($"(({CamelCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({CamelCase(property.Name)}:{property.Type.Name}))"));
         }
     }
 }

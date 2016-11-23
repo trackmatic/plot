@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Neo4j.Driver.V1;
 
 namespace Plot.Sample.Data.Nodes
 {
     public class PersonNode
     {
-        public PersonNode()
+        public PersonNode(INode node)
         {
-            
+            Id = node[Keys.Id].As<string>();
+            Name = node[Keys.Name].As<string>();
+            Born = node[Keys.Born].As<int>();
         }
 
         public PersonNode(Person item)
@@ -31,6 +33,13 @@ namespace Plot.Sample.Data.Nodes
                 Born = Born
             };
             return site;
+        }
+
+        private static class Keys
+        {
+            public const string Id = "Id";
+            public const string Name = "Name";
+            public const string Born = "Born";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Neo4j.Driver.V1;
+using Plot.Neo4j;
 
 namespace Plot.Sample.Data.Nodes
 {
@@ -6,9 +7,9 @@ namespace Plot.Sample.Data.Nodes
     {
         public MovieNode(INode node)
         {
-            Id = node["Id"].As<string>();
-            Title = node["Title"].As<string>();
-            Tagline = node["Tagline"].As<string>();
+            Id = node.Read<string>(Keys.Id);
+            Title = node.Read<string>(Keys.Title);
+            Tagline = node.Read<string>(Keys.Tagline);
         }
 
         public MovieNode(Movie item)
@@ -33,6 +34,13 @@ namespace Plot.Sample.Data.Nodes
                 Title = Title
             };
             return organisation;
+        }
+
+        private static class Keys
+        {
+            public const string Id = "Id";
+            public const string Tagline = "Tagline";
+            public const string Title = "Title";
         }
     }
 }

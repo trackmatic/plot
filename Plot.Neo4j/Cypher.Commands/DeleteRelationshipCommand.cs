@@ -1,44 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using Plot.Metadata;
+
 namespace Plot.Neo4j.Cypher.Commands
 {
     internal class DeleteRelationshipCommand : ICommand
     {
-        private readonly IdentifierNameSnippet _source;
+        private readonly Entity _source;
+        private readonly Entity _destination;
+        private readonly RelationshipMetadata _relationship;
 
-        private readonly NodeSnippet _destination;
-
-        private readonly RelationshipSnippet _relationship;
-
-        private readonly bool _deleteOrphan;
-
-        public DeleteRelationshipCommand(IdentifierNameSnippet source, NodeSnippet destination, RelationshipSnippet relationship, bool deleteOrphan)
+        public DeleteRelationshipCommand(Entity source, Entity destination, RelationshipMetadata relationship)
         {
             _source = source;
             _destination = destination;
-            _destination = destination;
             _relationship = relationship;
-            _deleteOrphan = deleteOrphan;
         }
 
         public ICypherFluentQuery Execute(ICypherFluentQuery query)
         {
             query = query
-                .With(new WithSnippet(_source))
-                .Match(new MatchPropertySnippet(_destination, new IdentifierNameSnippet(_destination.IdentifierName, "id")))
-                .Match(new MatchRelationshipSnippet(_source, _destination.IdentifierName, _relationship))
-                .WithParam(new IdentifierNameSnippet(_destination.IdentifierName, "id"), ProxyUtils.GetEntityId(_destination.Data))
+                .With(StatementFactory.With(_source))
+                .Match(StatementFactory.Match(_destination, StatementFactory.IdParameter(_destination)))
+                .Match(StatementFactory.Relationship(_source, _destination, _relationship, "r"))
+                .WithParam(StatementFactory.IdParameter(_destination), _destination.Id)
                 .Delete(GetNodesToDelete());
             return query;
         }
 
-        private IdentifierNameSnippet[] GetNodesToDelete()
+        private string GetNodesToDelete()
         {
-            var nodes = new List<IdentifierNameSnippet> {_relationship.Identifier};
-            if (_deleteOrphan)
+            var statment = $"r, {StatementFactory.ExistingNode(_source)}";
+            if (_relationship.DeleteOrphan)
             {
-                nodes.Add(_destination.IdentifierName);
+                statment += $", {StatementFactory.ExistingNode(_destination)}";
             }
-            return nodes.ToArray();
+            return statment;
         }
     }
 }

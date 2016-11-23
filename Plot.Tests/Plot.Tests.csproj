@@ -91,12 +91,7 @@
     <Compile Include="metadata_factory_tests.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Person.cs" />
-    <Compile Include="Neo4j.Cypher\match_relationship_snippet_tests.cs" />
-    <Compile Include="Neo4j.Cypher\match_node_snippet_tests.cs" />
-    <Compile Include="Neo4j.Cypher\property_identifier_snippet_tests.cs" />
-    <Compile Include="Neo4j.Cypher\set_identifier_snippet_tests.cs" />
-    <Compile Include="Neo4j.Cypher\node_snippet_tests.cs" />
-    <Compile Include="Neo4j.Cypher\node_identifier_snippet_tests.cs" />
+    <Compile Include="Neo4j.Cypher\statement_factory_tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="trackable_relationship_tests.cs" />
     <Compile Include="Utility\MapperFixtureBase.cs" />
@@ -123,6 +118,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Neo4j.Driver.V1;
 using Plot.Queries;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
@@ -99,7 +98,7 @@ namespace Plot.Neo4j.Queries
         private IList<TResult> Execute(IQuery<TAggregate> query)
         {
             var cypher = CreateCypherQuery(query);
-            var dataset = _transactionFactory.Run<TResult>(cypher);
+            var dataset = _transactionFactory.Run(cypher);
             return dataset;
         }
 

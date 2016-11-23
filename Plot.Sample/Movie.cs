@@ -19,6 +19,16 @@ namespace Plot.Sample
         [Relationship(Relationships.ActedIn, Reverse = true)]
         public virtual IList<Person> People { get; set; }
 
+        public virtual void Add(Person person)
+        {
+            Utils.Add(People, person, () => person.Add(this));
+        }
+
+        public virtual void Remove(Person person)
+        {
+            Utils.Remove(People, person, () => person.Remove(this));
+        }
+
         public override bool Equals(object obj)
         {
             return Utils.Equals(this, obj);

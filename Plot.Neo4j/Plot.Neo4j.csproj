@@ -59,36 +59,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="CypherTransaction.cs" />
-    <Compile Include="CypherTransactionFactory.cs" />
     <Compile Include="Cypher.Commands\CreateNodeCommand.cs" />
     <Compile Include="Cypher.Commands\CreateRelationshipCommand.cs" />
     <Compile Include="Cypher.Commands\DeleteNodeCommand.cs" />
     <Compile Include="Cypher.Commands\DeleteRelationshipCommand.cs" />
-    <Compile Include="Cypher\AsSnippet.cs" />
-    <Compile Include="Cypher\CollectPropertyAsSnippet.cs" />
+    <Compile Include="Cypher.Commands\ICommand.cs" />
+    <Compile Include="CypherTransaction.cs" />
+    <Compile Include="CypherTransactionFactory.cs" />
     <Compile Include="Cypher\CypherFluentQuery%27.cs" />
     <Compile Include="Cypher\CypherReturn.cs" />
+    <Compile Include="Cypher\Entity.cs" />
     <Compile Include="Cypher\ICypherFluentQuery%27.cs" />
     <Compile Include="Cypher\ICypherFluentQuery.cs" />
     <Compile Include="Cypher\ICypherReturn.cs" />
     <Compile Include="Cypher\IQueryBuilder.cs" />
     <Compile Include="Cypher\IQueryBuilderElement.cs" />
-    <Compile Include="Cypher\MatchPropertySnippet.cs" />
-    <Compile Include="Cypher\MatchRelationshipSnippet.cs" />
-    <Compile Include="Cypher\NodeIdentifierSnippet.cs" />
-    <Compile Include="Cypher\PropertyAsSnippet.cs" />
-    <Compile Include="Cypher\PropertyIdentifierSnippet.cs" />
-    <Compile Include="Cypher\NodeSnippet.cs" />
     <Compile Include="Cypher\Order.cs" />
     <Compile Include="Cypher\OrderByHelper.cs" />
-    <Compile Include="Cypher\IdentifierNameSnippet.cs" />
     <Compile Include="Cypher\QueryBuilder.cs" />
     <Compile Include="Cypher\Return.cs" />
-    <Compile Include="Cypher\SetIdentifierSnippet.cs" />
-    <Compile Include="Cypher\WithSnippet.cs" />
+    <Compile Include="Cypher\StatementFactory.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Cypher.Commands\ICommand.cs" />
     <Compile Include="ICypherTransaction.cs" />
     <Compile Include="ICypherTransactionFactory.cs" />
     <Compile Include="Mapper.cs" />
@@ -99,7 +90,6 @@
     <Compile Include="Queries\GetQuery.cs" />
     <Compile Include="Queries\ICypherQueryResult.cs" />
     <Compile Include="Queries\QueryExecutorFactory.cs" />
-    <Compile Include="Cypher\RelationshipSnippet.cs" />
     <Compile Include="RepositoryFactory.cs" />
   </ItemGroup>
   <ItemGroup>

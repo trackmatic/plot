@@ -6,7 +6,6 @@ using Plot.Metadata;
 using Plot.Neo4j.Queries;
 using Plot.Proxies;
 using Plot.Queries;
-using ILogger = Plot.Logging.ILogger;
 
 namespace Plot.Neo4j
 {
@@ -14,15 +13,15 @@ namespace Plot.Neo4j
     {
         public static Func<Guid> ResourceManagerId = () => Guid.Parse("5c62baaa-2c28-4a2d-b55f-36b96503ffc3");
 
-        public static Func<ILogger> Logger = () => new NullLogger();
+        public static Func<Logging.ILogger> Logger = () => new NullLogger();
 
         public static Func<IEntityStateCacheFactory> EntityStateCacheFactory = () => new EntityStateCacheFactory();
 
-        public static Func<ILogger, IMetadataFactory> MetadataFactory = logger => new AttributeMetadataFactory(logger);
+        public static Func<Logging.ILogger, IMetadataFactory> MetadataFactory = logger => new AttributeMetadataFactory(logger);
 
-        public static Func<IMetadataFactory, ILogger, IProxyFactory> ProxyFactory = (metadataFactory, logger) => new DynamicProxyFactory(metadataFactory, logger);
+        public static Func<IMetadataFactory, Logging.ILogger, IProxyFactory> ProxyFactory = (metadataFactory, logger) => new DynamicProxyFactory(metadataFactory, logger);
 
-        public static Func<IDriver, ILogger, ICypherTransactionFactory> CypherTransactionFactory = (db, logger) => new CypherTransactionFactory(db, logger);
+        public static Func<IDriver, Logging.ILogger, ICypherTransactionFactory> CypherTransactionFactory = (db, logger) => new CypherTransactionFactory(db, logger);
 
         public static  Func<IDriver, ICypherTransactionFactory, IProxyFactory, IMetadataFactory, Assembly[], IRepositoryFactory> RepositoryFactory = (db, transactionFactory, proxyFactory, metadataFactory, assemblies) => new RepositoryFactory(db, transactionFactory, proxyFactory, metadataFactory, assemblies);
 

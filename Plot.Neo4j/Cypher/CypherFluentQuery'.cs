@@ -73,7 +73,13 @@ namespace Plot.Neo4j.Cypher
         public ICypherFluentQuery WithParam(string key, object value)
         {
             Parameters.Add(key, value);
-            return new CypherFluentQuery<T>(_builder, _return, Parameters);
+            return Mutate(_builder);
+        }
+
+        public ICypherFluentQuery WithParam(string key, object[] value)
+        {
+            Parameters.Add(key, value);
+            return Mutate(_builder);
         }
 
         public ICypherFluentQuery OnCreate()
@@ -140,7 +146,7 @@ namespace Plot.Neo4j.Cypher
         {
             return new CypherFluentQuery<T>(builder, _return, Parameters);
         }
-
+        
         private static class Keywords
         {
             public const string With = "WITH";

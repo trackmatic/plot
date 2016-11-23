@@ -61,15 +61,7 @@ namespace Plot.Neo4j.Cypher
 
         private void Append(string format, params object[] parameters)
         {
-            if (_items.Count > 0)
-            {
-                _builder.Append(", ");
-            }
-            else
-            {
-                _builder.Append(" ");
-            }
-            _builder.AppendFormat(format, parameters);
+            _builder.Append(_items.Count > 0 ? ", " : " ").AppendFormat(format, parameters);
         }
     }
 }

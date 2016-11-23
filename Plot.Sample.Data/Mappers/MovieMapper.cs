@@ -21,7 +21,7 @@ namespace Plot.Sample.Data.Mappers
 
         protected override IQueryExecutor<Movie> CreateQueryExecutor()
         {
-            return CreateGenericExecutor(ResultFactory.CreateMovieResult, ResultFactory.CreateMovieResultReturn);
+            return CreateGenericExecutor(MovieResult.Map, MovieResult.Return);
         }
     }
 }
