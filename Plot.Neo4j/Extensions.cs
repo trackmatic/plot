@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Neo4j.Driver.V1;
-using Plot.Neo4j.Cypher;
-using Plot.Metadata;
 
 namespace Plot.Neo4j
 {
@@ -18,6 +16,16 @@ namespace Plot.Neo4j
                 return null;
             }
             return record[key].As<List<INode>>().Select(factory).ToList();
+        }
+
+        public static T Read<T>(this IRecord record, string key)
+        {
+            key = Conventions.NamedParameterCase(key);
+            if (!record.Keys.Contains(key))
+            {
+                return default(T);
+            }
+            return record[key].As<T>();
         }
 
         public static T Read<T>(this IRecord record, string key, Func<INode,T> factory)

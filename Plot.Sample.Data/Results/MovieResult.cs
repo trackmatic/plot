@@ -15,6 +15,7 @@ namespace Plot.Sample.Data.Results
         {
             Movie = record.Read(Keys.Movie, node => new MovieNode(node));
             People = record.ReadList(Keys.People, node => new PersonNode(node));
+            Total = record.Read<long>(Keys.Total);
         }
 
         public MovieNode Movie { get; set; }
@@ -38,13 +39,14 @@ namespace Plot.Sample.Data.Results
 
         public static ICypherReturn<MovieResult> Return(ICypherReturn<MovieResult> builder)
         {
-            return builder.Return("Movie").CollectDistinct("People");
+            return builder.Return("Movie").CollectDistinct("People").Return("Total");
         }
 
         public static class Keys
         {
             public const string Movie = "Movie";
             public const string People = "People";
+            public const string Total = "Total";
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Plot.Sample.Data.Queries
             var elements = new IQueryBuilderElement[]
             {
                 new Body(query, Metadata),
+                new Count(Metadata),
+                new Body(query, Metadata),
                 new Parameters(new Term(() => query.Term))
             };
             return QueryBuilder.Create(db, elements).AsTypedQuery<MovieResult>().ReturnDistinct(MovieResult.Map, MovieResult.Return);
@@ -51,6 +53,20 @@ namespace Plot.Sample.Data.Queries
                     return cypher;
                 }
                 return cypher.Where($"movie.Title =~ {Term.Key}");
+            }
+        }
+        public class Count : IQueryBuilderElement
+        {
+            private readonly string _name;
+
+            public Count(NodeMetadata node)
+            {
+                _name = Neo4j.Conventions.CamelCase(node.Name);
+            }
+
+            public ICypherQuery Append(ICypherQuery cypher)
+            {
+                return cypher.With($"count(distinct({_name})) as total");
             }
         }
     }
