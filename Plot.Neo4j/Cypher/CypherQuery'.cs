@@ -86,6 +86,16 @@ namespace Plot.Neo4j.Cypher
             return Mutate(_builder);
         }
 
+        public ICypherQuery RemoveParam(string key)
+        {
+            if (!Parameters.ContainsKey(key))
+            {
+                return this;
+            }
+            Parameters.Remove(key);
+            return this;
+        }
+
         public ICypherQuery OnCreate()
         {
             return Mutate(Append(Keywords.OnCreate));
@@ -115,7 +125,6 @@ namespace Plot.Neo4j.Cypher
             return _return.Map(record);
         }
         
-
         public bool ContainsParameter(string key)
         {
             return Parameters.ContainsKey(key);

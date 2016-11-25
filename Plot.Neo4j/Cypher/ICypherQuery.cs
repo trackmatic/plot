@@ -17,6 +17,7 @@ namespace Plot.Neo4j.Cypher
         ICypherQuery Where(string statement);
         ICypherQuery OptionalMatch(string statement);
         ICypherQuery WithParam(string key, object value);
+        ICypherQuery RemoveParam(string key);
         ICypherQuery OnCreate();
         ICypherQuery OnMatch();
         bool ContainsParameter(string key);

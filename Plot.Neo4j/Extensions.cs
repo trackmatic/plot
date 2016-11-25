@@ -8,12 +8,17 @@ namespace Plot.Neo4j
 {
     public static class Extensions
     {
+        private static bool IsEmpty(IRecord record, string key)
+        {
+            return !record.Keys.Contains(key) || record[key] == null;
+        }
+
         public static List<T> ReadList<T>(this IRecord record, string key, Func<INode, T> factory)
         {
             key = Conventions.NamedParameterCase(key);
-            if (!record.Keys.Contains(key))
+            if (IsEmpty(record, key))
             {
-                return null;
+                return new List<T>();
             }
             return record[key].As<List<INode>>().Select(factory).ToList();
         }
@@ -21,7 +26,7 @@ namespace Plot.Neo4j
         public static T Read<T>(this IRecord record, string key)
         {
             key = Conventions.NamedParameterCase(key);
-            if (!record.Keys.Contains(key))
+            if (IsEmpty(record, key))
             {
                 return default(T);
             }
@@ -31,7 +36,7 @@ namespace Plot.Neo4j
         public static T Read<T>(this IRecord record, string key, Func<INode,T> factory)
         {
             key = Conventions.NamedParameterCase(key);
-            if (!record.Keys.Contains(key))
+            if (!record.Keys.Contains(key) || record[key] == null)
             {
                 return default(T);
             }
