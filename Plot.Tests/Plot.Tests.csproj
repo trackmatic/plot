@@ -87,6 +87,7 @@
     <Compile Include="metadata_factory_tests.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Person.cs" />
+    <Compile Include="Neo4j.Cypher\cypher_query_tests.cs" />
     <Compile Include="Neo4j.Cypher\statement_factory_tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="trackable_relationship_tests.cs" />

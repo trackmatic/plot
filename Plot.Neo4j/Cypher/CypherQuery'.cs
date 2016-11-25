@@ -74,13 +74,15 @@ namespace Plot.Neo4j.Cypher
 
         public ICypherQuery WithParam(string key, object value)
         {
-            Parameters.Add(key, value);
-            return Mutate(_builder);
-        }
+            if (Parameters.ContainsKey(key))
+            {
+                Parameters[key] = value;
+            }
+            else
+            {
+                Parameters.Add(key, value);
+            }
 
-        public ICypherQuery WithParam(string key, object[] value)
-        {
-            Parameters.Add(key, value);
             return Mutate(_builder);
         }
 
