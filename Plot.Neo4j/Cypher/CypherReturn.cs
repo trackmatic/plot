@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Neo4j.Driver.V1;
+using Plot.Neo4j.Exceptions;
 
 namespace Plot.Neo4j.Cypher
 {
@@ -20,21 +21,24 @@ namespace Plot.Neo4j.Cypher
 
         public ICypherReturn<TResult> Collect(Return item)
         {
-            Append("COLLECT({0}) AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
+            GuardAgainstDuplicateKeys(item);
+            Append(Keywords.Collect, Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }
 
         public ICypherReturn<TResult> CollectDistinct(Return item)
         {
-            Append("COLLECT(DISTINCT {0}) AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
+            GuardAgainstDuplicateKeys(item);
+            Append(Keywords.CollectDistinct, Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }
 
         public ICypherReturn<TResult> Return(Return item)
         {
-            Append("{0} AS {1}", Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
+            GuardAgainstDuplicateKeys(item);
+            Append(Keywords.Return, Conventions.NamedParameterCase(item.Property), Conventions.NamedParameterCase(item.Alias));
             _items.Add(item.Property, item);
             return this;
         }
@@ -62,6 +66,23 @@ namespace Plot.Neo4j.Cypher
         private void Append(string format, params object[] parameters)
         {
             _builder.Append(_items.Count > 0 ? ", " : " ").AppendFormat(format, parameters);
+        }
+
+        private void GuardAgainstDuplicateKeys(Return item)
+        {
+            if (!_items.ContainsKey(item.Property))
+            {
+                return;
+            }
+
+            throw new DuplicateReturnStatementException(item);
+        }
+
+        private static class Keywords
+        {
+            public const string Return = "{0} AS {1}";
+            public const string Collect = "COLLECT({0}) AS {1}";
+            public const string CollectDistinct = "COLLECT(DISTINCT {0}) AS {1}";
         }
     }
 }

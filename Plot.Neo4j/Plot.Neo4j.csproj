@@ -76,6 +76,7 @@
     <Compile Include="Cypher\QueryBuilder.cs" />
     <Compile Include="Cypher\Return.cs" />
     <Compile Include="Cypher\StatementFactory.cs" />
+    <Compile Include="Exceptions\DuplicateReturnStatementException.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ICypherTransaction.cs" />
     <Compile Include="ICypherTransactionFactory.cs" />
