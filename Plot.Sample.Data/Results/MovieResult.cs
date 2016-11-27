@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Neo4j.Driver.V1;
 using Plot.Neo4j;
 using Plot.Neo4j.Cypher;
@@ -39,7 +38,12 @@ namespace Plot.Sample.Data.Results
 
         public static ICypherReturn<MovieResult> Return(ICypherReturn<MovieResult> builder)
         {
-            return builder.Return("Movie").CollectDistinct("People").Return("Total");
+            return builder.Return("Movie").CollectDistinct("People");
+        }
+
+        public static ICypherReturn<MovieResult> ReturnWithTotal(ICypherReturn<MovieResult> builder)
+        {
+            return Return(builder).Return("Total");
         }
 
         public static class Keys

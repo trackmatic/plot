@@ -70,9 +70,9 @@ namespace Plot.Neo4j.Cypher
             return statment;
         }
 
-        private static string MakeSafe(string value)
+        public static string MakeSafe(object value)
         {
-            return value.Replace("/", "_")
+            return value.ToString().Replace("/", "_")
                 .Replace("-", "_")
                 .Replace(".", string.Empty)
                 .Replace(",", string.Empty)

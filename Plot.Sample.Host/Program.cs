@@ -15,20 +15,14 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (MovieMapper).Assembly);
 
 
-
-            for (int i = 0; i < 1000; i++)
+            var start = DateTime.UtcNow;
+            using (var session = factory.OpenSession())
             {
-                var start = DateTime.UtcNow;
-                using (var session = factory.OpenSession())
-                {
-                    var movie = session.Query(new GetMoviesByTitle
-                    {
-                        Term = "My Movie"
-                    });
-                    session.SaveChanges();
-                }
-                Console.WriteLine(DateTime.UtcNow.Subtract(start));
+                var movie = session.Get<Movie>("movie1");
+                session.Delete(movie);
+                session.SaveChanges();
             }
+            Console.WriteLine(DateTime.UtcNow.Subtract(start));
             Console.WriteLine("Done");
             Console.ReadLine();
         }

@@ -125,7 +125,7 @@ namespace Plot.Proxies
             }
             public void Push(object item)
             {
-                if (_current != null)
+                if (_current != null && !_current.Equals(item))
                 {
                     _items.Add(_current);
                 }
