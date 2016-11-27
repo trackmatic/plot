@@ -19,7 +19,7 @@ namespace Plot.Logging
         public void Dispose()
         {
             var duration = DateTime.Now.Subtract(_start);
-            _logger.Info($"Executed {_name} in {duration}");
+            _logger?.Info($"Executed {_name} in {duration}");
         }
 
         public static Timer Start(string name, ILogger logger)

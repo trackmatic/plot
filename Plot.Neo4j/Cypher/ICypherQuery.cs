@@ -14,6 +14,7 @@ namespace Plot.Neo4j.Cypher
         ICypherQuery With(string statement);
         ICypherQuery CreateUnique(string statement);
         ICypherQuery Delete(string statement);
+        ICypherQuery DetachDelete(string statement);
         ICypherQuery Where(string statement);
         ICypherQuery OptionalMatch(string statement);
         ICypherQuery WithParam(string key, object value);

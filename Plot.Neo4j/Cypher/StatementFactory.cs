@@ -48,8 +48,9 @@ namespace Plot.Neo4j.Cypher
 
         public static string Relationship(Node source, Node destination, RelationshipMetadata relationship, string name = null)
         {
-            return $"{ExistingNode(source)}{Relationship(relationship)}{ExistingNode(destination)}";
+            return $"{ExistingNode(source)}{Relationship(relationship, name)}{ExistingNode(destination)}";
         }
+
         public static string ExistingNode(Node entity)
         {
             return $"({Parameter(entity)})";

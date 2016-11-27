@@ -25,6 +25,7 @@ namespace Plot.Neo4j.Cypher
         }
 
         public string Statement => _builder.ToString().Trim('\r').Trim('\n');
+
         public IDictionary<string, object> Parameters { get; }
 
         public string GetDebugText()
@@ -60,6 +61,11 @@ namespace Plot.Neo4j.Cypher
         public ICypherQuery Delete(string statement)
         {
             return Mutate(Append(Keywords.Delete, statement));
+        }
+
+        public ICypherQuery DetachDelete(string statement)
+        {
+            return Mutate(Append(Keywords.DetachDelete, statement));
         }
 
         public ICypherQuery Where(string statement)
@@ -179,6 +185,7 @@ namespace Plot.Neo4j.Cypher
             public const string OnMatch = "ON MATCH";
             public const string Merge = "MERGE";
             public const string Delete = "DELETE";
+            public const string DetachDelete = "DETACH DELETE";
             public const string Where = "WHERE";
             public const string Limit = "LIMIT";
             public const string Skip = "SKIP";

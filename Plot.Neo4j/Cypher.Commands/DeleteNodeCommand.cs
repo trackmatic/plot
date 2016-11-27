@@ -13,9 +13,8 @@
         {
             query = query
                 .Match(StatementFactory.Match(_node, StatementFactory.IdParameter(_node)))
-                .OptionalMatch($"({StatementFactory.ExistingNode(_node)}-[r]-())")
                 .WithParam(StatementFactory.IdParameter(_node), _node.Id)
-                .Delete($"r, {StatementFactory.ExistingNode(_node)}");
+                .DetachDelete($"{StatementFactory.ExistingNode(_node)}");
             return query;
         }
     }
