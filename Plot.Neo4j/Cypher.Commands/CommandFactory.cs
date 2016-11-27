@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Plot.Metadata;
-using Plot.Proxies;
 
 namespace Plot.Neo4j.Cypher.Commands
 {
@@ -62,20 +62,17 @@ namespace Plot.Neo4j.Cypher.Commands
 
             foreach (var trackableRelationship in ProxyUtils.Flush(source, relationship))
             {
-                DeleteRealtionship(source, trackableRelationship, relationship);
+                foreach (var destination in trackableRelationship.Flush())
+                {
+                    DeleteRelationship(source, destination, relationship);
+                }
+
                 if (trackableRelationship.Current == null)
                 {
                     continue;
                 }
+
                 CreateRelationship(source, trackableRelationship.Current, relationship);
-            }
-        }
-        
-        private void DeleteRealtionship(object source, ITrackableRelationship trackableRelationship, RelationshipMetadata relationship)
-        {
-            foreach (var destination in trackableRelationship.Flush())
-            {
-                DeleteRelationship(source, destination, relationship);
             }
         }
 
@@ -86,17 +83,21 @@ namespace Plot.Neo4j.Cypher.Commands
                 return;
             }
 
-            foreach (var destination in collection)
+            var destinations = collection as object[] ?? collection.Cast<object>().ToArray();
+
+            foreach (var destination in destinations)
             {
                 CreateRelationship(source, destination, relationship);
             }
             
-            if (ProxyUtils.IsTrackable(collection))
+            if (!ProxyUtils.IsTrackable(destinations))
             {
-                foreach (var destination in ProxyUtils.Flush(collection))
-                {
-                    DeleteRelationship(source, destination, relationship);
-                }
+                return;
+            }
+
+            foreach (var destination in ProxyUtils.Flush(destinations))
+            {
+                DeleteRelationship(source, destination, relationship);
             }
         }
         
