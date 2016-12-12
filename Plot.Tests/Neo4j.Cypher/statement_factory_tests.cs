@@ -47,6 +47,15 @@ namespace Plot.Tests.Neo4j.Cypher
             Assert.Equal("-[:REL]->", result);
         }
 
+
+        [Fact]
+        public void ShouldCreateNamedRelationshipStatement()
+        {
+            var metadata = new RelationshipMetadata { Name = "REL", IsReverse = false };
+            var result = StatementFactory.Relationship(metadata, "x");
+            Assert.Equal("-[x:REL]->", result);
+        }
+
         [Fact]
         public void ShouldCreateReverseRelationshipStatement()
         {

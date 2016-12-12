@@ -15,7 +15,7 @@ namespace Plot.Neo4j.Cypher.Commands
             _source = source;
             _destination = destination;
             _relationship = relationship;
-            _relationshipName = StatementFactory.MakeSafe(Guid.NewGuid());
+            _relationshipName = $"rel_{StatementFactory.MakeSafe(Guid.NewGuid())}";
         }
 
         public ICypherQuery Execute(ICypherQuery query)
