@@ -44,13 +44,9 @@ namespace Plot.Metadata
         {
             using (Timer.Start("Metadata Creation", _logger))
             {
-                var node = new NodeMetadata
-                {
-                    Name = type.Name
-                };
-                _cache.Add(type, node);
                 var properties = type.GetProperties().Select(CreateProperty).ToList();
-                node.Set(properties);
+                var node = new NodeMetadata(type.Name, properties);
+                _cache.Add(type, node);
                 return node;
             }
         }
