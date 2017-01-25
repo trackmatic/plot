@@ -18,8 +18,9 @@ namespace Plot.Sample.Host
             var start = DateTime.UtcNow;
             using (var session = factory.OpenSession())
             {
-                var movie = session.Get<Movie>("movie1");
-                session.Delete(movie);
+                var person = session.Get<Person>("test_person");
+
+                person.Remove(person.Movies[0]);
                 session.SaveChanges();
             }
             Console.WriteLine(DateTime.UtcNow.Subtract(start));

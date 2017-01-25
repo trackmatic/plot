@@ -83,19 +83,17 @@ namespace Plot.Neo4j.Cypher.Commands
                 return;
             }
 
-            var destinations = collection as object[] ?? collection.Cast<object>().ToArray();
-
-            foreach (var destination in destinations)
+            foreach (var destination in collection)
             {
                 CreateRelationship(source, destination, relationship);
             }
             
-            if (!ProxyUtils.IsTrackable(destinations))
+            if (!ProxyUtils.IsTrackable(collection))
             {
                 return;
             }
 
-            foreach (var destination in ProxyUtils.Flush(destinations))
+            foreach (var destination in ProxyUtils.Flush(collection))
             {
                 DeleteRelationship(source, destination, relationship);
             }

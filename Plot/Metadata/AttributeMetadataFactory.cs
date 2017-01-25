@@ -44,9 +44,10 @@ namespace Plot.Metadata
         {
             using (Timer.Start("Metadata Creation", _logger))
             {
-                var properties = type.GetProperties().Select(CreateProperty).ToList();
-                var node = new NodeMetadata(type.Name, properties);
+                var node = new NodeMetadata(type.Name);
                 _cache.Add(type, node);
+                var properties = type.GetProperties().Select(CreateProperty).ToList();
+                node.SetProperties(properties);
                 return node;
             }
         }
@@ -124,7 +125,8 @@ namespace Plot.Metadata
             typeof (double),
             typeof (uint),
             typeof (float),
-            typeof (bool)
+            typeof (bool),
+            typeof (char)
         };
     }
 }
