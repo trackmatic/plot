@@ -11,7 +11,7 @@ namespace Plot.Metadata
 {
     public class AttributeMetadataFactory : IMetadataFactory
     {
-        private readonly IDictionary<Type, NodeMetadata> _cache;
+        private readonly ConcurrentDictionary<Type, NodeMetadata> _cache;
 
         private readonly ILogger _logger;
 
@@ -44,8 +44,7 @@ namespace Plot.Metadata
         {
             using (Timer.Start("Metadata Creation", _logger))
             {
-                var node = new NodeMetadata(type.Name);
-                _cache.Add(type, node);
+                var node = _cache.GetOrAdd(type, new NodeMetadata(type.Name));
                 var properties = type.GetProperties().Select(CreateProperty).ToList();
                 node.SetProperties(properties);
                 return node;

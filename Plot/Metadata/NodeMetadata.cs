@@ -5,7 +5,7 @@ namespace Plot.Metadata
 {
     public class NodeMetadata
     {
-        private readonly IDictionary<string, PropertyMetadata> _properties;
+        private readonly ConcurrentDictionary<string, PropertyMetadata> _properties;
         private readonly string _name;
 
         public NodeMetadata(string name)
@@ -24,7 +24,7 @@ namespace Plot.Metadata
         {
             foreach (var property in properties)
             {
-                _properties.Add(property.Name, property);
+                _properties.GetOrAdd(property.Name, property);
             }
         }
         
