@@ -23,7 +23,10 @@ namespace Plot.Metadata
 
         public NodeMetadata Create(Type type)
         {
-            return Load(type) ?? New(type);
+            lock (type)
+            {
+                return Load(type) ?? New(type);
+            }
         }
 
         public NodeMetadata Create(object instance)

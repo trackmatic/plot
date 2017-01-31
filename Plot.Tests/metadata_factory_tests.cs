@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Moq;
 using Plot.Attributes;
 using Plot.Logging;
@@ -83,6 +85,44 @@ namespace Plot.Tests
                 var metadata = metadataFactory.Create(beta);
                 Assert.True(metadata["Alpha"].Relationship.IsReverse);
             }
+        }
+
+        [Fact]
+        public void factory_is_thread_safe()
+        {
+            var error = false;
+            var factory = new AttributeMetadataFactory(new NullLogger());
+
+            var threads = new Thread[150];
+
+            for (int i = 0; i < threads.Length; i++)
+            {
+                threads[i] = new Thread(() =>
+                {
+                    try
+                    {
+                        var node = factory.Create(typeof(Person));
+                        var property = node["Id"];
+                        Assert.Equal("Id", property.Name);
+                    }
+                    catch (Exception)
+                    {
+                        error = true;
+                    }
+                });
+            }
+
+            foreach (var thread in threads)
+            {
+                thread.Start();
+            }
+
+            foreach (Thread thread in threads)
+            {
+                thread.Join();
+            }
+
+            Assert.False(error);
         }
 
         public class Parent
