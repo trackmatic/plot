@@ -18,7 +18,9 @@ namespace Plot.Sample.Host
             var start = DateTime.UtcNow;
             using (var session = factory.OpenSession())
             {
-                var person = session.Get<Movie>("blabal1");
+                var person = session.Get<Movie>(new MovieId("blabal1"));
+
+                person.Title = "XYZ";
 
                 var p2 = session.Get<Movie>(person.Id.Value);
 

@@ -46,7 +46,11 @@ namespace Plot.Metadata
         {
             using (Timer.Start("Metadata Creation", _logger))
             {
-                var node = _cache.GetOrAdd(type, new NodeMetadata(type.Name));
+                var node = _cache.GetOrAdd(type, new NodeMetadata(type.Name, IsIgnored(type)));
+                if (node.IsIgnored)
+                {
+                    return node;
+                }
                 var properties = type.GetProperties().Select(CreateProperty).ToList();
                 node.SetProperties(properties);
                 return node;
@@ -59,7 +63,7 @@ namespace Plot.Metadata
             {
                 Name = propertyInfo.Name,
                 IsList = IsList(propertyInfo.PropertyType),
-                IsPrimitive = ProxyUtils.IsPrimitive(propertyInfo.PropertyType),
+                IsPrimitive = IsPrimitive(propertyInfo.PropertyType),
                 Relationship = CreateRelationship(propertyInfo),
                 IsReadOnly = IsReadonly(propertyInfo),
                 IsIgnored = IsIgnored(propertyInfo),
@@ -105,5 +109,34 @@ namespace Plot.Metadata
         {
             return typeof(IEnumerable).IsAssignableFrom(type) && type.IsGenericType;
         }
+        
+        public static bool IsIgnored(Type type)
+        {
+            return type.GetCustomAttributes<IgnoreAttribute>().Any() || IsPrimitive(type);
+        }
+
+        private static bool IsPrimitive(Type type)
+        {
+            return IsNullable(type) || Primitives.Contains(type);
+        }
+        
+        private static bool IsNullable(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private static readonly Type[] Primitives =
+        {
+            typeof (int),
+            typeof (decimal),
+            typeof (string),
+            typeof (DateTime),
+            typeof (TimeSpan),
+            typeof (double),
+            typeof (uint),
+            typeof (float),
+            typeof (bool),
+            typeof (char)
+        };
     }
 }

@@ -10,19 +10,12 @@ namespace Plot
     public class GraphSession : IGraphSession
     {
         private readonly IDictionary<Type, IRepository> _repositories;
-
         private readonly IUnitOfWork _uow;
-
         private readonly List<IListener> _listeners;
-
         private readonly IQueryExecutorFactory _queryExecutorFactory;
-
         private readonly IRepositoryFactory _repositoryFactory;
-
         private readonly IEntityStateCache _state;
-
         private readonly IProxyFactory _proxyFactory;
-
         private bool _disposed;
 
         public GraphSession(IUnitOfWork uow, IEnumerable<IListener> listeners, IQueryExecutorFactory queryExecutorFactory, IRepositoryFactory repositoryFactory, IEntityStateCache state, IProxyFactory proxyFactory)
@@ -56,13 +49,13 @@ namespace Plot
             repository.Delete(item);
         }
 
-        public IEnumerable<T> Get<T>(params string[] id)
+        public IEnumerable<T> Get<T>(params object[] id)
         {
             var repository = GetRepositoryOfType<T>();
-            return repository.Get(id);
+            return repository.Get(id.Select(x => Conventions.ConvertIdToString(x)).ToArray());
         }
 
-        public T Get<T>(string id)
+        public T Get<T>(object id)
         {
             var items = Get<T>(new[] {id});
             return items.FirstOrDefault();

@@ -32,6 +32,17 @@ namespace Plot.Sample
         {
             return Value;
         }
+
+
+        public static implicit operator MovieId(string value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return new MovieId(value);
+        }
     }
 
     public class Movie

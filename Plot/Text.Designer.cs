@@ -88,7 +88,7 @@ namespace Plot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The entity is required to have a property named {0} of type string on type {1}.
+        ///   Looks up a localized string similar to An entity is required to have a property named {0} on type {1}. This convention can be changed by setting the Conventions.IdPropertyName. If you would like Plot to ignore type {1} add the [Ignore] attribute to the class definition..
         /// </summary>
         internal static string MissingIdProperty {
             get {

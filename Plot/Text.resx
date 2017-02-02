@@ -127,6 +127,6 @@
     <value>Id of {0} cannot be null</value>
   </data>
   <data name="MissingIdProperty" xml:space="preserve">
-    <value>The entity is required to have a property named {0} of type string on type {1}</value>
+    <value>An entity is required to have a property named {0} on type {1}. This convention can be changed by setting the Conventions.IdPropertyName. If you would like Plot to ignore type {1} add the [Ignore] attribute to the class definition.</value>
   </data>
 </root>

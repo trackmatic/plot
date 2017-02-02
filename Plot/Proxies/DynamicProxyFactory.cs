@@ -60,7 +60,6 @@ namespace Plot.Proxies
 
             private object Create(Type type, object item)
             {
-                ProxyUtils.SetEntityId(item);
                 var id = ProxyUtils.GetEntityId(item);
                 var reference = new EntityReference(id, type);
                 if (IsBusyCreatingProxy(reference))
@@ -158,11 +157,13 @@ namespace Plot.Proxies
 
             private object Entity(NodeMetadata metadata, PropertyInfo property, object item, object parent)
             {
-                var type = ProxyUtils.GetTargetType(item);
-                if (ProxyUtils.IsIgnored(type))
+                var propertyMetadata = _metadataFactory.Create(item);
+                if (propertyMetadata.IsIgnored)
                 {
                     return item;
                 }
+
+                var type = ProxyUtils.GetTargetType(item);
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
                 return Create(type, entity);
             }

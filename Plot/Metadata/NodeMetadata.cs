@@ -7,10 +7,12 @@ namespace Plot.Metadata
     {
         private readonly ConcurrentDictionary<string, PropertyMetadata> _properties;
         private readonly string _name;
+        private readonly bool _isIgnored;
 
-        public NodeMetadata(string name)
+        public NodeMetadata(string name, bool isIgnored)
         {
             _name = name;
+            _isIgnored = isIgnored;
             _properties = new ConcurrentDictionary<string, PropertyMetadata>();
         }
 
@@ -19,6 +21,8 @@ namespace Plot.Metadata
         public IEnumerable<PropertyMetadata> Properties => _properties.Values;
 
         public PropertyMetadata this[string name] => _properties[name];
+
+        public bool IsIgnored => _isIgnored;
 
         public void SetProperties(IEnumerable<PropertyMetadata> properties)
         {

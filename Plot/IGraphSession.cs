@@ -11,11 +11,11 @@ namespace Plot
 
         void Delete<T>(T item);
 
-        IEnumerable<T> Get<T>(params string[] id);
+        IEnumerable<T> Get<T>(params object[] id);
 
         T Get<T>(IQuery<T> query, bool enlist = true);
 
-        T Get<T>(string id);
+        T Get<T>(object id);
 
         void Evict<T>(T item);
 
