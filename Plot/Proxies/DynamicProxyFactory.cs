@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Plot.Exceptions;
 using Plot.Logging;
 using Plot.Metadata;
 
@@ -60,7 +61,7 @@ namespace Plot.Proxies
 
             private object Create(Type type, object item)
             {
-                var id = ProxyUtils.GetEntityId(item);
+                var id = EnsureIdIsNotNull(item);
                 var reference = new EntityReference(id, type);
                 if (IsBusyCreatingProxy(reference))
                 {
@@ -80,6 +81,16 @@ namespace Plot.Proxies
                     ((IRequireSession)proxy).Set(_session);
                 }
                 return proxy;
+            }
+
+            private string EnsureIdIsNotNull(object item)
+            {
+                var id = ProxyUtils.GetEntityId(item);
+                if (string.IsNullOrEmpty(id))
+                {
+                    throw new PropertyNotSetException($"The entity identified \"{Conventions.IdPropertyName}\" cannot be null or empty", item);
+                }
+                return id;
             }
 
             private object NewProxy(Type type, object source)
