@@ -3,6 +3,37 @@ using Plot.Attributes;
 
 namespace Plot.Sample
 {
+    [Ignore]
+    public class MovieId
+    {
+        public MovieId(string id)
+        {
+            Value = id;
+        }
+
+        public string Value { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as MovieId;
+            if (other == null)
+            {
+                return false;
+            }
+            return other.GetHashCode() == GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
+    }
+
     public class Movie
     {
         public Movie()
@@ -10,7 +41,7 @@ namespace Plot.Sample
             People = new List<Person>();
         }
 
-        public virtual string Id { get; set; }
+        public virtual MovieId Id { get; set; }
 
         public virtual string Title { get; set; }
 

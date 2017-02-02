@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Plot.Attributes;
@@ -60,7 +59,7 @@ namespace Plot.Metadata
             {
                 Name = propertyInfo.Name,
                 IsList = IsList(propertyInfo.PropertyType),
-                IsPrimitive = IsPrimitive(propertyInfo.PropertyType),
+                IsPrimitive = ProxyUtils.IsPrimitive(propertyInfo.PropertyType),
                 Relationship = CreateRelationship(propertyInfo),
                 IsReadOnly = IsReadonly(propertyInfo),
                 IsIgnored = IsIgnored(propertyInfo),
@@ -106,29 +105,5 @@ namespace Plot.Metadata
         {
             return typeof(IEnumerable).IsAssignableFrom(type) && type.IsGenericType;
         }
-
-        private static bool IsPrimitive(Type type)
-        {
-            return IsNullable(type) || Primitives.Contains(type);
-        }
-
-        private static bool IsNullable(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
-        }
-
-        private static readonly Type[] Primitives =
-        {
-            typeof (int),
-            typeof (decimal),
-            typeof (string),
-            typeof (DateTime),
-            typeof (TimeSpan),
-            typeof (double),
-            typeof (uint),
-            typeof (float),
-            typeof (bool),
-            typeof (char)
-        };
     }
 }

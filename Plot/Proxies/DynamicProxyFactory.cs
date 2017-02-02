@@ -159,6 +159,10 @@ namespace Plot.Proxies
             private object Entity(NodeMetadata metadata, PropertyInfo property, object item, object parent)
             {
                 var type = ProxyUtils.GetTargetType(item);
+                if (ProxyUtils.IsIgnored(type))
+                {
+                    return item;
+                }
                 var entity = _session.Uow.Get(ProxyUtils.GetEntityId(item), type) ?? item;
                 return Create(type, entity);
             }

@@ -2,7 +2,7 @@
 
 namespace Plot.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property|AttributeTargets.Class)]
     public class IgnoreAttribute : Attribute
     {
     }

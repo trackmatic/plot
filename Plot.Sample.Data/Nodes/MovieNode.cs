@@ -14,7 +14,7 @@ namespace Plot.Sample.Data.Nodes
 
         public MovieNode(Movie item)
         {
-            Id = item.Id;
+            Id = item.Id.Value;
             Tagline = item.TagLine;
             Title = item.Title;
         }
@@ -29,7 +29,7 @@ namespace Plot.Sample.Data.Nodes
         {
             var organisation = new Movie
             {
-                Id = Id,
+                Id = new MovieId(Id),
                 TagLine = Tagline,
                 Title = Title
             };
