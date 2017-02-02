@@ -50,30 +50,16 @@ Task Test {
 
 function publish-package($nuspec, $apikey) {
     $file = "$base_dir\$nuspec\$nuspec.nuspec"
-    write-host $file
     $spec = [xml](get-content $file)
     $version = $spec.package.metadata.version
     $package = "$base_dir\$nuspec.$version.nupkg"
-    $package_dir = "$base_dir\$nuspec\bin\package"
-    
-    # Prepare package folder
-    remove-item $package_dir -R -ErrorAction SilentlyContinue
-    new-item -itemtype directory "$package_dir"
-    new-item -itemtype directory "$package_dir/lib"
-    new-item -itemtype directory "$package_dir/lib/net45"
-    
-    # Copy nuspec file to package folder
-    copy-item "$base_dir\$nuspec\$nuspec.nuspec" "$package_dir\$nuspec.nuspec"
-
-    # Copy libraries to package folders
-    get-childitem "$base_dir\$nuspec\bin\Debug" | ? { $_.Name -like "$nuspec*.dll" -and $_.Name } | % { copy-item $_.FullName "$package_dir\lib\net45" }
 
     # Create nuget package and upload to nuget
-    exec { & $nuget pack "$package_dir/$nuspec.nuspec" }
+    exec { & $nuget pack "$base_dir/$nuspec/$nuspec.csproj" -IncludeReferencedProjects }
     exec { & $nuget setApiKey $apikey }
+    write-host $package
     exec { & $nuget push "$package" }
 
     # Perform some cleanup on the folder
     remove-item $package
-    remove-item $package_dir -R -ErrorAction SilentlyContinue
 }

@@ -22,7 +22,7 @@ namespace Plot.Metadata
 
         public NodeMetadata Create(Type type)
         {
-            lock (type)
+            lock (_cache)
             {
                 return Load(type) ?? New(type);
             }
