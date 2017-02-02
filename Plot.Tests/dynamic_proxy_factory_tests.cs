@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Moq;
 using Plot.Attributes;
+using Plot.Exceptions;
 using Plot.Logging;
 using Plot.Metadata;
 using Plot.Proxies;
@@ -67,7 +68,7 @@ namespace Plot.Tests
         }
 
         [Fact]
-        public void id_property_is_set_if_null()
+        public void an_exception_is_thrown_if_id_null()
         {
             var metadataFactory = new AttributeMetadataFactory(new NullLogger());
             var queryExecutorFactory = new Mock<IQueryExecutorFactory>();
@@ -76,15 +77,12 @@ namespace Plot.Tests
             var proxyFactory = new DynamicProxyFactory(metadataFactory, new NullLogger());
             using (var session = new GraphSession(new UnitOfWork(stateTracker), new List<IListener>(), queryExecutorFactory.Object, repositoryFactory.Object, stateTracker, proxyFactory))
             {
-                var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
-                var notSet = new AnotherEntity();
-                var proxy = factory.Create(notSet, session);
-                Assert.NotNull(proxy.Id);
-                Assert.NotEmpty(proxy.Id);
-
-                var set = new AnotherEntity {Id = "1"};
-                proxy = factory.Create(set, session);
-                Assert.Equal("1", proxy.Id);
+                Assert.Throws<PropertyNotSetException>(() =>
+                {
+                    var factory = new DynamicProxyFactory(metadataFactory, new NullLogger());
+                    var notSet = new AnotherEntity();
+                    factory.Create(notSet, session);
+                });
             }
         }
 
@@ -238,6 +236,7 @@ namespace Plot.Tests
             {
                 var entity = new EntityWithNullableType
                 {
+                    Id = "1",
                     Date = DateTime.Now
                 };
                 var proxy = proxyFactory.Create(entity, session);
