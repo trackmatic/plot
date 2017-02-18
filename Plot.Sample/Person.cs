@@ -3,6 +3,26 @@ using Plot.Attributes;
 
 namespace Plot.Sample
 {
+    [Ignore]
+    public class PersonId : Identity
+    {
+        public PersonId(string id) : base(id)
+        {
+
+        }
+
+
+        public static implicit operator PersonId(string value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return new PersonId(value);
+        }
+    }
+
     public class Person
     {
         public Person()
@@ -10,7 +30,7 @@ namespace Plot.Sample
             Movies = new List<Movie>();
         }
 
-        public virtual string Id { get; set; }
+        public virtual PersonId Id { get; set; }
 
         public virtual string Name { get; set; }
 

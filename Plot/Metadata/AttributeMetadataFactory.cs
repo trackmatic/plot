@@ -89,7 +89,8 @@ namespace Plot.Metadata
                 IsReverse = attribute.Reverse,
                 Name = attribute.Name,
                 DeleteOrphan = attribute.DeleteOrphan,
-                Lazy = attribute.Lazy
+                Lazy = attribute.Lazy,
+                NotNull = attribute.NotNull
             };
             return relationship;
 

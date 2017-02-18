@@ -4,33 +4,11 @@ using Plot.Attributes;
 namespace Plot.Sample
 {
     [Ignore]
-    public class MovieId
+    public class MovieId : Identity
     {
-        public MovieId(string id)
+        public MovieId(string id) : base(id)
         {
-            Value = id;
-        }
-
-        public string Value { get; set; }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as MovieId;
-            if (other == null)
-            {
-                return false;
-            }
-            return other.GetHashCode() == GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Value;
+            
         }
 
 

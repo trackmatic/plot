@@ -143,7 +143,11 @@ namespace Plot.Neo4j.Cypher
 
         public ICypherQuery IncludeRelationships(NodeMetadata metadata)
         {
-            return metadata.Properties.Where(x => x.HasRelationship && !x.Relationship.Lazy).Aggregate((ICypherQuery)this, (current, property) => current.OptionalMatch($"(({Conventions.NamedParameterCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({Conventions.NamedParameterCase(property.Name)}:{property.Type.Name}))"));
+            return metadata
+                .Properties
+                .Where(x => x.HasRelationship && !x.Relationship.Lazy)
+                .OrderByDescending(x => x.Relationship.NotNull)
+                .Aggregate((ICypherQuery)this, (current, property) => IncludeRelationship(current, property, metadata));
         }
 
         public ICypherQuery<T> Skip(int count)
@@ -164,6 +168,12 @@ namespace Plot.Neo4j.Cypher
         public ICypherQuery<T> OrderBy(string property)
         {
             return Mutate(Append(Keywords.OrderBy, property));
+        }
+
+        private ICypherQuery IncludeRelationship(ICypherQuery current, PropertyMetadata property, NodeMetadata metadata)
+        {
+            var statement = $"(({Conventions.NamedParameterCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({Conventions.NamedParameterCase(property.Name)}:{property.Type.Name}))";
+            return property.Relationship.NotNull ? current.Match(statement) : current.OptionalMatch(statement);
         }
 
         private StringBuilder Append(params object[] items)

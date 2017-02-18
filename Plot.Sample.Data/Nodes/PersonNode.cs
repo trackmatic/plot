@@ -14,7 +14,7 @@ namespace Plot.Sample.Data.Nodes
 
         public PersonNode(Person item)
         {
-            Id = item.Id;
+            Id = item.Id.Value;
             Name = item.Name;
             Born = item.Born;
         }

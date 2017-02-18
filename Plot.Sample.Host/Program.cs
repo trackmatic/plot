@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Plot.Logging;
 using Plot.Neo4j;
 using Plot.Sample.Data.Mappers;
@@ -15,17 +17,27 @@ namespace Plot.Sample.Host
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (MovieMapper).Assembly);
 
 
+            var id1 = new MovieId("rWJ-ibil2kOUqqcQAUs0uQ");
+            var id2 = new MovieId("rWJ-ibil2kOUqqcQAUs0uQ");
+
+            var list = new List<Identity>() {id1, id2};
+            var contains = list.Contains(id1);
+            contains = list.Contains(id2);
+
+            var result = id1.Equals(id2);
+            result = id1 == id2;
+
             var start = DateTime.UtcNow;
             using (var session = factory.OpenSession())
             {
-                var person = session.Get<Movie>(new MovieId("blabal1"));
+                var movie = session.Get<Movie>("new-movie-1");
 
-                person.Title = "XYZ";
+                var ids = movie.People.Select(x => (object)x.Id.Value).ToArray();
 
-                var p2 = session.Get<Movie>(person.Id.Value);
+                var people = session.Get<Person>(ids);
 
-                //person.Remove(person.Movies[0]);
-                session.SaveChanges();
+                
+                //session.SaveChanges();
             }
             Console.WriteLine(DateTime.UtcNow.Subtract(start));
             Console.WriteLine("Done");

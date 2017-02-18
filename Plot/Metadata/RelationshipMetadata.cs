@@ -19,6 +19,8 @@ namespace Plot.Metadata
 
         public bool Lazy { get; set; }
 
+        public bool NotNull { get; set; }
+
         public override int GetHashCode()
         {
             return Id.GetHashCode();
