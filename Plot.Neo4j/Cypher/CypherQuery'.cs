@@ -172,7 +172,7 @@ namespace Plot.Neo4j.Cypher
 
         private ICypherQuery IncludeRelationship(ICypherQuery current, PropertyMetadata property, NodeMetadata metadata)
         {
-            var statement = $"(({Conventions.NamedParameterCase(metadata.Name)}){StatementFactory.Relationship(property.Relationship)}({Conventions.NamedParameterCase(property.Name)}:{property.Type.Name}))";
+            var statement = $"(({Conventions.NamedParameterCase(metadata.Name)}:{metadata.Name}){StatementFactory.Relationship(property.Relationship)}({Conventions.NamedParameterCase(property.Name)}:{property.Type.Name}))";
             return property.Relationship.NotNull ? current.Match(statement) : current.OptionalMatch(statement);
         }
 

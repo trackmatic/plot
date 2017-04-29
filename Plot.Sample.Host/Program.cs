@@ -16,28 +16,24 @@ namespace Plot.Sample.Host
             Configuration.Logger = () => new ConsoleLogger();
             var factory = Configuration.CreateGraphSessionFactory(uri, "neo4j", "trackmatic101", typeof (MovieMapper).Assembly);
 
-
-            var id1 = new MovieId("rWJ-ibil2kOUqqcQAUs0uQ");
-            var id2 = new MovieId("rWJ-ibil2kOUqqcQAUs0uQ");
-
-            var list = new List<Identity>() {id1, id2};
-            var contains = list.Contains(id1);
-            contains = list.Contains(id2);
-
-            var result = id1.Equals(id2);
-            result = id1 == id2;
-
+            
             var start = DateTime.UtcNow;
             using (var session = factory.OpenSession())
             {
-                var movie = session.Get<Movie>("new-movie-1");
 
-                var ids = movie.People.Select(x => (object)x.Id.Value).ToArray();
+                /*var person1 = session.Create(new Person {Id = "person1"});
+                var movie1 = session.Create(new Movie {Id = "movie1"});
+                var movie2 = session.Create(new Movie { Id = "movie2" });
+                person1.Add(movie1);
+                person1.Add(movie2);
 
-                var people = session.Get<Person>(ids);
+                var person2 = session.Create(new Person { Id = "person2" });
+                var movie3 = session.Create(new Movie { Id = "movie3" });
+                person2.Add(movie3);
+                session.SaveChanges();*/
 
-                
-                //session.SaveChanges();
+
+                var movie = session.Get<Person>("person2");
             }
             Console.WriteLine(DateTime.UtcNow.Subtract(start));
             Console.WriteLine("Done");
