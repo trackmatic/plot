@@ -101,6 +101,7 @@ namespace Plot
         public IUnitOfWork Uow => _uow;
 
         public IEntityStateCache State => _state;
+
         public IProxyFactory ProxyFactory => _proxyFactory;
 
         public bool Register(object item)
