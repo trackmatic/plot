@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Plot.Attributes;
-using Plot.Logging;
 using Plot.Metadata;
 using Plot.Neo4j.Cypher;
 using Plot.Tests.Model;
@@ -39,11 +38,13 @@ namespace Plot.Tests.Neo4j.Cypher
         {
             var factory = new AttributeMetadataFactory(null);
             var person = new PersonWithNotNullAttributes { Id = "1" };
-            var node = new Node(factory.Create(person), person);
             var metadata = factory.Create(person);
             var query = new CypherQuery<Person>();
             var response = query.IncludeRelationships(metadata);
-            Assert.Equal("MATCH ((personWithNotNullAttributes)-[:HAS_A]->(person1:Person))\r\nMATCH ((personWithNotNullAttributes)-[:HAS_A]->(person2:Person))\r\nOPTIONAL MATCH ((personWithNotNullAttributes)-[:LINKED_TO]->(contacts:Contact))", response.Statement);
+            var expected = @"MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:HAS_A]->(person1:Person))
+MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:HAS_A]->(person2:Person))
+OPTIONAL MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:LINKED_TO]->(contacts:Contact))";
+            Assert.Equal(expected , response.Statement);
         }
 
 
