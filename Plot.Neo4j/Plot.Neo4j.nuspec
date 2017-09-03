@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Plot.Neo4j</id>
-    <version>0.2.12</version>
+    <version>0.3.0</version>
     <title>Plot.Neo4j</title>
     <authors>Trackmatic Solutions (Pty) Ltd</authors>
     <owners>Trackmatic Solutions (Pty) Ltd</owners>
@@ -12,7 +12,7 @@
     <copyright>Copyright 2016</copyright>
     <tags>plot n4g ogm neo4j</tags>
     <dependencies>
-      <dependency id="Neo4j.Driver" version="1.0.2" />
+      <dependency id="Neo4j.Driver" version="1.4.1" />
     </dependencies>
   </metadata>
 </package>
