@@ -11,8 +11,6 @@ namespace Plot.Neo4j
 {
     public static class Configuration
     {
-        public static Func<Guid> ResourceManagerId = () => Guid.Parse("5c62baaa-2c28-4a2d-b55f-36b96503ffc3");
-
         public static Func<Logging.ILogger> Logger = () => new NullLogger();
 
         public static Func<IEntityStateCacheFactory> EntityStateCacheFactory = () => new EntityStateCacheFactory();
