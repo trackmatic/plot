@@ -41,9 +41,9 @@ namespace Plot.Tests.Neo4j.Cypher
             var metadata = factory.Create(person);
             var query = new CypherQuery<Person>();
             var response = query.IncludeRelationships(metadata);
-            var expected = @"MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:HAS_A]->(person1:Person))
-MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:HAS_A]->(person2:Person))
-OPTIONAL MATCH ((personWithNotNullAttributes:PersonWithNotNullAttributes)-[:LINKED_TO]->(contacts:Contact))";
+            var expected = @"MATCH ((personWithNotNullAttributes)-[:HAS_A]->(person1:Person))
+MATCH ((personWithNotNullAttributes)-[:HAS_A]->(person2:Person))
+OPTIONAL MATCH ((personWithNotNullAttributes)-[:LINKED_TO]->(contacts:Contact))";
             Assert.Equal(expected , response.Statement);
         }
 
