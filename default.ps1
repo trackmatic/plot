@@ -58,7 +58,7 @@ function publish-package($nuspec, $apikey) {
     exec { & $nuget pack "$base_dir/$nuspec/$nuspec.csproj" -IncludeReferencedProjects }
     exec { & $nuget setApiKey $apikey }
     write-host $package
-    exec { & $nuget push "$package" }
+    exec { & $nuget push "$package" -source "https://www.nuget.org/api/v2/package" }
 
     # Perform some cleanup on the folder
     remove-item $package

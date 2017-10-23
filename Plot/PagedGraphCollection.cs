@@ -19,6 +19,7 @@ namespace Plot
             _session = session;
             _executor = executor;
             _query = query;
+            _enlist = enlist;
             Data = data;
             Total = total;
             Page = page;
